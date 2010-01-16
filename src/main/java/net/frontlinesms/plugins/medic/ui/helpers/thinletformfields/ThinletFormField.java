@@ -15,8 +15,8 @@ public abstract class ThinletFormField<E>{
 	protected MedicField field;	
 	/** the main thinlet panel**/
 	protected Object mainPanel;
-	
-	protected E response;
+	/** the string that represents the response of the field **/
+	protected String response;
 
 	public ThinletFormField(ExtendedThinlet controller,String label,String name){
 		this.thinlet = controller;
@@ -39,26 +39,36 @@ public abstract class ThinletFormField<E>{
 		controller.add(mainPanel,controller.createLabel(label));
 	}
 	
+	/** returns the label of the field **/
 	public String getLabel(){
 		return label;
 	}
+	
+	/**returns the main panel of the field that contains all the subcomponents **/
 	public Object getThinletPanel(){
 		return mainPanel;
 	}
 	
+	/**expansion point for validating the fields **/
 	public abstract boolean isValid();
 	
+	/**returns true if the field currently has a response **/
 	public boolean hasResponse(){
-		return getResponse() !=null;
+		return getResponse() !=null && getResponse()!="";
 	}
 	
-	public E getResponse(){
-		return response;
-	}
+	/**returns the current response in string form 
+	 * the default is string form because it needs to be database readable**/
+	public abstract String getResponse();
 	
-	public void setResponse(E response){
-		this.response = response;
-	}
+	/** sets the response with a string **/
+	public abstract void setResponse(String response);
+	
+	/**gets the response in the field's designated format **/
+	public abstract E getRawResponse();
+	
+	public abstract void setRawResponse(E response);
+	
 	
 	public MedicField getField(){
 		return field;

@@ -167,7 +167,7 @@ public class MedicThinletTabController implements ThinletUiEventHandler{
 				uiController.setString(btn, "group", "organizerButtons");
 				uiController.setAction(btn,"organizerButtonClicked(this,this.text)", null, this);
 				uiController.setAttachedObject(btn, e);
-				if(e.getName().equals("CHW"))
+				if(e.getName().equals("Patient"))
 					uiController.setSelected(btn, true);
 			}
 			//add the "Responses" button
@@ -185,7 +185,7 @@ public class MedicThinletTabController implements ThinletUiEventHandler{
 			queryGenerator = new QueryGenerator(pluginController.getApplicationContext(),tableController);
 			detailViewController = new DetailedViewController(uiController,pluginController.getApplicationContext(),this);
 			//initial state of the organizer
-			organizerButtonClicked(EntityType.CHW,"CHW");
+			organizerButtonClicked(EntityType.PATIENT,"Patient");
 			//initialize the forward/backward stacks
 			forwardStack = new Stack<ArrayList<BreadCrumb>>();
 			backStack = new Stack<ArrayList<BreadCrumb>>();

@@ -1,82 +1,69 @@
 package net.frontlinesms.plugins.medic.ui.helpers.thinletformfields;
 
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.frontlinesms.plugins.medic.ui.dialogs.DateSelectorDialog;
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class DateField extends ThinletFormField<String>{
+public class DateField extends TextBox {
 
-	protected Object textBox;
-	private DateSelectorDialog ds;
+	protected DateSelectorDialog ds;
+	protected SimpleDateFormat df;
 	public static final String NAME = "dateField";
-	
-	public DateField(ExtendedThinlet thinlet, String label){
-		super(thinlet,label, NAME);
-		textBox =thinlet.createTextfield(null, null);
+
+	public DateField(ExtendedThinlet thinlet, String label) {
+		super(thinlet, label, NAME);
 		Object btn = thinlet.create("button");
 		thinlet.setIcon(btn, "/icons/date.png");
 		thinlet.setAction(btn, "showDateSelector()", null, this);
-		thinlet.add(mainPanel,textBox);
-		thinlet.add(mainPanel,btn);
-		thinlet.setInteger(textBox, "weightx", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
+		thinlet.add(mainPanel, btn);
 		thinlet.setInteger(mainPanel, "columns", 3);
-		ds = new DateSelectorDialog(thinlet,textBox);
+		ds = new DateSelectorDialog(thinlet, textBox);
+		df =  new SimpleDateFormat();
+		df.applyLocalizedPattern("dd/MM/yyyy");
 		thinlet.setAttachedObject(mainPanel, this);
-		
 	}
 
-	protected DateField(ExtendedThinlet thinlet, String label, String name){
-		super(thinlet,label, name);
-		textBox =thinlet.createTextfield(null, null);
+	protected DateField(ExtendedThinlet thinlet, String label, String name) {
+		super(thinlet, label, name);
 		Object btn = thinlet.create("button");
 		thinlet.setIcon(btn, "/icons/date.png");
 		thinlet.setAction(btn, "showDateSelector()", null, this);
-		thinlet.add(mainPanel,textBox);
-		thinlet.add(mainPanel,btn);
-		thinlet.setInteger(textBox, "weightx", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
+		thinlet.add(mainPanel, btn);
 		thinlet.setInteger(mainPanel, "columns", 3);
-		ds = new DateSelectorDialog(thinlet,textBox);
+		df =  new SimpleDateFormat();
+		df.applyLocalizedPattern("dd/MM/yyyy");
+		ds = new DateSelectorDialog(thinlet, textBox);
 	}
 
-	public Date getResponse() {
-		return thinlet.getText(textBox);
+	public Date getDateResponse() {
+		try {
+			return df.parse(getResponse());
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 
-	public Object getThinletPanel() {
-		return mainPanel;
-	}
-
-	public boolean hasResponse() {
-		return !getResponse().equals("");
-	}
-	
-	public void showDateSelector(){
+	public void showDateSelector() {
 		try {
 			ds.showSelecter();
 		} catch (Throwable e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public boolean isValid() {
-		try{
+		try {
 			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
 			df.setLenient(false);
 			Date date = df.parse(this.getResponse());
-		}catch(Exception e){
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public void setResponse(String s) {
-		thinlet.setText(textBox,s);
 	}
 
 }

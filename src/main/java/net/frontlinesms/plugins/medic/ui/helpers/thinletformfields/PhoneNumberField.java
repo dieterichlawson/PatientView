@@ -5,35 +5,20 @@ import java.util.regex.Pattern;
 
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class PhoneNumberField extends ThinletFormField<String> {
+public class PhoneNumberField extends TextBox{
 
-	private Object textBox;
+	
 	public static final String NAME = "phoneNumberField";
 	
 	public PhoneNumberField(ExtendedThinlet thinlet, String label){
 		super(thinlet, label, NAME);
-		textBox =thinlet.createTextfield(null, null);
-		thinlet.add(mainPanel,textBox);
-		thinlet.setInteger(textBox, "weightx", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
 		thinlet.setAttachedObject(mainPanel, this);
 	}
 	
 	protected PhoneNumberField(ExtendedThinlet thinlet, String label, String name){
 		super(thinlet, label, name);
-		textBox =thinlet.createTextfield(null, null);
-		thinlet.add(mainPanel,textBox);
-		thinlet.setInteger(textBox, "weightx", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
 	}
-	
-	public String getResponse() {
-		return thinlet.getText(textBox);
-	}
-	
-	public boolean hasResponse() {
-		return !getResponse().equals("");
-	}
+
 	
 	public boolean isValid() {
 		//if there are any letters in the input, it will find them and fail validation
@@ -47,10 +32,4 @@ public class PhoneNumberField extends ThinletFormField<String> {
 			return true;
 		}
 	}
-
-	@Override
-	public void setResponse(String s) {
-		thinlet.setText(textBox, s);
-	}
-
 }

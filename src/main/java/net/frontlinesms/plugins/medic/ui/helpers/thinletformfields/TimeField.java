@@ -2,36 +2,20 @@ package net.frontlinesms.plugins.medic.ui.helpers.thinletformfields;
 
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class TimeField extends ThinletFormField<String> {
-
-	private Object textBox;
+public class TimeField extends TextBox {
+	
 	public static final String NAME = "timeField";
 	
 	public TimeField(ExtendedThinlet thinlet, String label){
 		super(thinlet, label,NAME);
-		textBox =thinlet.createTextfield(null, null);
-		thinlet.add(mainPanel,textBox);
-		thinlet.setInteger(textBox, "weightx", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
 		thinlet.setAttachedObject(mainPanel, this);
 	}
 	
 	protected TimeField(ExtendedThinlet thinlet, String label, String name){
 		super(thinlet, label,name);
-		textBox =thinlet.createTextfield(null, null);
-		thinlet.add(mainPanel,textBox);
-		thinlet.setInteger(textBox, "weightx", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
 	}
 	
-	public String getResponse() {
-		return thinlet.getText(textBox);
-	}
-	
-	public boolean hasResponse() {
-		return !getResponse().equals("");
-	}
-	
+	@Override
 	public boolean isValid() {
 			String input = getResponse().trim();
 			int hour = 0;
@@ -89,11 +73,6 @@ public class TimeField extends ThinletFormField<String> {
 				return false;
 			}
 			return true;
-	}
-
-	@Override
-	public void setResponse(String s) {
-		thinlet.setText(textBox, s);
 	}
 
 }

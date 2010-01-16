@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 
 public class CHWComboBox extends ThinletFormField<CommunityHealthWorker>{
 	
+	private CommunityHealthWorker response;
 	private Object comboBox;
 	private HibernateCommunityHealthWorkerDao chwDao;
 	private boolean hasChanged;
@@ -80,10 +81,24 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker>{
 	}
 
 	@Override
-	public void setResponse(CommunityHealthWorker chw) {
+	public void setRawResponse(CommunityHealthWorker chw) {
 		thinlet.setText(comboBox, chw.getName());
 		response = chw;
 		textChanged(chw.getName());
+	}
+	
+	@Override
+	public void setResponse(String chw) {
+	}
+	
+	@Override
+	public CommunityHealthWorker getRawResponse(){
+		return response;
+	}
+	
+	@Override
+	public String getResponse(){
+		return response.getName();
 	}
 	
 }

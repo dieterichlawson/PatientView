@@ -5,34 +5,18 @@ import java.util.regex.Pattern;
 
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class NumericTextField extends ThinletFormField<String>{
+public class NumericTextField extends TextBox{
 
 	private Object textBox;
 	public static final String NAME = "numericTextField";
 	
 	public NumericTextField(ExtendedThinlet thinlet, String label){
 		super(thinlet,label, NAME);
-		textBox =thinlet.createTextfield(null, null);
-		thinlet.add(mainPanel,textBox);
-		thinlet.setInteger(textBox, "weightx", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
 		thinlet.setAttachedObject(mainPanel, this);
 	}
 
 	protected NumericTextField(ExtendedThinlet thinlet, String label, String name){
 		super(thinlet,label, name);
-		textBox =thinlet.createTextfield(null, null);
-		thinlet.add(mainPanel,textBox);
-		thinlet.setInteger(textBox, "weightx", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
-	}
-	
-	public String getResponse() {
-		return thinlet.getText(textBox);
-	}
-
-	public boolean hasResponse() {
-		return !getResponse().equals("");
 	}
 
 	public boolean isValid() {
@@ -44,10 +28,5 @@ public class NumericTextField extends ThinletFormField<String>{
 		}else{
 			return true;
 		}
-	}
-
-	@Override
-	public void setResponse(String s) {
-		thinlet.setText(textBox, s);
 	}
 }

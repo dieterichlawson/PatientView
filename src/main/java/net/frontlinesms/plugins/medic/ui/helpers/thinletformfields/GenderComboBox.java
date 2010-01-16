@@ -1,52 +1,33 @@
 package net.frontlinesms.plugins.medic.ui.helpers.thinletformfields;
 
+import net.frontlinesms.plugins.medic.data.domain.people.Person.Gender;
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class GenderComboBox extends ThinletFormField<Character>{
+public class GenderComboBox extends ThinletFormField<Gender>{
 
 	protected Object comboBox;
 	protected boolean hasChanged;
 	public static final String NAME = "genderComboBox";
 	
-	public GenderComboBox(ExtendedThinlet thinlet, Character gender) {
+	public GenderComboBox(ExtendedThinlet thinlet, Gender gender) {
 		super(thinlet, "Gender:",NAME);
 		hasChanged = false;
 		comboBox = thinlet.create("combobox");
-		thinlet.add(comboBox,thinlet.createComboboxChoice("Male", 'm'));
-		thinlet.add(comboBox,thinlet.createComboboxChoice("Female", 'f'));
-		thinlet.add(comboBox,thinlet.createComboboxChoice("Trans-gender", 't'));
+		thinlet.add(comboBox,thinlet.createComboboxChoice("Male", Gender.MALE));
+		thinlet.add(comboBox,thinlet.createComboboxChoice("Female", Gender.FEMALE));
+		thinlet.add(comboBox,thinlet.createComboboxChoice("Trans-gender", Gender.TRANSGENDER));
 		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null, this);
 		thinlet.add(mainPanel,comboBox);
-		response = gender;
 		thinlet.setInteger(comboBox, "weightx", 5);
-		//initialize the textbox
-		if(response !=null){
-			if(response == 'm'){
-				thinlet.setText(comboBox, "Male");
-				thinlet.setSelectedIndex(comboBox, 0);
-			}else if(response == 'f'){
-				thinlet.setText(comboBox, "Female");
-				thinlet.setSelectedIndex(comboBox, 1);
-			}else if(response == 't'){
-				thinlet.setText(comboBox, "Trans-gender");
-				thinlet.setSelectedIndex(comboBox, 2);
-			}
-		}
+		//initialize the comboBox
+		setRawResponse(gender);
 		thinlet.setAttachedObject(mainPanel, this);
 	}
 
 	public void selectionChanged(int index){
-		System.out.println("Selection changed, bitches " + index);
 		if(index >=0){
 			hasChanged = true;
-			response = (Character) thinlet.getAttachedObject(thinlet.getItem(comboBox, index));
-		}else{
-			response = null;
 		}
-	}
-	
-	public String getStringResponse() {
-		return response + "";
 	}
 
 	@Override
@@ -57,5 +38,26 @@ public class GenderComboBox extends ThinletFormField<Character>{
 	public boolean hasChanged(){		
 		return hasChanged;
 	}
+	
+	@Override
+	public Gender getRawResponse() {
+		return (Gender) thinlet.getAttachedObject(thinlet.getSelectedItem(comboBox));
+	}
+	
+	@Override
+	public void setRawResponse(Gender s) {
+		thinlet.setText(comboBox, Gender.getGenderName(s));
+		thinlet.setSelectedIndex(comboBox, s == Gender.MALE? 0: s == Gender.FEMALE? 1:2);
+	}
+	
+	@Override
+	public String getResponse() {
+		return Gender.getGenderName(getRawResponse());
+	}
 
+	@Override
+	public void setResponse(String response) {
+		if(Gender.getGenderForName(response) != null)
+			setRawResponse(Gender.getGenderForName(response));
+	}
 }

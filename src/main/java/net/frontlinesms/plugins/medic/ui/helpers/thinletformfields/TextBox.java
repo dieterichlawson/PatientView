@@ -16,6 +16,7 @@ public class TextBox extends ThinletFormField<String>{
 		thinlet.setInteger(textBox, "weightx", 1);
 		thinlet.setInteger(mainPanel, "colspan", 1);
 		thinlet.setAttachedObject(mainPanel, this);
+		thinlet.setAction(textBox, "textBoxKeyPressed(this.text)", null, this);
 	}
 	
 	protected TextBox(ExtendedThinlet thinlet, String label, String name){
@@ -28,12 +29,8 @@ public class TextBox extends ThinletFormField<String>{
 		thinlet.setInteger(mainPanel, "colspan", 1);
 	}
 	
-	public String getResponse() {
-		return thinlet.getText(textBox);
-	}
-	
-	public boolean hasResponse() {
-		return !getResponse().equals("");
+	public void textBoxKeyPressed(String text){
+		//allows subclasses to do stuff with the text
 	}
 	
 	/** Text Boxes are always valid**/
@@ -42,8 +39,24 @@ public class TextBox extends ThinletFormField<String>{
 	}
 
 	@Override
-	public void setResponse(String s) {
-		thinlet.setText(textBox, s);
+	public String getRawResponse() {
+		return getResponse();
+	}
+
+	@Override
+	public String getResponse() {
+		return thinlet.getText(textBox);
+		
+	}
+
+	@Override
+	public void setRawResponse(String response) {
+		setResponse(response);
+	}
+
+	@Override
+	public void setResponse(String response) {
+		thinlet.setText(textBox, response);
 	}
 
 }

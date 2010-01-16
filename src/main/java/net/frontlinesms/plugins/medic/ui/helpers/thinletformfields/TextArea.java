@@ -29,22 +29,30 @@ public class TextArea extends ThinletFormField<String>{
 		thinlet.setInteger(mainPanel, "columns", 1);
 	}
 	
-	public String getResponse() {
-		return thinlet.getText(textArea);
-	}
-	
-	public boolean hasResponse() {
-		return !getResponse().equals("");
-	}
-	
 	/** Text Areas are always valid**/
 	public boolean isValid() {
 		return true;
 	}
 
 	@Override
-	public void setResponse(String s) {
-		thinlet.setText(textArea,s);
+	public String getRawResponse() {
+		return getResponse();
+	}
+
+	@Override
+	public String getResponse() {
+		return thinlet.getText(textArea);
+		
+	}
+
+	@Override
+	public void setRawResponse(String response) {
+		setResponse(response);
+	}
+
+	@Override
+	public void setResponse(String response) {
+		thinlet.setText(textArea, response);
 	}
 	
 }

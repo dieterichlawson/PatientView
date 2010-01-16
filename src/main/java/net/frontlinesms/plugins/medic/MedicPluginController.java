@@ -19,6 +19,7 @@ import net.frontlinesms.plugins.medic.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.medic.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.medic.data.domain.people.Patient;
 import net.frontlinesms.plugins.medic.data.domain.people.User;
+import net.frontlinesms.plugins.medic.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.medic.data.domain.people.User.Role;
 import net.frontlinesms.plugins.medic.data.domain.response.MedicFieldResponse;
 import net.frontlinesms.plugins.medic.data.domain.response.MedicFormResponse;
@@ -163,13 +164,13 @@ public class MedicPluginController extends BasePluginController  {
 		for (int i = 0; i < 35; i++) {
 			String name = firsts[rand.nextInt(firsts.length)] + " "
 					+ lasts[rand.nextInt(lasts.length)];
-			char gender = (rand.nextBoolean()) ? 'm':'f';
+			Gender gender = (rand.nextBoolean()) ? Gender.MALE:Gender.FEMALE;
 			CommunityHealthWorker chw = new CommunityHealthWorker(name, getRandomNumber(),gender,getRandomDate());
 			chws.add(chw);
 			ArrayList<Patient> patients = new ArrayList<Patient>();
 			//create 100 patients for each chw
 			for (int j = 0; j < 35; j++) {
-				char gender2= (rand.nextBoolean()) ? 'm':'f';
+				Gender gender2 = (rand.nextBoolean()) ? Gender.MALE:Gender.FEMALE;
 				String name2 = firsts[rand.nextInt(firsts.length)] + " " + lasts[rand.nextInt(lasts.length)];
 				Patient p = new Patient(chw, name2, gender2, getRandomDate());
 				patients.add(p);
@@ -425,9 +426,9 @@ public class MedicPluginController extends BasePluginController  {
 		}
 		log("Everything saved, creating user credentials");
 		
-		User user = new User("Alex Harsha",'f', new Date(),"aHarsha","medic",Role.ADMIN);
-		User user2 = new User("Aisha Moniba ",'f', new Date(),"aMoniba","medic",Role.READWRITE);
-		User user3 = new User("Daniel Kayiwa ",'m', new Date(),"dKayiwa","medic",Role.READ);
+		User user = new User("Alex Harsha",Gender.FEMALE, new Date(),"aHarsha","medic",Role.ADMIN);
+		User user2 = new User("Aisha Moniba ",Gender.FEMALE, new Date(),"aMoniba","medic",Role.READWRITE);
+		User user3 = new User("Daniel Kayiwa ",Gender.MALE, new Date(),"dKayiwa","medic",Role.READ);
 		HibernateUserDao userDao = (HibernateUserDao) applicationContext.getBean("UserDao");
 		userDao.saveUser(user);
 		userDao.saveUser(user2);

@@ -2,18 +2,14 @@ package net.frontlinesms.plugins.medic.ui.helpers.thinletformfields;
 
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class PasswordTextField extends ThinletFormField<String>{
+public class PasswordTextField extends TextBox{
 
-	private Object textBox;
 	public static final String NAME = "passwordField";
+	private String response;
 	
 	public PasswordTextField(ExtendedThinlet thinlet, String label){
 		super(thinlet,label, NAME);
 		response = "";
-		textBox =thinlet.createTextfield(null, null);
-		thinlet.setAction(textBox, "textBoxKeyPressed(this.text)", null, this);
-		thinlet.add(mainPanel,textBox);
-		thinlet.setInteger(textBox, "weightx", 1);
 		thinlet.setInteger(mainPanel, "colspan", 1);
 		thinlet.setAttachedObject(mainPanel, this);
 	}
@@ -21,15 +17,7 @@ public class PasswordTextField extends ThinletFormField<String>{
 	protected PasswordTextField(ExtendedThinlet thinlet, String label, String name){
 		super(thinlet,label, name);
 		response = "";
-		textBox =thinlet.createTextfield(null, null);
-		thinlet.setAction(textBox, "textBoxKeyPressed(this.text)", null, this);
-		thinlet.add(mainPanel,textBox);
-		thinlet.setInteger(textBox, "weightx", 1);
 		thinlet.setInteger(mainPanel, "colspan", 1);
-	}
-
-	public Object getThinletPanel() {
-		return mainPanel;
 	}
 	
 	public void textBoxKeyPressed(String typed){
@@ -46,12 +34,13 @@ public class PasswordTextField extends ThinletFormField<String>{
 		thinlet.setText(textBox, mask);	
 	}
 
-	public boolean hasResponse() {
-		return (getResponse() != "");
-	}
-
 	public boolean isValid() {
 		return true;
+	}
+	
+	@Override
+	public String getResponse() {
+		return response;
 	}
 
 	@Override

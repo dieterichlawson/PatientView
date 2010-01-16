@@ -18,36 +18,15 @@ public class RoleComboBox extends ThinletFormField<Role>{
 		thinlet.add(comboBox,thinlet.createComboboxChoice("Read Only", Role.READ));
 		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null, this);
 		thinlet.add(mainPanel,comboBox);
-		response = role;
 		thinlet.setInteger(comboBox, "weightx", 5);
-		//initialize the textbox
-		if(response == Role.ADMIN){
-			thinlet.setText(comboBox, "Administrator");
-			thinlet.setSelectedIndex(comboBox, 0);
-		}else if(response == Role.READWRITE){
-			thinlet.setText(comboBox, "Read/Write");
-			thinlet.setSelectedIndex(comboBox, 1);
-		}else if(response == Role.READ){
-			thinlet.setText(comboBox, "Read");
-			thinlet.setSelectedIndex(comboBox, 2);
-		}
+		setRawResponse(role);
 		thinlet.setAttachedObject(mainPanel, this);
 	}
 
 	public void selectionChanged(int index){
 		if(index >=0){
-			System.out.println(hasChanged);
 			hasChanged = true;
-			System.out.println(hasChanged);
-			response = (Role) thinlet.getAttachedObject(thinlet.getItem(comboBox, index));
-		}else{
-			response = null;
 		}
-	}
-	
-	
-	public Role getSelectedRole(){
-		return response;
 	}
 
 	@Override
@@ -60,9 +39,26 @@ public class RoleComboBox extends ThinletFormField<Role>{
 	}
 
 	@Override
-	public void setResponse(Role s) {
-		response= s;
+	public Role getRawResponse() {
+		return (Role) thinlet.getAttachedObject(thinlet.getSelectedItem(comboBox));
+	}
+	
+	@Override
+	public void setRawResponse(Role s) {
 		thinlet.setText(comboBox, Role.getRoleName(s));
 		thinlet.setSelectedIndex(comboBox, s == Role.ADMIN? 0: s == Role.READWRITE? 1:2);
 	}
+
+	@Override
+	public String getResponse() {
+		return Role.getRoleName(getRawResponse());
+	}
+
+	@Override
+	public void setResponse(String response) {
+		if(Role.getRoleForName(response) != null)
+			setRawResponse(Role.getRoleForName(response));
+	}
+	
+	
 }

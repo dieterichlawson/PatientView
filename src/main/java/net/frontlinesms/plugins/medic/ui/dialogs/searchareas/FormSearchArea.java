@@ -20,6 +20,7 @@ public class FormSearchArea extends EntitySearchArea<MedicForm>{
 		super(entity, uiController);
 		this.fofDialog = fofDialog;
 		formDao = (HibernateMedicFormDao) appCon.getBean("MedicFormDao");
+		searchBarKeyPressed("");
 	}
 
 	

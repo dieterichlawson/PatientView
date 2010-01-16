@@ -17,6 +17,7 @@ import net.frontlinesms.plugins.medic.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.medic.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.medic.data.domain.people.Patient;
 import net.frontlinesms.plugins.medic.data.domain.people.Person;
+import net.frontlinesms.plugins.medic.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.medic.data.domain.people.User.Role;
 import net.frontlinesms.plugins.medic.data.domain.response.MedicFieldResponse;
 import net.frontlinesms.plugins.medic.data.domain.response.MedicFormResponse;
@@ -120,6 +121,7 @@ public class DetailedViewController implements ThinletUiEventHandler{
 		furtherOptions.put(CommunityHealthWorker.class, chwOptions);
 		furtherOptions.put(MedicForm.class, formOptions);
 		furtherOptions.put(MedicFormField.class, fieldOptions);
+		//selectionChanged(null);
 	}
 	
 	public void selectionChanged(Object entity){
@@ -318,7 +320,7 @@ public class DetailedViewController implements ThinletUiEventHandler{
 		}
 		uiController.setText(uiController.find(labelPanel,"label1"), p.getName());
 		uiController.setText(uiController.find(labelPanel,"label2"), "ID: "+ p.getPid());
-		String gender = (p.getGender() == 'm') ? "Male" : ((p.getGender() =='f') ? "Female" : "Transgender");
+		String gender = Gender.getGenderName(p.getGender());
 		uiController.setText(uiController.find(labelPanel,"label3"), gender );
 		uiController.setText(uiController.find(labelPanel,"label4"), "Age: " + p.getAge());
 		if(p instanceof CommunityHealthWorker){
@@ -554,18 +556,18 @@ public class DetailedViewController implements ThinletUiEventHandler{
 					Date date = null;
 					try {
 						date = df.parse(f.getResponse());
+						((Person) currentEntity).setBirthdate(date);
 					} catch (ParseException e) {
 						System.out.println("Error parsing date");
-					}
-					((Person) currentEntity).setBirthdate(date);
+					}	
 				}
 			}else if(f instanceof GenderComboBox){
 				if(f.isValid()){
-					((Person) currentEntity).setGender(((GenderComboBox) f).getSelectedGender());						
+					((Person) currentEntity).setGender(((GenderComboBox) f).getRawResponse());						
 				}
 			}else if(f instanceof CHWComboBox){
 				if(f.isValid()){
-					((Patient) currentEntity).setChw(((CHWComboBox) f).getCHW());
+					((Patient) currentEntity).setChw(((CHWComboBox) f).getRawResponse());
 				}
 			}
 		}

@@ -30,11 +30,22 @@ public class User extends Person {
 			}
 			return null;
 		}
+		
+		public static Role getRoleForName(String name){
+			if(name == Role.getRoleName(Role.ADMIN)){
+				return Role.ADMIN;
+			}else if(name == Role.getRoleName(Role.READWRITE)){
+				return Role.READWRITE;
+			}else if(name == Role.getRoleName(Role.READ)){
+				return Role.READ;
+			}
+			return null;
+		}
 	}
 	
 	public User(){}
 	
-	public User(String name, char gender, Date birthdate, String username, String password, Role role){
+	public User(String name, Gender gender, Date birthdate, String username, String password, Role role){
 		super(name, gender, birthdate);
 		this.username = username;
 		this.password = password;

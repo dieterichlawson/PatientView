@@ -9,6 +9,8 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +24,7 @@ import javax.persistence.Table;
 
 import net.frontlinesms.data.DuplicateKeyException;
 import net.frontlinesms.data.domain.Contact;
+import net.frontlinesms.plugins.medic.data.domain.people.User.Role;
 import net.frontlinesms.plugins.medic.ui.dialogs.imagechooser.ImageUtils;
 
 import org.hibernate.annotations.IndexColumn;
@@ -33,6 +36,31 @@ import org.hibernate.annotations.IndexColumn;
 @DiscriminatorValue("person")
 @Table(name="medic_people")
 public abstract class Person{
+	
+	
+	public static enum Gender{ MALE(),FEMALE(),TRANSGENDER(); 	
+	public static String getGenderName(Gender r){
+		if(r == MALE){
+			return "Male";
+		}else if(r == FEMALE){
+			return "Female";
+		}else if(r == TRANSGENDER){
+			return "Transgender";
+		}
+		return null;
+	}
+	
+	public static Gender getGenderForName(String name){
+		if(name.equalsIgnoreCase(Gender.getGenderName(Gender.MALE))){
+			return Gender.MALE;
+		}else if(name.equalsIgnoreCase(Gender.getGenderName(Gender.FEMALE))){
+			return Gender.FEMALE;
+		}else if(name.equalsIgnoreCase(Gender.getGenderName(Gender.TRANSGENDER))){
+			return Gender.TRANSGENDER;
+		}
+		return null;
+	}
+}
 	
 	/** Unique id for this entity.  This is for hibernate usage. */
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -54,8 +82,8 @@ public abstract class Person{
 	 * Gender of this person. Right now, possibilities are m,f,t.
 	 * Should figure out a better way to do this
 	 */
-	//FIXME: limit the possibilities using annotations
-	private char gender;
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
 	
 	@Lob
 	private byte[] unscaledImageContent;
@@ -73,7 +101,7 @@ public abstract class Person{
 	 * @param gender Gender of the Person (options are m,f,t)
 	 * @param birthdate birthdate of the person
 	 */
-	protected Person(String name, char gender, Date birthdate){
+	protected Person(String name, Gender gender, Date birthdate){
 		this.name = name;
 		this.gender = gender;
 		this.birthdate = birthdate.getTime();
@@ -104,11 +132,11 @@ public abstract class Person{
 		this.birthdate = birthdate.getTime();
 	}
 
-	public char getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
-	public void setGender(char gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 	

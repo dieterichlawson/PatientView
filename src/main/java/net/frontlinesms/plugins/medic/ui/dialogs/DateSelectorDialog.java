@@ -210,7 +210,7 @@ public class DateSelectorDialog {
 			Object button = buttons[dayOfWeek - 1];
 			ui.setEnabled(button, true);
 			ui.setText(button, String.valueOf(current.get(Calendar.DATE)));
-			ui.setAction(button, "selectionMade(dateSelectorDialog, this.text)", dialog, this);
+			ui.setAction(button, "selectionMade(dateSelecter, this.text)", dialog, this);
 			if (isDayToHighlight()) {
 				ui.setColor(button, Thinlet.FOREGROUND, Color.RED);
 			}
