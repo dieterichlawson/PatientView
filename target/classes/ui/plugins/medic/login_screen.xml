@@ -7,5 +7,4 @@
     <textfield name="UsernameField" />
     <label text="Password:"/>
     <textfield name="PasswordField" action="textBoxKeyPressed(this.text)" perform="login()"/>
-    <button colspan="2" halign="center" text = "        Login        " action="login()"/>
 </panel>
