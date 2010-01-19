@@ -70,6 +70,7 @@ public class SearchDescriptorGenerator {
 		}else{
 			result = "All " + currentlySearchingEntity.getName() + "s";
 		}
+		result = result.replaceAll("null", "");
 		return result;
 	}
 	
