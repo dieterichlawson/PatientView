@@ -61,9 +61,9 @@ import thinlet.Thinlet;
 public class DetailedViewController implements ThinletUiEventHandler{
 
 	private UiGeneratorController uiController;
-	private static final String UI_FILE_FORM_AAG = "/ui/plugins/medic/form_AAG.xml";
-	private static String UI_FILE_PERSON_AAG_PANEL = "/ui/plugins/medic/person_AAG.xml"; 
-	private static String CHART_OPTIONS = "/ui/plugins/medic/chart_options.xml"; 
+	private static final String UI_FILE_FORM_AAG = "/ui/plugins/medic/AtAGlance/form_AAG.xml";
+	private static String UI_FILE_PERSON_AAG_PANEL = "/ui/plugins/medic/AtAGlance/person_AAG.xml"; 
+	private static String CHART_OPTIONS = "/ui/plugins/medic/AtAGlance/chart_options.xml"; 
 	
 
 	/**the at a glance panel for Forms**/
@@ -320,7 +320,7 @@ public class DetailedViewController implements ThinletUiEventHandler{
 		}
 		uiController.setText(uiController.find(labelPanel,"label1"), p.getName());
 		uiController.setText(uiController.find(labelPanel,"label2"), "ID: "+ p.getPid());
-		String gender = Gender.getGenderName(p.getGender());
+		String gender = p.getGender().toString();
 		uiController.setText(uiController.find(labelPanel,"label3"), gender );
 		uiController.setText(uiController.find(labelPanel,"label4"), "Age: " + p.getAge());
 		if(p instanceof CommunityHealthWorker){

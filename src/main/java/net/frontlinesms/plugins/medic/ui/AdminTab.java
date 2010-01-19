@@ -12,6 +12,7 @@ import net.frontlinesms.plugins.medic.data.domain.people.User;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateCommunityHealthWorkerDao;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernatePatientDao;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateUserDao;
+import net.frontlinesms.plugins.medic.search.QueryGenerator;
 import net.frontlinesms.plugins.medic.ui.helpers.thinletformfields.BirthdateField;
 import net.frontlinesms.plugins.medic.ui.helpers.thinletformfields.CHWComboBox;
 import net.frontlinesms.plugins.medic.ui.helpers.thinletformfields.GenderComboBox;
@@ -305,5 +306,9 @@ public class AdminTab implements ThinletUiEventHandler, TableActionDelegate{
 		ArrayList results = new ArrayList();
 		results.addAll(cresults);
 		advancedTable.setResults(results);
+	}
+	
+	public QueryGenerator getQueryGenerator(){
+		return null;
 	}
 }

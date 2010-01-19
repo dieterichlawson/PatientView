@@ -31,6 +31,10 @@ public class MedicFormField extends MedicField{
 		return form;
 	}
 	
+	public String getParentFormName(){
+		return form.getName();
+	}
+	
 	public void setForm(MedicForm form) {
 		this.form = form;
 	}

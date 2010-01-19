@@ -20,7 +20,9 @@ public class GenderComboBox extends ThinletFormField<Gender>{
 		thinlet.add(mainPanel,comboBox);
 		thinlet.setInteger(comboBox, "weightx", 5);
 		//initialize the comboBox
-		setRawResponse(gender);
+		if(gender !=null){
+			setRawResponse(gender);
+		}
 		thinlet.setAttachedObject(mainPanel, this);
 	}
 
@@ -46,13 +48,13 @@ public class GenderComboBox extends ThinletFormField<Gender>{
 	
 	@Override
 	public void setRawResponse(Gender s) {
-		thinlet.setText(comboBox, Gender.getGenderName(s));
+		thinlet.setText(comboBox, s.toString());
 		thinlet.setSelectedIndex(comboBox, s == Gender.MALE? 0: s == Gender.FEMALE? 1:2);
 	}
 	
 	@Override
 	public String getResponse() {
-		return Gender.getGenderName(getRawResponse());
+		return getRawResponse().toString();
 	}
 
 	@Override

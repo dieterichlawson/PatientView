@@ -1,5 +1,6 @@
 package net.frontlinesms.plugins.medic.data.domain.response;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.swing.text.DateFormatter;
 
 import net.frontlinesms.plugins.medic.data.domain.people.Person;
 
@@ -70,6 +72,14 @@ public class Response {
 	public void setSubmitter(Person submitter) {
 		this.submitter = submitter;
 	}
+	
+	public String getSubmitterName(){
+		return submitter.getName();
+	}
+	
+	public String getSubjectName(){
+		return subject.getName();
+	}
 
 	public Person getSubject() {
 		return subject;
@@ -77,6 +87,11 @@ public class Response {
 
 	public void setSubject(Person subject) {
 		this.subject = subject;
+	}
+	
+	public String getStringDateSubmitted(){
+		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+		return df.format(getDateSubmitted());
 	}
 
 	public Date getDateSubmitted() {

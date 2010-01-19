@@ -38,29 +38,27 @@ import org.hibernate.annotations.IndexColumn;
 public abstract class Person{
 	
 	
-	public static enum Gender{ MALE(),FEMALE(),TRANSGENDER(); 	
-	public static String getGenderName(Gender r){
-		if(r == MALE){
-			return "Male";
-		}else if(r == FEMALE){
-			return "Female";
-		}else if(r == TRANSGENDER){
-			return "Transgender";
+	public static enum Gender{ MALE("Male"),FEMALE("Female"),TRANSGENDER("Transgender"); 	
+
+		private Gender(String name){
+			this.name = name;
 		}
-		return null;
-	}
 	
-	public static Gender getGenderForName(String name){
-		if(name.equalsIgnoreCase(Gender.getGenderName(Gender.MALE))){
-			return Gender.MALE;
-		}else if(name.equalsIgnoreCase(Gender.getGenderName(Gender.FEMALE))){
-			return Gender.FEMALE;
-		}else if(name.equalsIgnoreCase(Gender.getGenderName(Gender.TRANSGENDER))){
-			return Gender.TRANSGENDER;
+		private String name;
+	
+		public String toString(){
+			return name;
 		}
-		return null;
+
+		public static Gender getGenderForName(String name){
+			for(Gender g : Gender.values()){
+				if(name.equalsIgnoreCase(g.toString())){
+					return g;
+				}
+			}
+			return null;
+		}
 	}
-}
 	
 	/** Unique id for this entity.  This is for hibernate usage. */
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -156,6 +154,11 @@ public abstract class Person{
 	public String getStringAge(){
 		return String.valueOf(getAge());
 	}
+	
+	public String getStringGender(){
+		return getGender().toString();
+	}
+	
 	
 	public boolean hasImage(){
 		return unscaledImageContent !=null;

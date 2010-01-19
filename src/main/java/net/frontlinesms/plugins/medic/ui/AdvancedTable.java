@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -55,12 +56,14 @@ public class AdvancedTable {
 	}
 	
 	/** creates a new header option for the specified class**/
+	@SuppressWarnings("static-access")
 	public void putHeader(Class headerClass, String[] columnNames, String[] columnMethods){
 		Object header = uiController.create("header");
 		for(int i = 0; i < columnNames.length; i++){
 			uiController.add(header, uiController.createColumn(columnNames[i], columnMethods[i]));
 		}
-		headers.put(headerClass, header);
+		uiController.setAction(header,"headerClicked()",null,this);
+		headers.put(getRealClass(headerClass), header);
 	}
 	
 	
@@ -69,7 +72,7 @@ public class AdvancedTable {
 	 * header and autofit it to the width of the results
 	 * @param results
 	 */
-	public void setResults(ArrayList results){
+	public void setResults(List results){
 		if(results.size() == 0){
 			uiController.removeAll(getTable());
 			Object header = uiController.create("header");
@@ -78,15 +81,16 @@ public class AdvancedTable {
 			Object row = uiController.createTableRow(null);
 			uiController.add(row, uiController.createTableCell("There were no results matching your search..."));
 			uiController.add(getTable(),row);
+			return;
 		}
 		if(useTableMethod){
 			uiController.setAction(getTable(), "tableSelectionChange()", null, this);
 			uiController.setPerformMethod(getTable(), "doubleClick()",null,this);
 		}
 		uiController.removeAll(getTable());
-		currentClass = results.get(0).getClass();
+		currentClass = getRealClass(results.get(0).getClass());
 		uiController.add(getTable(),getAutoFitHeader(results));
-		ArrayList<Method> methods = getMethodsForClass(currentClass);
+		List<Method> methods = getMethodsForClass(currentClass);
 		for(Object result: results){
 			Object row = uiController.createTableRow(result);
 			for(Method m:methods){
@@ -104,12 +108,25 @@ public class AdvancedTable {
 		}
 	}
 	
+	public static Class getRealClass(Class c){
+		String s = c.getName();
+		if(s.indexOf("_$$_javassist") != -1){
+			s = s.substring(0, s.indexOf("_$$_javassist"));
+		}
+		try {
+			return Class.forName(s);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**
 	 * get all of the methods for the columns that are in the result display of Class c
 	 * @param c
 	 * @return
 	 */
-	private ArrayList<Method> getMethodsForClass(Class c){
+	private List<Method> getMethodsForClass(Class c){
 		ArrayList<Method> results = new ArrayList<Method>();
 		Object [] columns = uiController.getItems(headers.get(c));
 		for(Object column : columns){
@@ -129,8 +146,8 @@ public class AdvancedTable {
 	 * @param results
 	 * @return
 	 */
-	private Object getAutoFitHeader(ArrayList results){
-		Class c = results.get(0).getClass();
+	private Object getAutoFitHeader(List results){
+		Class c = getRealClass(results.get(0).getClass());
 		Object tempHeader = headers.get(c);
 		for(Object column :uiController.getItems(tempHeader)){
 			uiController.setWidth(column, getColumnWidth(column,results,c));
@@ -138,7 +155,7 @@ public class AdvancedTable {
 		return tempHeader;
 	}
 	
-	private int getColumnWidth(Object column, ArrayList results, Class c){
+	private int getColumnWidth(Object column, List results, Class c){
 		int result = getStringWidth(uiController.getText(column));
 		Method m=null;
 		try {
@@ -195,5 +212,20 @@ public class AdvancedTable {
 		}else{
 			return table;
 		}
+	}
+	
+	private Object getCurrentHeader(){
+		return headers.get(currentClass);
+	}
+	
+	public void headerClicked(){
+//		int index = uiController.getSelectedIndex(getCurrentHeader());
+//		String sort = uiController.getChoice(uiController.getSelectedItem(getCurrentHeader()), "sort");
+//		boolean sortOrder = (sort.equals("ascent"))? true:false;
+//		delegate.getQueryGenerator().setSort(, sortOrder);
+	}
+	
+	public void clearResults(){
+		uiController.removeAll(getTable());
 	}
 }

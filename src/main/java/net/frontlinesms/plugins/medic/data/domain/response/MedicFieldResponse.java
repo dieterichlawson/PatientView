@@ -42,6 +42,10 @@ public class MedicFieldResponse extends Response {
 	public MedicField getField() {
 		return field;
 	}
+	
+	public String getFieldLabel(){
+		return field.getLabel();
+	}
 
 	public MedicFormResponse getFormResponse() {
 		return formResponse;
