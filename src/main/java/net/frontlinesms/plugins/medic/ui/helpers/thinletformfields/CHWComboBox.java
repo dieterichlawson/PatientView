@@ -96,9 +96,17 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker>{
 		return response;
 	}
 	
+	public boolean hasResponse(){
+		return getResponse()!=null;
+	}
+	
 	@Override
 	public String getResponse(){
-		return response.getName();
+		if(response!=null){
+			return response.getName();
+		}else{
+			return null;
+		}
 	}
 	
 }

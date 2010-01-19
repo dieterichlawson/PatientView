@@ -148,7 +148,7 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 			tableController.putHeader(MedicFormField.class, new String[]{"Label","Parent Form"}, new String[]{"getLabel","getParentFormName"});
 			tableController.putHeader(MedicMessageResponse.class, new String[]{"Sender","Date Sent", "Message Content"}, new String[]{"getSubmitterName","getStringDateSubmitted","getMessageContent"});
 			tableController.putHeader(MedicFormResponse.class, new String[]{"Form Name", "Sender","Subject", "Date Submitted"}, new String[]{"getFormName","getSubmitterName","getSubjectName","getStringDateSubmitted"});
-			tableController.putHeader(MedicFieldResponse.class, new String[]{"Field Label", "Sender","Subject", "Date Submitted","response"}, new String[]{"getFieldLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"});
+			tableController.putHeader(MedicFieldResponse.class, new String[]{"Field Label", "Sender","Subject", "Date Submitted","Response"}, new String[]{"getFieldLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"});
 			
 			//intialize the search controllers
 			simpleSearch = new SimpleSearchController(uiController,pluginController.getApplicationContext(),tableController);
@@ -162,7 +162,7 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 	}
 	
 	public void doubleClickAction(Object selectedObject) {
-		if(drillDownSearch != null){
+		if(currentSearchState == SearchState.DRILLDOWNSEARCH){
 			drillDownSearch.drillDown(selectedObject);
 		}
 	}
@@ -191,6 +191,7 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 			}else{
 				uiController.remove(drillDownSearch.getMainPanel());
 				uiController.add(uiController.find(mainTab,"searchContainer"), simpleSearch.getMainPanel());
+				simpleSearch.controllerWillAppear();
 				currentSearchState = SearchState.SIMPLESEARCH;
 			}
 		}else if(uiController.getName(sender).equalsIgnoreCase("drillDownSearchButton")){
@@ -199,6 +200,7 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 			}else{
 				uiController.remove(simpleSearch.getMainPanel());
 				uiController.add(uiController.find(mainTab,"searchContainer"), drillDownSearch.getMainPanel());
+				drillDownSearch.controllerWillAppear();
 				currentSearchState = SearchState.DRILLDOWNSEARCH;
 			}
 		}

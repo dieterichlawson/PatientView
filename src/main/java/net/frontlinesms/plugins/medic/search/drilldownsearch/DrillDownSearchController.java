@@ -441,6 +441,6 @@ public class DrillDownSearchController implements ThinletUiEventHandler, SearchC
 		return searchPanel;
 	}
 	public void controllerWillAppear() {
-		organizerButtonClicked(EntityType.PATIENT,"Patient");
+		refresh();
 	}
 }

@@ -54,7 +54,11 @@ public class GenderComboBox extends ThinletFormField<Gender>{
 	
 	@Override
 	public String getResponse() {
-		return getRawResponse().toString();
+		if(getRawResponse()!=null){
+			return getRawResponse().toString();
+		}else{
+			return null;
+		}
 	}
 
 	@Override

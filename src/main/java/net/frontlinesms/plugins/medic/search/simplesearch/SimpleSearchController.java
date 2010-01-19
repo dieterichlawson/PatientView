@@ -4,6 +4,7 @@ import java.util.Date;
 
 import net.frontlinesms.plugins.medic.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.medic.search.FieldDescriptor;
+import net.frontlinesms.plugins.medic.search.SearchController;
 import net.frontlinesms.plugins.medic.ui.AdvancedTable;
 import net.frontlinesms.plugins.medic.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.ui.ThinletUiEventHandler;
@@ -11,7 +12,7 @@ import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
 
-public class SimpleSearchController implements ThinletUiEventHandler{
+public class SimpleSearchController implements ThinletUiEventHandler, SearchController{
 	
 	//ui files
 	private static String UI_FILE = "/ui/plugins/medic/simpleSearch.xml";
@@ -191,6 +192,10 @@ public class SimpleSearchController implements ThinletUiEventHandler{
 	}
 	
 	public void comboSelectionChanged(){
+		searchButtonPressed();
+	}
+
+	public void controllerWillAppear() {
 		searchButtonPressed();
 	}
 	
