@@ -52,7 +52,7 @@ public class DrillDownSearchController implements ThinletUiEventHandler, SearchC
 	private Stack<ArrayList<BreadCrumb>> forwardStack;
 	
 	//UI XML files
-	private static final String SEARCH_PANEL_XML = 	"/ui/plugins/medic/drillDownSearch.xml";
+	private static final String SEARCH_PANEL_XML = 	"/ui/plugins/medic/drill_down_search.xml";
 
 	
 	public DrillDownSearchController(UiGeneratorController uiController, ApplicationContext appCon, AdvancedTable tableController){

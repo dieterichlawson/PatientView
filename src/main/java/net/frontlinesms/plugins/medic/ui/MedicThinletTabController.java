@@ -80,7 +80,10 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 	public Object getTab(){
 		return mainTab;
 	}
-
+	
+	/**
+	 * performs the initialization required for the login screen
+	 */
 	public void initialInit(){
 		loginText ="";
 		loginScreen = uiController.loadComponentFromFile(XML_LOGIN_SCREEN, this);
@@ -89,6 +92,10 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 		uiController.add(uiController.find(mainTab,"medicTabMainPanel"),loginScreen);
 	}
 	
+	/**
+	 * activated when a user presses enter while the password box has focus
+	 * logs the user in
+	 */
 	public void login(){
 		String username = uiController.getText(uiController.find(loginScreen, "UsernameField"));
 		
@@ -102,6 +109,9 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 		}
 	}
 	
+	/**
+	 * ends the user's session, and returns them to the login screen
+	 */
 	public void logout(){
 		UserSessionManager.getUserSessionManager().logout();
 		uiController.removeAll(uiController.find(mainTab,"medicTabMainPanel"));
@@ -111,6 +121,10 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 		loginText="";
 	}
 	
+	/**
+	 * method that handles the keypresses from the password textbox
+	 * @param response
+	 */
 	public void textBoxKeyPressed(String response){
 		String newText = response.substring(response.lastIndexOf("*") + 1);
 		if(response.lastIndexOf("*") <  loginText.length() -1){
@@ -125,20 +139,19 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 		uiController.setText(uiController.find(loginScreen, "PasswordField"), mask);	
 	}
 	
+	/**
+	 * performs the initialization required for the main patient view screen
+	 */
 	public void init() {
 			uiController.removeAll(uiController.find(mainTab,"medic"));
 			uiController.add(uiController.find(mainTab,"medic"),uiController.find(uiController.loadComponentFromFile(XML_MEDIC_TAB, this),"medicTabMainPanel"));
 			detailViewController = new DetailedViewController(uiController,pluginController.getApplicationContext(),this);
 			uiController.setInteger(uiController.find(mainTab,"splitPanel"), "divider", (int) (uiController.getWidth() * 0.56));
-			
-			
-			
+			//if user is an admin, add the admin tab
 			if(UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.ADMIN){
 				AdminTab adminTab = new AdminTab(uiController,pluginController.getApplicationContext());
 				uiController.add(uiController.getParent(getTab()),adminTab.getMainPanel());
 			}
-			
-			
 			//initialize the results table
 			tableController = new AdvancedTable(this, uiController,true);
 			tableController.putHeader(CommunityHealthWorker.class, new String[]{"Name","Age","Gender", "Phone Number"}, new String[]{"getName", "getStringAge","getStringGender","getPhoneNumber"});
@@ -161,6 +174,8 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 								 UserSessionManager.getUserSessionManager().getCurrentUser().getName());
 	}
 	
+	//TableActionDelegate methods
+	
 	public void doubleClickAction(Object selectedObject) {
 		if(currentSearchState == SearchState.DRILLDOWNSEARCH){
 			drillDownSearch.drillDown(selectedObject);
@@ -170,7 +185,6 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 	public void selectionChanged(Object selectedObject) {
 		detailViewController.selectionChanged(selectedObject);
 	}
-
 
 	public Object getTable() {
 		return uiController.find(mainTab, "resultTable");
@@ -184,6 +198,11 @@ public class MedicThinletTabController implements ThinletUiEventHandler,TableAct
 		
 	}
 	
+	/**
+	 * Switches from Drill-Down Search to Simple search or vice-versa
+	 * when one of the selection buttons is clicked
+	 * @param sender the button that was clicked
+	 */
 	public void switchSearchControls(Object sender){
 		if(uiController.getName(sender).equalsIgnoreCase("simpleSearchButton")){
 			if(currentSearchState == SearchState.SIMPLESEARCH){

@@ -40,8 +40,8 @@ public class AdminTab implements ThinletUiEventHandler, TableActionDelegate{
 	private Object splitPanel;
 	
 	/**the Thinlet XML files used for this tab **/
-	private static final String UI_FILE_MAINTAB =  "/ui/plugins/medic/admintab/adminTab.xml";
-	private static final String UI_FILE_SEARCH_ACTION =  "/ui/plugins/medic/admintab/searchActionPanel.xml";
+	private static final String UI_FILE_MAINTAB =  "/ui/plugins/medic/admintab/admin_tab.xml";
+	private static final String UI_FILE_SEARCH_ACTION =  "/ui/plugins/medic/admintab/search_action_panel.xml";
 	
 	private static final String FIELDS_PANEL_CONTAINER = "fieldspanelcontainer";
 	private static final String FIELDS_PANEL = "fieldspanel";

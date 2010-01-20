@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationContext;
 public class SimpleSearchController implements ThinletUiEventHandler, SearchController{
 	
 	//ui files
-	private static String UI_FILE = "/ui/plugins/medic/simpleSearch.xml";
+	private static String UI_FILE = "/ui/plugins/medic/simple_search.xml";
 	
 	//state objects
 	private FieldDescriptor currentField;
