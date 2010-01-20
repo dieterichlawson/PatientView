@@ -38,8 +38,8 @@ public class DetailViewEditorController implements ThinletUiEventHandler{
 	private HibernateMedicFieldResponseDao fieldResponseDao;
 	
 	/**resource files containing ui components**/
-	private static final String UI_FILE_AAG_VIEW_EDITOR = "/ui/plugins/medic/AAG_view_editor.xml";
-	private static final String UI_FILE_PERSON_AAG =  "/ui/plugins/medic/person_AAG.xml";
+	private static final String UI_FILE_AAG_VIEW_EDITOR = "/ui/plugins/medic/AtAGlance/AAG_view_editor.xml";
+	private static final String UI_FILE_PERSON_AAG =  "/ui/plugins/medic/AtAGlance/person_AAG.xml";
 	
 	/** the Ui Controller**/
 	private ExtendedThinlet thinlet;
