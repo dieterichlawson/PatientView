@@ -59,4 +59,8 @@
 		class="net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateTagKeywordDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	<bean id="HistoryEntryDao"
+		class="net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateHistoryEntryDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 </beans>

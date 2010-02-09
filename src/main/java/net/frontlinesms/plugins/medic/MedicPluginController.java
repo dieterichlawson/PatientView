@@ -10,6 +10,8 @@ import net.frontlinesms.FrontlineSMS;
 import net.frontlinesms.Utils;
 import net.frontlinesms.data.domain.Message;
 import net.frontlinesms.data.repository.MessageDao;
+import net.frontlinesms.data.repository.hibernate.HibernateMessageDao;
+import net.frontlinesms.listener.IncomingMessageListener;
 import net.frontlinesms.plugins.BasePluginController;
 import net.frontlinesms.plugins.PluginControllerProperties;
 import net.frontlinesms.plugins.PluginInitialisationException;
@@ -24,12 +26,13 @@ import net.frontlinesms.plugins.medic.data.domain.people.User.Role;
 import net.frontlinesms.plugins.medic.data.domain.response.MedicFieldResponse;
 import net.frontlinesms.plugins.medic.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.medic.data.domain.response.MedicMessageResponse;
-import net.frontlinesms.plugins.medic.data.repository.CommunityHealthWorkerDao;
 import net.frontlinesms.plugins.medic.data.repository.PatientDao;
+import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateCommunityHealthWorkerDao;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateMedicFormDao;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateMedicFormResponseDao;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateMedicMessageResponseDao;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateUserDao;
+import net.frontlinesms.plugins.medic.history.HistoryManager;
 import net.frontlinesms.plugins.medic.ui.MedicThinletTabController;
 import net.frontlinesms.plugins.medic.userlogin.UserSessionManager;
 import net.frontlinesms.ui.ExtendedThinlet;
@@ -44,7 +47,7 @@ import thinlet.Thinlet;
 @PluginControllerProperties(name="Patient View", iconPath="/icons/big_medic.png",
 		springConfigLocation="classpath:net/frontlinesms/plugins/medic/medic-spring-hibernate.xml",
 		hibernateConfigPath="classpath:net/frontlinesms/plugins/medic/medic.hibernate.cfg.xml")
-public class MedicPluginController extends BasePluginController  {
+public class MedicPluginController extends BasePluginController implements IncomingMessageListener  {
 
 	// > INSTANCE PROPERTIES
 	/** Logging object */
@@ -53,7 +56,10 @@ public class MedicPluginController extends BasePluginController  {
 	private FrontlineSMS frontlineController;
 
 	/** Data access object for CHWs **/
-	private CommunityHealthWorkerDao CHWDao;
+	private HibernateCommunityHealthWorkerDao CHWDao;
+	
+	private HibernateMedicMessageResponseDao messageResponseDao;
+	private HibernateMessageDao messageDao;
 
 	/** Data access object for Patients **/
 	private PatientDao patientDao;
@@ -72,8 +78,7 @@ public class MedicPluginController extends BasePluginController  {
 	}
 
 	public void deinit() {
-		// TODO Auto-generated method stub
-		
+		frontlineController.removeIncomingMessageListener(this);
 	}
 
 	/** @return {@link #frontlineController} */
@@ -90,18 +95,22 @@ public class MedicPluginController extends BasePluginController  {
 
 	public void init(FrontlineSMS frontlineController, ApplicationContext applicationContext) throws PluginInitialisationException {
 		this.frontlineController = frontlineController;
+		frontlineController.addIncomingMessageListener(this);
 		this.applicationContext = applicationContext;
 		UserSessionManager.getUserSessionManager().init(applicationContext);
+		HistoryManager.getHistoryManager().init(applicationContext);
 		try {
-			this.CHWDao = (CommunityHealthWorkerDao) applicationContext
+			this.CHWDao = (HibernateCommunityHealthWorkerDao) applicationContext
 					.getBean("CHWDao");
 			this.patientDao = (PatientDao) applicationContext
 					.getBean("PatientDao");
+			this.messageDao = (HibernateMessageDao) applicationContext.getBean("messageDao");
 			testing(applicationContext);
 		} catch (Throwable t) {
 			log.warn("Unable to load Medic plugin", t);
 			throw new PluginInitialisationException(t);
 		}	
+		
 	}
 	
 	private void log(String s){
@@ -135,7 +144,7 @@ public class MedicPluginController extends BasePluginController  {
 		thinlet.add(Thinlet.create("panel"));
 		thinlet.add(mainPanel);
 		//you have to use a special framelauncher class because otherwise it will close all open windows
-		FrameLauncher framel = new FrameLauncher("Edit the Detail View",thinlet,500,500,null)
+		FrameLauncher framel = new FrameLauncher("Creating Dummy Data",thinlet,500,500,null)
 		{ public void windowClosing(WindowEvent e){  dispose(); }}; 
 		
 		log("Creating dummy data..");
@@ -247,32 +256,32 @@ public class MedicPluginController extends BasePluginController  {
 		f8.addField(new MedicFormField(f8, DataType.TEXT, "Type of Pain"));
 		f8.addField(new MedicFormField(f8, DataType.TEXT_AREA, "Additional Notes"));
 		// create other form
-		MedicForm f9 = new MedicForm("Long Test MedicForm");
+		MedicForm f9 = new MedicForm("Long Test Form");
 		f9.addField(new MedicFormField(f9, DataType.TEXT, "Patient Name"));
 		f9.addField(new MedicFormField(f9, DataType.DATE_FIELD, "Patient Birthdate"));
-		f9.addField(new MedicFormField(f9, DataType.TEXT, "MedicField 1"));
+		f9.addField(new MedicFormField(f9, DataType.TEXT, "Field 1"));
 		f9.addField(new MedicFormField(f9, DataType.CHECK_BOX, "more fun!"));
-		f9.addField(new MedicFormField(f9, DataType.TEXT, "MedicField 2"));
-		f9.addField(new MedicFormField(f9, DataType.TEXT, "MedicField 3"));
-		f9.addField(new MedicFormField(f9, DataType.TEXT, "MedicField 4"));
-		f9.addField(new MedicFormField(f9, DataType.TEXT, "MedicField 5"));
-		f9.addField(new MedicFormField(f9, DataType.TEXT, "MedicField 6"));
-		f9.addField(new MedicFormField(f9, DataType.TEXT, "MedicField 7"));
-		f9.addField(new MedicFormField(f9, DataType.TEXT, "MedicField 8"));
+		f9.addField(new MedicFormField(f9, DataType.TEXT, "Field 2"));
+		f9.addField(new MedicFormField(f9, DataType.TEXT, "Field 3"));
+		f9.addField(new MedicFormField(f9, DataType.TEXT, "Field 4"));
+		f9.addField(new MedicFormField(f9, DataType.TEXT, "Field 5"));
+		f9.addField(new MedicFormField(f9, DataType.TEXT, "Field 6"));
+		f9.addField(new MedicFormField(f9, DataType.TEXT, "Field 7"));
+		f9.addField(new MedicFormField(f9, DataType.TEXT, "Field 8"));
 
 		// create other form
-		MedicForm f0 = new MedicForm("CheckBox Long Test MedicForm");
+		MedicForm f0 = new MedicForm("CheckBox Long Test Form");
 		f0.addField(new MedicFormField(f0, DataType.TEXT, "Patient Name"));
 		f0.addField(new MedicFormField(f0, DataType.DATE_FIELD, "Patient Birthdate"));
 		f0.addField(new MedicFormField(f0, DataType.TEXT, "Field 1"));
 		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 2"));
-		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "MedicField 1"));
-		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "MedicField 2"));
-		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "MedicField 3"));
-		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "MedicField 4"));
-		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "MedicField 5"));
-		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "MedicField 6"));
-		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "MedicField 7"));
+		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 1"));
+		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 2"));
+		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 3"));
+		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 4"));
+		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 5"));
+		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 6"));
+		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 7"));
 		
 		MedicForm f11 = new MedicForm("Side Effects");
 		f11.addField(new MedicFormField(f11, DataType.TEXT, "Patient Name"));
@@ -363,9 +372,8 @@ public class MedicPluginController extends BasePluginController  {
 			Patient subject = ps.get(rand.nextInt(ps.size()));
 			CommunityHealthWorker submitter = subject.getChw();
 			String mess ="This is a freeform text message from " + submitter.getName() + " about " + subject.getName();
-			Message m = Message.createIncomingMessage(new Date().getTime(), submitter.getPhoneNumber(), "8004329", mess);
+			Message m = Message.createIncomingMessage(getRandomDate().getTime(), submitter.getPhoneNumber(), "8004329", mess);
 			MedicMessageResponse message = new MedicMessageResponse(m, mess,submitter,subject);
-			message.setDateSubmitted(getRandomDate());
 			messages.add(m);
 			mresponse.add(message);
 		}
@@ -373,10 +381,10 @@ public class MedicPluginController extends BasePluginController  {
 		
 		HibernateMedicFormResponseDao formResponseDao =(HibernateMedicFormResponseDao) appCon.getBean("MedicFormResponseDao");
 		HibernateMedicFormDao formDao =(HibernateMedicFormDao) appCon.getBean("MedicFormDao");
-		HibernateMedicMessageResponseDao messageResponseDao = (HibernateMedicMessageResponseDao) appCon.getBean("MedicMessageResponseDao");
-		MessageDao messageDao = (MessageDao) appCon.getBean("messageDao");
+		messageResponseDao = (HibernateMedicMessageResponseDao) appCon.getBean("MedicMessageResponseDao");
 		
-		log("Information generated, saving...");
+		
+		log("Information generated, saving Forms...");
 		for(MedicForm f: forms){
 			try{
 				formDao.saveMedicForm(f);
@@ -426,6 +434,9 @@ public class MedicPluginController extends BasePluginController  {
 		}
 		log("Everything saved, creating user credentials");
 		
+		User user0 = new User("Tester Admin",Gender.FEMALE, new Date(),"admin","medic",Role.ADMIN);
+		User user9 = new User("Tester Read/Write",Gender.MALE, new Date(),"readwrite","medic",Role.READWRITE);
+		User user8 = new User("Tester Read Only",Gender.FEMALE, new Date(),"readonly","medic",Role.READ);
 		User user = new User("Alex Harsha",Gender.FEMALE, new Date(),"aHarsha","medic",Role.ADMIN);
 		User user2 = new User("Aisha Moniba ",Gender.FEMALE, new Date(),"aMoniba","medic",Role.READWRITE);
 		User user3 = new User("Daniel Kayiwa ",Gender.MALE, new Date(),"dKayiwa","medic",Role.READ);
@@ -433,6 +444,9 @@ public class MedicPluginController extends BasePluginController  {
 		userDao.saveUser(user);
 		userDao.saveUser(user2);
 		userDao.saveUser(user3);
+		userDao.saveUser(user0);
+		userDao.saveUser(user8);
+		userDao.saveUser(user9);
 
 	}
 
@@ -441,7 +455,7 @@ public class MedicPluginController extends BasePluginController  {
 	
 	private Date getRandomDate(){
 		double d = rand.nextDouble();
-		long time = (long) (d * 31536000000L);
+		long time = (long) (d * 31536000000.0);
 		return new Date(time);	
 	}
 	
@@ -451,6 +465,14 @@ public class MedicPluginController extends BasePluginController  {
 			result += rand.nextInt(10);
 		}
 		return result;
+	}
+
+	public void incomingMessageEvent(Message message) {
+		CommunityHealthWorker submitter = CHWDao.getCommunityHealthWorkerByPhoneNumber(message.getSenderMsisdn());
+		if(submitter!= null){
+			MedicMessageResponse mr = new MedicMessageResponse(message,message.getTextContent(),submitter,null);
+			messageResponseDao.saveMedicMessageResponse(mr);
+		}
 	}
 
 

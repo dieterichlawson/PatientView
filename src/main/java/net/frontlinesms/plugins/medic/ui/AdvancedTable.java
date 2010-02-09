@@ -43,7 +43,9 @@ public class AdvancedTable {
 		if(!useTableMethod){
 			table = uiController.create("table");
 			uiController.setAction(table, "tableSelectionChange()", null, this);
-			uiController.setPerformMethod(table, "doubleClick()",null,this);
+			uiController.setPerform(table, "doubleClick()",null,this);
+			uiController.setInteger(table, "weightx", 1);
+			uiController.setInteger(table, "weighty", 1);
 		}
 		headers = new HashMap<Class, Object>();
 		this.delegate = delegate;
@@ -81,11 +83,12 @@ public class AdvancedTable {
 			Object row = uiController.createTableRow(null);
 			uiController.add(row, uiController.createTableCell("There were no results matching your search..."));
 			uiController.add(getTable(),row);
+			delegate.resultsChanged();
 			return;
 		}
 		if(useTableMethod){
 			uiController.setAction(getTable(), "tableSelectionChange()", null, this);
-			uiController.setPerformMethod(getTable(), "doubleClick()",null,this);
+			uiController.setPerform(getTable(), "doubleClick()",null,this);
 		}
 		uiController.removeAll(getTable());
 		currentClass = getRealClass(results.get(0).getClass());
@@ -106,6 +109,7 @@ public class AdvancedTable {
 			}
 			uiController.add(getTable(),row);
 		}
+		delegate.resultsChanged();
 	}
 	
 	public static Class getRealClass(Class c){
@@ -192,7 +196,7 @@ public class AdvancedTable {
 		uiController.removeAll(table);
 		this.table = table;
 		uiController.setAction(table, "tableSelectionChange()", null, this);
-		uiController.setPerformMethod(table, "doubleClick()",null,this);
+		uiController.setPerform(table, "doubleClick()",null,this);
 	}
 	
 	public void tableSelectionChange(){
@@ -205,13 +209,18 @@ public class AdvancedTable {
 		delegate.doubleClickAction(entity);
 	}
 	
-	private Object getTable(){
+	public Object getTable(){
 		if(useTableMethod){
 			Object table = delegate.getTable();
 			return table;
 		}else{
 			return table;
 		}
+	}
+	
+	public void setSelected(int index){
+		uiController.setSelectedIndex(getTable(),index);
+		tableSelectionChange();
 	}
 	
 	private Object getCurrentHeader(){

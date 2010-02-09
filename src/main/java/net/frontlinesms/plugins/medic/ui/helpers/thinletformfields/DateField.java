@@ -12,11 +12,12 @@ public class DateField extends TextBox {
 
 	protected DateSelectorDialog ds;
 	protected SimpleDateFormat df;
+	Object btn;
 	public static final String NAME = "dateField";
 
 	public DateField(ExtendedThinlet thinlet, String label) {
 		super(thinlet, label, NAME);
-		Object btn = thinlet.create("button");
+		btn = thinlet.create("button");
 		thinlet.setIcon(btn, "/icons/date.png");
 		thinlet.setAction(btn, "showDateSelector()", null, this);
 		thinlet.add(mainPanel, btn);
@@ -29,7 +30,7 @@ public class DateField extends TextBox {
 
 	protected DateField(ExtendedThinlet thinlet, String label, String name) {
 		super(thinlet, label, name);
-		Object btn = thinlet.create("button");
+		btn = thinlet.create("button");
 		thinlet.setIcon(btn, "/icons/date.png");
 		thinlet.setAction(btn, "showDateSelector()", null, this);
 		thinlet.add(mainPanel, btn);
@@ -53,6 +54,14 @@ public class DateField extends TextBox {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void setRawResponse(Date d){
+		setResponse(df.format(d));
+	}
+	
+	public void setDateButtonEnabled(boolean value){
+		thinlet.setEnabled(btn, value);
 	}
 
 	public boolean isValid() {

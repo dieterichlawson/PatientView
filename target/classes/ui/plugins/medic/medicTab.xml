@@ -15,15 +15,18 @@
             </table>
             <panel colspan="1" border="true" name="bottomButtonPanel" weightx="1" gap="10" left="5" right="5" top="5" bottom="5">
             	<label name="userStatusLabel"/>
-            	<button action="logout()" text="Logout"/>
+            	<button action="logout()" text="i18n.buttons.logout" icon="/icons/exit.png"/>
             	<label weightx="1"/>
-            	<label name="searchSelectLabel" text="Switch search controls:"/>
-            	<togglebutton name="simpleSearchButton" group="searchgroup" text="Simple Search" action="switchSearchControls(this)" selected="true"/>
-            	<togglebutton name="drillDownSearchButton" group="searchgroup" text="Drill-Down Search" action="switchSearchControls(this)"/>
+            	<label name="searchSelectLabel" text="i18n.labels.switch.search.controls" visible="false"/>
+            	<togglebutton name="simpleSearchButton" group="searchgroup" text="i18n.buttons.simplesearch" action="switchSearchControls(this)" selected="true" visible="false"/>
+            	<togglebutton name="drillDownSearchButton" group="searchgroup" text="i18n.buttons.drilldownsearch" action="switchSearchControls(this)" visible="false"/>
+            	<label name="resultsLabel" text="Results 1-30 of 3000"/>
+            	<button name="leftPageButton" icon="/icons/left.png" action="pageLeft()"/>
+            	<button name="rightPageButton" icon="/icons/right.png" action="pageRight()"/>
             </panel> 
         </panel>
         <panel  columns="1" gap="7" weightx="1" halign="fill" left="5">
-            <panel border="true" name="detailPanelMedic" weightx="1" weighty="5" halign="fill" columns="1" gap="5" left ="5" right="5" bottom="5"/>
+            <panel border="true" name="detailPanelMedic" weightx="1" weighty="5" halign="fill" columns="1" gap="5" left ="5" right="5" bottom="5" top="5"/>
             <panel border="true" name="furtherOptionsPanel" weightx="1" weighty="1" top="5" bottom="5" left="5" right="5" gap="6"/>
         </panel>
     </splitpane>

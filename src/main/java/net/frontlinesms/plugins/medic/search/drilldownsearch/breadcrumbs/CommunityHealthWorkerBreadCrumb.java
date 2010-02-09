@@ -8,7 +8,7 @@ public class CommunityHealthWorkerBreadCrumb extends BreadCrumb {
 
 	private CommunityHealthWorker chw;
 	
-	private static final String formResponseQuery = "select mformr from MedicFormResponse mformr where mformr.submitter.pid =";
+	private static final String formResponseQuery = "select mformr from MedicFormResponse mformr, CommunityHealthWorker chw where mformr.submitter = chw and chw.pid =";
 	
 	private static final String fieldResponseQuery = "select mfieldr from MedicFieldResponse mfieldr where mfieldr.submitter.pid =";
 	

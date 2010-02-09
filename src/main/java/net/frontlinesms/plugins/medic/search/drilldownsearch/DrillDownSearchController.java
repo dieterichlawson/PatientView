@@ -8,6 +8,7 @@ import net.frontlinesms.plugins.medic.data.domain.framework.MedicField;
 import net.frontlinesms.plugins.medic.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.medic.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.medic.data.domain.people.Patient;
+import net.frontlinesms.plugins.medic.search.QueryGenerator;
 import net.frontlinesms.plugins.medic.search.SearchController;
 import net.frontlinesms.plugins.medic.search.drilldownsearch.breadcrumbs.BreadCrumb;
 import net.frontlinesms.plugins.medic.search.drilldownsearch.breadcrumbs.CommunityHealthWorkerBreadCrumb;
@@ -18,6 +19,7 @@ import net.frontlinesms.plugins.medic.search.drilldownsearch.breadcrumbs.Patient
 import net.frontlinesms.plugins.medic.ui.AdvancedTable;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -54,6 +56,9 @@ public class DrillDownSearchController implements ThinletUiEventHandler, SearchC
 	//UI XML files
 	private static final String SEARCH_PANEL_XML = 	"/ui/plugins/medic/drill_down_search.xml";
 
+	//i18n constants
+	private static final String RESPONSE_ORGANIZER_BUTTON = "medic.common.responses";
+	private static final String PATIENT_ORGANIZER_BUTTON = "medic.common.patient";
 	
 	public DrillDownSearchController(UiGeneratorController uiController, ApplicationContext appCon, AdvancedTable tableController){
 		this.uiController = uiController;
@@ -76,25 +81,25 @@ public class DrillDownSearchController implements ThinletUiEventHandler, SearchC
 			Object btn = uiController.create("togglebutton");
 			organizerButtons.add(btn);
 			uiController.add(organizerPanel, btn);
-			uiController.setString(btn, "text", e.getName());
+			uiController.setString(btn, "text",e.getName());
 			uiController.setChoice(btn, "halign", "center");
 			uiController.setString(btn, "group", "organizerButtons");
 			uiController.setAction(btn,"organizerButtonClicked(this,this.text)", null, this);
 			uiController.setAttachedObject(btn, e);
-			if(e.getName().equals("Patient"))
+			if(e.getName().equalsIgnoreCase(InternationalisationUtils.getI18NString(PATIENT_ORGANIZER_BUTTON)))
 				uiController.setSelected(btn, true);
 		}
 		//add the "Responses" button
 		Object btn = uiController.create("togglebutton");
 		responseButton = btn;
 		uiController.add(organizerPanel, btn);
-		uiController.setString(btn, "text", "Responses");
+		uiController.setString(btn, "text", InternationalisationUtils.getI18NString(RESPONSE_ORGANIZER_BUTTON));
 		uiController.setChoice(btn, "halign", "center");
 		uiController.setString(btn, "group", "organizerButtons");
 		uiController.setVisible(btn, false);
 		uiController.setAction(btn, "organizerButtonClicked(this,this.text)", null, this);
 		//initial state of the organizer
-		organizerButtonClicked(EntityType.PATIENT,"Patient");
+		organizerButtonClicked(EntityType.PATIENT,InternationalisationUtils.getI18NString(PATIENT_ORGANIZER_BUTTON));
 		//initialize the forward/backward stacks
 		forwardStack = new Stack<ArrayList<BreadCrumb>>();
 		backStack = new Stack<ArrayList<BreadCrumb>>();
@@ -140,7 +145,7 @@ public class DrillDownSearchController implements ThinletUiEventHandler, SearchC
 	 * @param name The name of that entity
 	 */
 	private void organizerButtonClicked(EntityType type, String name){
-		if(name.equals("Responses")){
+		if(name.equals(InternationalisationUtils.getI18NString(RESPONSE_ORGANIZER_BUTTON))){
 			queryGenerator.setSearchingForResponses(true);
 		}else{
 			queryGenerator.setSearchingForResponses(false);
@@ -150,7 +155,7 @@ public class DrillDownSearchController implements ThinletUiEventHandler, SearchC
 		}
 		queryGenerator.startSearch(uiController.getText(searchBar));
 		uiController.setText(uiController.find(searchPanel, "searchDescriptorLabel"), 
-				SearchDescriptorGenerator.getSearchDescriptor(breadCrumbs, type,name.equals("Responses") ? true: false ));
+				SearchDescriptorGenerator.getSearchDescriptor(breadCrumbs, type,name.equals(InternationalisationUtils.getI18NString(RESPONSE_ORGANIZER_BUTTON)) ? true: false ));
 		uiController.setFocus(searchBar);
 	}
 	
@@ -294,7 +299,7 @@ public class DrillDownSearchController implements ThinletUiEventHandler, SearchC
 		}
 		//make sure an organizer button is clicked
 		if(uiController.getBoolean(responseButton, "visible")){
-			organizerButtonClicked(responseButton,"Responses");
+			organizerButtonClicked(responseButton,InternationalisationUtils.getI18NString(RESPONSE_ORGANIZER_BUTTON));
 		}else{
 			for(Object o: organizerButtons){
 				if(uiController.getBoolean(o, "visible")){
@@ -361,7 +366,6 @@ public class DrillDownSearchController implements ThinletUiEventHandler, SearchC
 	 */
 	public void breadCrumbClicked(Object button){
 		int index = Integer.valueOf(uiController.getProperty(button, "bcIndex").toString());
-		System.out.println("Bread crumb "+ index + " clicked");
 		setBreadCrumbs(new ArrayList<BreadCrumb>(breadCrumbs.subList(0, index+1)));	
 	}
 	
@@ -442,5 +446,8 @@ public class DrillDownSearchController implements ThinletUiEventHandler, SearchC
 	}
 	public void controllerWillAppear() {
 		refresh();
+	}
+	public QueryGenerator getQueryGenerator() {
+		return queryGenerator;
 	}
 }

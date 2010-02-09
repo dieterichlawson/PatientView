@@ -2,8 +2,8 @@ package net.frontlinesms.plugins.medic.data.domain.people;
 
 import java.awt.image.BufferedImage;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -11,21 +11,18 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import net.frontlinesms.data.DuplicateKeyException;
-import net.frontlinesms.data.domain.Contact;
-import net.frontlinesms.plugins.medic.data.domain.people.User.Role;
+import net.frontlinesms.plugins.medic.data.domain.response.MedicFormResponse;
+import net.frontlinesms.plugins.medic.history.HistoryManager;
 import net.frontlinesms.plugins.medic.ui.dialogs.imagechooser.ImageUtils;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.hibernate.annotations.IndexColumn;
 
@@ -38,7 +35,7 @@ import org.hibernate.annotations.IndexColumn;
 public abstract class Person{
 	
 	
-	public static enum Gender{ MALE("Male"),FEMALE("Female"),TRANSGENDER("Transgender"); 	
+	public static enum Gender{ MALE("medic.common.male"),FEMALE("medic.common.female"),TRANSGENDER("medic.common.transgender"); 	
 
 		private Gender(String name){
 			this.name = name;
@@ -47,7 +44,7 @@ public abstract class Person{
 		private String name;
 	
 		public String toString(){
-			return name;
+			return InternationalisationUtils.getI18NString(name);
 		}
 
 		public static Gender getGenderForName(String name){
@@ -80,7 +77,7 @@ public abstract class Person{
 	 * Gender of this person. Right now, possibilities are m,f,t.
 	 * Should figure out a better way to do this
 	 */
-	@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.ORDINAL)
 	private Gender gender;
 	
 	@Lob
@@ -88,6 +85,7 @@ public abstract class Person{
 
 	@Lob
 	private byte[] thumbnailImageContent;
+	
 	/**
 	 * skeleton constructor for hibernate
 	 */
@@ -119,6 +117,7 @@ public abstract class Person{
 	}
 
 	public void setName(String name) {
+		HistoryManager.logNameChange(this, name);
 		this.name = name;
 	}
 
@@ -127,6 +126,7 @@ public abstract class Person{
 	}
 
 	public void setBirthdate(Date birthdate) {
+		HistoryManager.logBirthdateChange(this,birthdate.toLocaleString());
 		this.birthdate = birthdate.getTime();
 	}
 
@@ -135,6 +135,7 @@ public abstract class Person{
 	}
 
 	public void setGender(Gender gender) {
+		HistoryManager.logGenderChange(this, gender);
 		this.gender = gender;
 	}
 	
@@ -173,6 +174,7 @@ public abstract class Person{
 	 }
 
 	 public void setImage(BufferedImage image, String type) {
+		HistoryManager.logImageChange(this);
 	    unscaledImageContent = ImageUtils.getByteArrayForImage(ImageUtils.getLargeImage(image), type);
 	    thumbnailImageContent = ImageUtils.getByteArrayForImage(ImageUtils.getThumbnailImage(image), type);
 	 }

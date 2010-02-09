@@ -3,6 +3,7 @@ package net.frontlinesms.plugins.medic.ui.dialogs.searchareas;
 import java.util.Collection;
 
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 public abstract class EntitySearchArea<E> {
 
@@ -25,6 +26,13 @@ public abstract class EntitySearchArea<E> {
 	/** the main panel**/
 	private Object mainPanel;
 	
+	//i18n strings
+	private static final String COLLAPSE_BUTTON ="searchareas.buttons.collapse";
+	private static final String EXPAND_BUTTON ="searchareas.buttons.expand";
+	private static final String SELECT_BUTTON ="searchareas.buttons.select";
+	private static final String NO_RESULTS ="searchareas.no.result.mathing";
+	private static final String INITIAL_SELECT ="searchareas.initial.select";
+	private static final String NOT_SELECTED ="searchareas.initial.not.selected";
 	public EntitySearchArea(E entity, ExtendedThinlet uiController){
 		this.uiController = uiController;
 		currentEntity = entity;
@@ -44,7 +52,7 @@ public abstract class EntitySearchArea<E> {
 		uiController.setInteger(table, "weightx", 1);
 		uiController.setInteger(table, "weighty", 1);
 		uiController.setInteger(table, "colspan", 2);
-		uiController.setPerformMethod(table,"selectionMade()", null, this);
+		uiController.setPerform(table,"selectionMade()", null, this);
 		uiController.setAction(table, "selectionChanged()", null, this);
 		
 		if(currentEntity!=null){
@@ -64,10 +72,10 @@ public abstract class EntitySearchArea<E> {
 		Object btn;
 		if(currentEntity != null){
 			label = uiController.createLabel(getEntityTypeName() + ": " + getEntityName(currentEntity));
-		 	btn = uiController.createButton("Expand");
+		 	btn = uiController.createButton(InternationalisationUtils.getI18NString(EXPAND_BUTTON));
 		}else{
-			label = uiController.createLabel(getEntityTypeName() + ": Not Selected");
-		 	btn = uiController.createButton("Select " + getEntityTypeName());
+			label = uiController.createLabel(getEntityTypeName() + ": "+ InternationalisationUtils.getI18NString(NOT_SELECTED));
+		 	btn = uiController.createButton(InternationalisationUtils.getI18NString(SELECT_BUTTON) +" "+ getEntityTypeName());
 		}
 		uiController.setChoice(btn, "halign", "right");
 		uiController.setInteger(btn,"weightx",1);
@@ -82,7 +90,7 @@ public abstract class EntitySearchArea<E> {
 		uiController.removeAll(mainPanel);
 		uiController.setInteger(mainPanel, "columns", 2);
 		uiController.add(mainPanel,searchBar);
-		Object btn = uiController.createButton("Collapse");
+		Object btn = uiController.createButton(InternationalisationUtils.getI18NString(COLLAPSE_BUTTON));
 		uiController.setChoice(btn, "halign", "right");
 		uiController.setAction(btn,"selectionMade()",null,this);
 		uiController.add(mainPanel,btn);
@@ -98,7 +106,7 @@ public abstract class EntitySearchArea<E> {
 	}
 	
 	protected Object setUpTable(){
-		String text = "Select a " + getEntityTypeName();
+		String text = InternationalisationUtils.getI18NString(INITIAL_SELECT) + " " + getEntityTypeName();
 		Object header = uiController.create("header");
 		uiController.add(header,uiController.createColumn(text,null));
 		uiController.removeAll(table);
@@ -120,7 +128,7 @@ public abstract class EntitySearchArea<E> {
 			setTableResults(results);
 		}else{
 			Object row = uiController.createTableRow(null);
-			uiController.add(row,uiController.createTableCell("Sorry, there were no results matching \""+ text +"\""));
+			uiController.add(row,uiController.createTableCell(InternationalisationUtils.getI18NString(NO_RESULTS)+" \""+ text +"\""));
 			uiController.add(table,row);
 		}
 	}

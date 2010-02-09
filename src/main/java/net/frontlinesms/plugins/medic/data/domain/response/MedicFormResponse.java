@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 
 import net.frontlinesms.plugins.medic.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.medic.data.domain.people.Person;
+import net.frontlinesms.plugins.medic.history.HistoryManager;
 
 @Entity
 @DiscriminatorValue("formresponse")
@@ -34,6 +35,7 @@ public class MedicFormResponse extends Response{
 			mfr.setFormResponse(this);
 		}
 		this.responses = responses;
+		HistoryManager.logFormSubmssion(subject, form);
 	}
 
 	public List<MedicFieldResponse> getResponses() {
@@ -51,6 +53,7 @@ public class MedicFormResponse extends Response{
 		super(submitter, subject);
 		this.form = form;
 		responses = new ArrayList<MedicFieldResponse>();
+		HistoryManager.logFormSubmssion(subject, form);
 	}
 
 	public MedicForm getForm(){

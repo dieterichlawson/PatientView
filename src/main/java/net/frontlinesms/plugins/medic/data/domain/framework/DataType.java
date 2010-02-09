@@ -6,7 +6,7 @@ public enum DataType {
 		WRAPPED_TEXT("Wrapped Text", false, null, null),
 		CURRENCY_FIELD("Currency", false, null, null),
 		EMAIL_FIELD("Email",false, null,null),
-		CHECK_BOX("Check Box", true,null,null),
+		CHECK_BOX("Check Box", true,"Yes","No"),
 		DATE_FIELD("Date",false,null,null),
 		PASSWORD_FIELD("Password",false,null,null),
 		PHONE_NUMBER_FIELD("Phone Number",false,null,null),

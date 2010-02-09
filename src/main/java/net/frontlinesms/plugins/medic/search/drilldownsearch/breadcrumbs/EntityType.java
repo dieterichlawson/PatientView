@@ -9,6 +9,7 @@ import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.forms.data.domain.FormField;
 import net.frontlinesms.plugins.medic.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.medic.data.domain.people.Patient;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 /**
  * 
@@ -19,12 +20,11 @@ import net.frontlinesms.plugins.medic.data.domain.people.Patient;
  */
 
 public enum EntityType {
-	
-	CHW("CHW", CommunityHealthWorker.class),
-	PATIENT("Patient", Patient.class),
-	MESSAGE("Freeform Text", Message.class),
-	FORM("Form",Form.class),
-	FIELD("Field", FormField.class);
+	CHW("medic.common.chw",CommunityHealthWorker.class),
+	PATIENT("medic.common.patient", Patient.class),
+	MESSAGE("medic.common.text.message", Message.class),
+	FORM("medic.common.form",Form.class),
+	FIELD("medic.common.field", FormField.class);
 	
 	/**
 	 * the name of the entity
@@ -39,7 +39,7 @@ public enum EntityType {
 	}
 	
 	public String getName(){
-		return name;
+		return InternationalisationUtils.getI18NString(name);
 	}
 	public Class getEntityClass(){
 		return entityClass;

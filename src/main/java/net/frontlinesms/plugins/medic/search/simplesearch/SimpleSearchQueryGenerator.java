@@ -1,30 +1,21 @@
 package net.frontlinesms.plugins.medic.search.simplesearch;
 
-import java.util.List;
-
 import net.frontlinesms.plugins.medic.search.FieldDescriptor;
 import net.frontlinesms.plugins.medic.search.QueryGenerator;
 import net.frontlinesms.plugins.medic.ui.AdvancedTable;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.context.ApplicationContext;
 
-public class SimpleSearchQueryGenerator implements QueryGenerator {
+public class SimpleSearchQueryGenerator extends QueryGenerator{
 	
 	private SimpleSearchController searchController;
-	private ApplicationContext appCon;
-	private AdvancedTable resultsTable;
-	private SessionFactory sessionFactory;
-	private Session session;
 	
 	public SimpleSearchQueryGenerator(SimpleSearchController searchController, ApplicationContext appCon, AdvancedTable resultsTable){
-		sessionFactory = (SessionFactory) appCon.getBean("sessionFactory");
-		this.appCon = appCon;
-		this.resultsTable = resultsTable;
+		super(appCon,resultsTable);
 		this.searchController = searchController;
 	}
 	
+	@Override
 	public void startSearch() {
 		SimpleSearchEntity sEntity = searchController.getCurrentEntity();
 		FieldDescriptor field = searchController.getCurrentField();
@@ -53,27 +44,12 @@ public class SimpleSearchQueryGenerator implements QueryGenerator {
 			}
 			
 		}
+		super.resetPaging();
 		runQuery(query);
 	}
 	
-	public void runQuery(String query){
-		System.out.println(query);
-		//check if session is active
-		if(session == null){
-			session = sessionFactory.openSession();
-			session.beginTransaction();
-		}
-		
-		long prevTime = System.nanoTime();
-		List results  = session.createQuery(query).setMaxResults(30).list();
-		long elapsedTime = System.nanoTime() - prevTime;
-		System.out.println("Query Time: " + elapsedTime/1000000.0);
-		resultsTable.setResults(results);
+	@Override
+	public void setSort(int column, boolean ascending) {
+		// TODO Make this work
 	}
-	
-	public void setSort(String fieldName, boolean ascending) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

@@ -27,5 +27,11 @@ public class BirthdateField extends DateField{
 	public boolean hasChanged(){
 		return hasChanged;
 	}
+	
+	@Override
+	public void showDateSelector(){
+		hasChanged = true;
+		super.showDateSelector();
+	}
 
 }

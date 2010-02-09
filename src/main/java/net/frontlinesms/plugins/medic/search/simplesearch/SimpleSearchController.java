@@ -4,11 +4,13 @@ import java.util.Date;
 
 import net.frontlinesms.plugins.medic.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.medic.search.FieldDescriptor;
+import net.frontlinesms.plugins.medic.search.QueryGenerator;
 import net.frontlinesms.plugins.medic.search.SearchController;
 import net.frontlinesms.plugins.medic.ui.AdvancedTable;
 import net.frontlinesms.plugins.medic.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -37,6 +39,10 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	private DateField dateFieldAfter;
 	private DateField dateFieldBefore;
 	private Object comboBox;
+	
+	//i18n
+	private static final String BEFORE = "simplesearch.labels.before";
+	private static final String AFTER = "simplesearch.labels.after";
 	
 	public SimpleSearchController(UiGeneratorController uiController, ApplicationContext appCon, AdvancedTable resultsTable){
 		this.uiController = uiController;
@@ -85,8 +91,8 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	
 	public Object getDateFieldEntry(){
 		if(dateFieldAfter == null){
-			dateFieldAfter = new DateField(uiController,"After");
-			dateFieldBefore = new DateField(uiController,"Before");
+			dateFieldAfter = new DateField(uiController,InternationalisationUtils.getI18NString(AFTER));
+			dateFieldBefore = new DateField(uiController,InternationalisationUtils.getI18NString(BEFORE));
 		}
 		dateFieldAfter.setResponse("");
 		dateFieldBefore.setResponse("");
@@ -197,6 +203,10 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 
 	public void controllerWillAppear() {
 		searchButtonPressed();
+	}
+
+	public QueryGenerator getQueryGenerator() {
+		return queryGenerator;
 	}
 	
 	

@@ -6,6 +6,7 @@
 		<mapping class="net.frontlinesms.plugins.medic.data.domain.people.Patient" /> 
 		<mapping class="net.frontlinesms.plugins.medic.data.domain.people.CommunityHealthWorker" />
 		<mapping class="net.frontlinesms.plugins.medic.data.domain.people.User" />
+		<mapping class="net.frontlinesms.plugins.medic.data.domain.framework.HistoryEntry" />
 		<mapping class="net.frontlinesms.plugins.medic.data.domain.framework.MedicField" />
 		<mapping class="net.frontlinesms.plugins.medic.data.domain.framework.MedicForm" />
 		<mapping class="net.frontlinesms.plugins.medic.data.domain.framework.MedicFormField" />
@@ -15,6 +16,5 @@
 		<mapping class="net.frontlinesms.plugins.medic.data.domain.response.Response" />
 		<mapping class="net.frontlinesms.plugins.medic.data.domain.response.Tag" />
 		<mapping class="net.frontlinesms.plugins.medic.data.domain.response.TagKeyword" />
-		
 	</session-factory>
 </hibernate-configuration>

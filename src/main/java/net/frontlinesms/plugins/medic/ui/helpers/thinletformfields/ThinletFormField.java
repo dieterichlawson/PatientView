@@ -77,6 +77,14 @@ public abstract class ThinletFormField<E>{
 	public void setField(MedicField field){
 		this.field = field;
 	}
+	
+	public void setEditable(boolean editable){
+		thinlet.recursivelySetEditable(getThinletPanel(), editable);
+	}
+	
+	public void setEnabled(boolean editable){
+		thinlet.recursivelySetEnabled(getThinletPanel(), editable);
+	}
 		
 	public static ThinletFormField getThinletFormFieldForDataType(DataType t){
 		//TODO:make this work

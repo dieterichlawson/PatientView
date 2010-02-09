@@ -3,7 +3,6 @@ package net.frontlinesms.plugins.medic.ui.dialogs.searchareas;
 import java.util.Collection;
 
 import net.frontlinesms.plugins.medic.data.domain.framework.MedicForm;
-import net.frontlinesms.plugins.medic.data.repository.FormDao;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateMedicFormDao;
 import net.frontlinesms.plugins.medic.ui.dialogs.SubmitFormDialog;
 import net.frontlinesms.ui.ExtendedThinlet;

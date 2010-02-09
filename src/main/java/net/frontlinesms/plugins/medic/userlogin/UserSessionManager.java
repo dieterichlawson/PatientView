@@ -24,8 +24,6 @@ public class UserSessionManager {
 	
 	private UserSessionManager(){
 		isLoggedIn = false;
-		//TODO:initialize UserDao
-		//userDao = 
 	}
 	
 	public static UserSessionManager getUserSessionManager(){

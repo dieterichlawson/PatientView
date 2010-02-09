@@ -20,8 +20,8 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker>{
 		super(thinlet, "CHW:", NAME);
 		comboBox =thinlet.create("combobox");
 		hasChanged=false;
-		thinlet.setInsertMethod(comboBox,"textChanged(this.text)", null, this);
-		thinlet.setRemoveMethod(comboBox, "textChanged(this.text)", null, this);
+		thinlet.setInsert(comboBox,"textChanged(this.text)", null, this);
+		thinlet.setRemove(comboBox, "textChanged(this.text)", null, this);
 		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null, this);
 		chwDao = (HibernateCommunityHealthWorkerDao) appCon.getBean("CHWDao");
 		if(chw != null){
@@ -39,8 +39,8 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker>{
 		super(thinlet, "CHW:", name);
 		comboBox =thinlet.create("combobox");
 		hasChanged=false;
-		thinlet.setInsertMethod(comboBox,"textChanged(this.text)", null, this);
-		thinlet.setRemoveMethod(comboBox, "textChanged(this.text)", null, this);
+		thinlet.setInsert(comboBox,"textChanged(this.text)", null, this);
+		thinlet.setRemove(comboBox, "textChanged(this.text)", null, this);
 		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null, this);
 		chwDao = (HibernateCommunityHealthWorkerDao) appCon.getBean("CHWDao");
 		if(chw != null){

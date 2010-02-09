@@ -1,5 +1,6 @@
 package net.frontlinesms.plugins.medic.data.domain.response;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,11 +11,13 @@ import net.frontlinesms.data.domain.Message;
 import net.frontlinesms.plugins.medic.data.domain.people.Person;
 
 
+
+
 @Entity
 @DiscriminatorValue("messageresponse")
 public class MedicMessageResponse extends Response{
-
-	@OneToOne(fetch=FetchType.LAZY, cascade={})
+	
+	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="message")
 	private Message message;
 	

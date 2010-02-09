@@ -4,5 +4,5 @@
     <panel border="true" bottom="5" columns="1" gap="6" left="5" name="searchPanel" right="5" rowspan="3" top="5" weightx="1" weighty="1"/>
     <panel border="true" bottom="5" columns="1" gap="6" left="5" name="formPanel" right="5" top="5" weightx="1" weighty="1"/>
     <label halign="center" name="warningLabel"/>
-    <button action="submit()" halign="center" name="submitButton" text="Submit Form" weightx="1"/>
+    <button action="submit()" halign="center" name="submitButton" text="i18n.submitform.buttons.submit.form" weightx="1"/>
 </panel>

@@ -27,4 +27,9 @@ public abstract class ExpandedDetailView implements ThinletUiEventHandler{
 		rightPanel = uiController.find(mainPanel,"rightPanel");
 		middlePanel = uiController.find(mainPanel,"middlePanel");
 	}
+	
+	public Object getMainPanel(){
+		return mainPanel;
+	}
 }
+

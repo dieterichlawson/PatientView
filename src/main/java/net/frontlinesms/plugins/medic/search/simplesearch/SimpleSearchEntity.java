@@ -12,63 +12,64 @@ import net.frontlinesms.plugins.medic.data.domain.response.MedicFieldResponse;
 import net.frontlinesms.plugins.medic.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.medic.data.domain.response.MedicMessageResponse;
 import net.frontlinesms.plugins.medic.search.FieldDescriptor;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 public enum SimpleSearchEntity {
 
-	PATIENT("Patients",  //Entity name
+	PATIENT("medic.common.patients",  //Display name
 			"pat",   //entity table alias
-			"Patient",
+			"Patient", //database name
 			 Patient.class,   //entity class
-			 new FieldDescriptor[] {new FieldDescriptor(null,"name","name",SimpleSearchDataType.STRING),
-									new FieldDescriptor(null,"CHW name","chw.name",SimpleSearchDataType.STRING),
-									new FieldDescriptor(null,"birthdate","birthdate",SimpleSearchDataType.DATE),
-									new FieldDescriptor(null,"gender","gender",SimpleSearchDataType.ENUM)}),
+			 new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.name","name",SimpleSearchDataType.STRING),
+									new FieldDescriptor(null,"simplesearch.fields.chw.name","chw.name",SimpleSearchDataType.STRING),
+									new FieldDescriptor(null,"simplesearch.fields.birthdate","birthdate",SimpleSearchDataType.DATE),
+									new FieldDescriptor(null,"simplesearch.fields.gender","gender",SimpleSearchDataType.ENUM)}),
 	
-	CHW("CHWs",
+	CHW("medic.common.chws",
 		"chw",
 		"CommunityHealthWorker",
 		 CommunityHealthWorker.class,
-		 new FieldDescriptor[] {new FieldDescriptor(null,"name","name",SimpleSearchDataType.STRING),
-								new FieldDescriptor(null,"phone number","contactInfo.phoneNumber",SimpleSearchDataType.STRING),
-								new FieldDescriptor(null,"birthdate","birthdate",SimpleSearchDataType.DATE),
-								new FieldDescriptor(null,"gender","gender",SimpleSearchDataType.ENUM)}),
-	MESSAGE("Text Messages",
+		 new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.name","name",SimpleSearchDataType.STRING),
+								new FieldDescriptor(null,"simplesearch.fields.phone.number","contactInfo.phoneNumber",SimpleSearchDataType.STRING),
+								new FieldDescriptor(null,"simplesearch.fields.birthdate","birthdate",SimpleSearchDataType.DATE),
+								new FieldDescriptor(null,"simplesearch.fields.gender","gender",SimpleSearchDataType.ENUM)}),
+	MESSAGE("medic.common.text.messages",
 			"sms",
 			"MedicMessageResponse",
 			 MedicMessageResponse.class,
-			 new FieldDescriptor[] {new FieldDescriptor(null,"submitter","submitter.name",SimpleSearchDataType.STRING),
-									new FieldDescriptor(null,"content","messageContent",SimpleSearchDataType.STRING),
-									new FieldDescriptor(null,"date submitted","dateSubmitted",SimpleSearchDataType.DATE)}),
-	FORM("Forms",
+			 new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.submitter.name","submitter.name",SimpleSearchDataType.STRING),
+									new FieldDescriptor(null,"simplesearch.fields.content","messageContent",SimpleSearchDataType.STRING),
+									new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmitted",SimpleSearchDataType.DATE)}),
+	FORM("medic.common.forms",
 		 "form",
 		 "MedicForm",
 		 MedicForm.class,
-		 new FieldDescriptor[] {new FieldDescriptor(null,"name","name",SimpleSearchDataType.STRING)}),
+		 new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.name","name",SimpleSearchDataType.STRING)}),
 	     
-	FIELD("Fields",
+	FIELD("medic.common.fields",
 		  "field",
 		  "MedicField",
 		   MedicField.class,
-		   new FieldDescriptor[] {new FieldDescriptor(null,"label","label",SimpleSearchDataType.STRING)}),
+		   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.field.label","label",SimpleSearchDataType.STRING)}),
 		   
-	FORM_RESPONSE("Form Responses",
+	FORM_RESPONSE("medic.common.form.responses",
 				   "formr",
 				   "MedicFormResponse",
 				   MedicFormResponse.class,
-				   new FieldDescriptor[] {new FieldDescriptor(null,"form name","form.name",SimpleSearchDataType.STRING),
-										  new FieldDescriptor(null,"submitter name","submitter.name",SimpleSearchDataType.STRING),
-										  new FieldDescriptor(null,"subject name","subject.name",SimpleSearchDataType.STRING),
-										  new FieldDescriptor(null,"date submitted","dateSubmited",SimpleSearchDataType.DATE)}),
+				   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.form.name","form.name",SimpleSearchDataType.STRING),
+										  new FieldDescriptor(null,"simplesearch.fields.submitter.name","submitter.name",SimpleSearchDataType.STRING),
+										  new FieldDescriptor(null,"simplesearch.fields.subject.name","subject.name",SimpleSearchDataType.STRING),
+										  new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmited",SimpleSearchDataType.DATE)}),
 					   
-    FIELD_RESPONSE("Field Responses",
+    FIELD_RESPONSE("medic.common.field.responses",
 				   "fieldr",
 				   "MedicFieldResponse",
 				   MedicFieldResponse.class,
-				   new FieldDescriptor[] {new FieldDescriptor(null,"field label","field.label",SimpleSearchDataType.STRING),
-										  new FieldDescriptor(null,"submitter name","submitter.name",SimpleSearchDataType.STRING),
-										  new FieldDescriptor(null,"subject name","subject.name",SimpleSearchDataType.STRING),
-										  new FieldDescriptor(null,"date submitted","dateSubmited",SimpleSearchDataType.DATE),
-				   						  new FieldDescriptor(null,"response","value",SimpleSearchDataType.STRING)});
+				   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.field.label","field.label",SimpleSearchDataType.STRING),
+    			   new FieldDescriptor(null,"simplesearch.fields.submitter.name","submitter.name",SimpleSearchDataType.STRING),
+    			   new FieldDescriptor(null,"simplesearch.fields.subject.name","subject.name",SimpleSearchDataType.STRING),
+    			   new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmited",SimpleSearchDataType.DATE),
+				   new FieldDescriptor(null,"simplesearch.fields.response","value",SimpleSearchDataType.STRING)});
 	
 	
 	private String displayName;
@@ -97,7 +98,7 @@ public enum SimpleSearchEntity {
 	}
 
 	public String getEntityDisplayName() {
-		return displayName;
+		return InternationalisationUtils.getI18NString(displayName);
 	}
 
 	public String getTableAlias() {

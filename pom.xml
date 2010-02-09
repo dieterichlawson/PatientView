@@ -56,11 +56,6 @@
   
 	<dependencies>
 		<dependency>
-			<groupId>net.frontlinesms.core</groupId>
-			<artifactId>frontlinesms</artifactId>
-			<version>1.6.08-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jfreechart</artifactId>
 			<version>1.0.9</version>
@@ -70,10 +65,15 @@
 			<artifactId>jcommon</artifactId>
 			<version>1.0.12</version>
 		</dependency>
-        <dependency>
-            <groupId>net.frontlinesms.plugins</groupId>
-            <artifactId>frontlinesms-plugin-forms</artifactId>
-            <version>0.02.02-SNAPSHOT</version>
-        </dependency>
+		<dependency>
+			<groupId>net.frontlinesms.core</groupId>
+			<artifactId>frontlinesms</artifactId>
+			<version>1.6.08-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.frontlinesms.plugins</groupId>
+			<artifactId>frontlinesms-plugin-forms</artifactId>
+			<version>0.02.02-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -2,6 +2,7 @@ package net.frontlinesms.plugins.medic.search;
 
 import net.frontlinesms.plugins.medic.search.simplesearch.SimpleSearchDataType;
 import net.frontlinesms.plugins.medic.search.simplesearch.SimpleSearchEntity;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 public class FieldDescriptor {
 
@@ -24,7 +25,7 @@ public class FieldDescriptor {
 		this.parentEntity = parentEntity;
 	}
 	public String getDisplayName() {
-		return displayName;
+		return InternationalisationUtils.getI18NString(displayName);
 	}
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;

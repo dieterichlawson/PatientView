@@ -36,7 +36,7 @@ public class CommunityHealthWorker extends Person {
 	}
 	
 	public String getPhoneNumber(){
-		return contactInfo.getMsisdn();
+		return contactInfo.getPhoneNumber();
 	}
 
 }

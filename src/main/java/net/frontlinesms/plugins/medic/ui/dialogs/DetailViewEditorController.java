@@ -10,9 +10,11 @@ import net.frontlinesms.plugins.medic.data.domain.framework.MedicField.PersonTyp
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateMedicFieldDao;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateMedicFieldResponseDao;
 import net.frontlinesms.plugins.medic.data.repository.hibernate.HibernateMedicFormFieldDao;
+import net.frontlinesms.plugins.medic.history.HistoryManager;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -44,6 +46,23 @@ public class DetailViewEditorController implements ThinletUiEventHandler{
 	/** the Ui Controller**/
 	private ExtendedThinlet thinlet;
 	
+	//i18n
+	private static final String FRAME_TITLE = "editdetailview.title";
+	private static final String TYPE_COLUMN = "medic.common.labels.type";
+	private static final String LABEL_COLUMN = "medic.common.labels.label";
+	private static final String PERSON_NAME = "editdetailview.preview.name";
+	private static final String ID = "editdetailview.preview.id";
+	private static final String AGE = "editdetailview.preview.age";
+	private static final String CHW = "editdetailview.preview.chw";
+	private static final String PHONE_NUMBER = "editdetailview.preview.phone.number";
+	private static final String ID_LABEL = "medic.common.labels.id";
+	private static final String FEMALE = "medic.common.female";
+	private static final String AGE_LABEL = "medic.common.labels.age";
+	private static final String CHW_LABEL = "medic.common.chw";
+	private static final String PHONE_NUMBER_LABEL = "medic.common.labels.phone.number";
+	private static final String PATIENT_AAG_LABEL = "detailview.patient.at.a.glance";
+	private static final String CHW_AAG_LABEL = "detailview.chw.at.a.glance";
+	
 	public DetailViewEditorController(UiGeneratorController uiController, ApplicationContext appContext, boolean isEditingPatient){
 		thinlet = new ExtendedThinlet();
 		//set currently editing patient
@@ -63,8 +82,10 @@ public class DetailViewEditorController implements ThinletUiEventHandler{
 		//initialize the combo box choices
 		thinlet.removeAll(dataTypeComboBox);
 		for(DataType d: DataType.values()){
+			if(!(d.equals(DataType.CURRENCY_FIELD) || d.equals(DataType.EMAIL_FIELD) || d.equals(DataType.PASSWORD_FIELD))){
 			Object choice = thinlet.createComboboxChoice(d.toString(), d);
 			thinlet.add(dataTypeComboBox,choice);
+			}
 		}
 		
 		//initialize the DAOs
@@ -78,7 +99,7 @@ public class DetailViewEditorController implements ThinletUiEventHandler{
 		
 		thinlet.add(mainPanel);
 		//you have to use a special framelauncher class because otherwise it will close all open windows
-		FrameLauncher f = new FrameLauncher("Edit the Detail View",thinlet,1150,500,null)
+		FrameLauncher f = new FrameLauncher(InternationalisationUtils.getI18NString(FRAME_TITLE),thinlet,1150,500,null)
 		{ public void windowClosing(WindowEvent e){  dispose(); }};   
 		
 		if(currentlyEditingPatient){
@@ -115,6 +136,9 @@ public class DetailViewEditorController implements ThinletUiEventHandler{
 	
 	public void fieldSearchBarKeyPress(String text){
 		updateFieldSearchTable(formFieldDao.getFieldsByName(text));
+		thinlet.setText(labelTextField, "");
+		thinlet.setText(dataTypeComboBox, "");
+		thinlet.setSelectedIndex(dataTypeComboBox, -1);
 	}
 	
 	private void updateFieldSearchTable(Collection<MedicFormField> fields){
@@ -129,14 +153,15 @@ public class DetailViewEditorController implements ThinletUiEventHandler{
 	
 	public void addItemButtonPressed(){
 		String label = thinlet.getText(labelTextField);
-		if(label != "" && label !=null){
+		if((label != "" && label !=null) && thinlet.getSelectedItem(dataTypeComboBox) != null){
 			DataType dataType = (DataType) thinlet.getAttachedObject(thinlet.getSelectedItem(dataTypeComboBox));
 			PersonType personType = (currentlyEditingPatient) ? PersonType.PATIENT : PersonType.CHW;
 			MedicField newField = new MedicField(label,dataType);
 			newField.setDetailViewField(true);
 			newField.setDetailViewPersonType(currentlyEditingPatient? PersonType.PATIENT:PersonType.CHW);
+			HistoryManager.logDetailViewFieldCreated(newField);
 			fieldsDao.saveMedicField(newField);
-		}else{
+		}else if(thinlet.getSelectedItem(fieldSearchTable) != null){
 			MedicFormField field = (MedicFormField) thinlet.getAttachedObject(thinlet.getSelectedItem(fieldSearchTable));
 			field.setDetailViewField(true);
 			field.setDetailViewPersonType(currentlyEditingPatient? PersonType.PATIENT:PersonType.CHW);
@@ -153,14 +178,28 @@ public class DetailViewEditorController implements ThinletUiEventHandler{
 		
 		updateCurrentItemTable();
 		updatePreview();
+		clearInputs();
+	}
+	
+	private void clearInputs(){
+		thinlet.setText(labelTextField, "");
+		thinlet.setText(dataTypeComboBox, "");
+		thinlet.setSelectedIndex(dataTypeComboBox, -1);
+		thinlet.setText(fieldSearchBar, "");
+		thinlet.removeAll(fieldSearchTable);
 	}
 	
 	public void removeItemButtonPressed(){
 		MedicField field = (MedicField) thinlet.getAttachedObject(thinlet.getSelectedItem(currentItemTable));
-		if(field.isDetailViewField()){
+		HistoryManager.logDetailViewFieldRemoved(field);
+		if(field instanceof MedicFormField){
+			field.setDetailViewField(false);
+			field.setDetailViewPersonType(null);
+			fieldsDao.updateMedicField(field);
+		}else{
+			fieldsDao.deleteMedicField(field);
 			fieldResponseDao.deleteResponsesForField(field);
 		}
-		fieldsDao.deleteMedicField(field);
 		updateCurrentItemTable();
 		updatePreview();
 	}
@@ -178,7 +217,7 @@ public class DetailViewEditorController implements ThinletUiEventHandler{
 		}else{
 			thinlet.add(previewPanel,getPersonPanel());
 			thinlet.setInteger(thinlet.find(previewPanel,"personAAGPanel"), "colspan", 1);
-			for(MedicField f: fieldsDao.getDetailViewFieldsForPersonType(PersonType.PATIENT)){
+			for(MedicField f: fieldsDao.getDetailViewFieldsForPersonType(PersonType.CHW)){
 				Object item = thinlet.createLabel(f.getLabel() + ":");
 				thinlet.add(previewPanel,item);
 				thinlet.setInteger(item,"colspan",1);
@@ -188,25 +227,26 @@ public class DetailViewEditorController implements ThinletUiEventHandler{
 	
 	private Object getPersonPanel(){
 		Object labelPanel = thinlet.find(personPanel,"labelPanel");
-		thinlet.setText(thinlet.find(labelPanel,"label1"), "Jane Doe");
-		thinlet.setText(thinlet.find(labelPanel,"label2"), "ID: 1234567");
-		thinlet.setText(thinlet.find(labelPanel,"label3"), "Female" );
-		thinlet.setText(thinlet.find(labelPanel,"label4"), "Age: 37");
+		thinlet.setText(thinlet.find(labelPanel,"label1"), InternationalisationUtils.getI18NString(PERSON_NAME));
+		thinlet.setText(thinlet.find(labelPanel,"label2"), InternationalisationUtils.getI18NString(ID_LABEL)+": "+ InternationalisationUtils.getI18NString(ID));
+		thinlet.setText(thinlet.find(labelPanel,"label3"), InternationalisationUtils.getI18NString(FEMALE) );
+		thinlet.setText(thinlet.find(labelPanel,"label4"), InternationalisationUtils.getI18NString(AGE_LABEL) + ": "+ InternationalisationUtils.getI18NString(AGE));
+		
 		if(!currentlyEditingPatient){
-			thinlet.setText(thinlet.find(labelPanel,"label5"), "Phone Number: 888-999-2492");
-			thinlet.setText(personPanel, "CHW at a Glance");
+			thinlet.setText(thinlet.find(labelPanel,"label5"),InternationalisationUtils.getI18NString(PHONE_NUMBER_LABEL) + ": "+ InternationalisationUtils.getI18NString(PHONE_NUMBER));
+			thinlet.setText(personPanel, InternationalisationUtils.getI18NString(CHW_AAG_LABEL));
 		}else{
-			thinlet.setText(thinlet.find(labelPanel,"label5"), "CHW: John Doe");
-			thinlet.setText(personPanel, "Patient at a Glance");
+			thinlet.setText(thinlet.find(labelPanel,"label5"),InternationalisationUtils.getI18NString(CHW_LABEL) + ": "+ InternationalisationUtils.getI18NString(CHW));
+			thinlet.setText(personPanel, InternationalisationUtils.getI18NString(PATIENT_AAG_LABEL));
 		}
 		return personPanel;
 	}
 	
 	private void updateCurrentItemTable(){
 		Object header = thinlet.create("header");
-		thinlet.add(header,thinlet.createColumn("Label", null));
+		thinlet.add(header,thinlet.createColumn(InternationalisationUtils.getI18NString(TYPE_COLUMN), null));
 		//TODO: make sure that this belongs here
-		thinlet.add(header,thinlet.createColumn("Type",null));
+		thinlet.add(header,thinlet.createColumn(InternationalisationUtils.getI18NString(LABEL_COLUMN),null));
 		thinlet.removeAll(currentItemTable);
 		thinlet.add(currentItemTable,header);
 		if(currentlyEditingPatient){

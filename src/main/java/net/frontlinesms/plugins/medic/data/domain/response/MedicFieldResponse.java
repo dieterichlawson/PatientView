@@ -9,6 +9,7 @@ import javax.persistence.OneToOne;
 
 import net.frontlinesms.plugins.medic.data.domain.framework.MedicField;
 import net.frontlinesms.plugins.medic.data.domain.people.Person;
+import net.frontlinesms.plugins.medic.history.HistoryManager;
 
 @Entity
 @DiscriminatorValue("fieldresponse")

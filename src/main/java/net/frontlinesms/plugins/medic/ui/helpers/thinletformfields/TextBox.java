@@ -30,7 +30,6 @@ public class TextBox extends ThinletFormField<String>{
 	}
 	
 	public void textBoxKeyPressed(String text){
-		//allows subclasses to do stuff with the text
 	}
 	
 	/** Text Boxes are always valid**/

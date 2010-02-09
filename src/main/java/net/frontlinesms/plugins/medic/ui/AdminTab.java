@@ -113,7 +113,9 @@ public class AdminTab implements ThinletUiEventHandler, TableActionDelegate{
 		uiController.setName(label,INFO_LABEL);
 		NameField nameField = new NameField(uiController,"");
 		BirthdateField bdayField = new BirthdateField(uiController,null);
+		bdayField.setDateButtonEnabled(false);
 		GenderComboBox genderBox = new GenderComboBox(uiController,null);
+		setAllEnabled(genderBox.getThinletPanel(), false);
 		uiController.add(fieldPanel,label);
 		uiController.add(fieldPanel,nameField.getThinletPanel());
 		uiController.add(fieldPanel,bdayField.getThinletPanel());
@@ -143,12 +145,13 @@ public class AdminTab implements ThinletUiEventHandler, TableActionDelegate{
 		uiController.setText(uiController.find(patientFields,INFO_LABEL), "Patient Info");
 		//create the one non-default field, the CHW box
 		CHWComboBox chwcombo = new CHWComboBox(uiController,appCon,null);
+		setAllEnabled(chwcombo.getThinletPanel(), false);
 		uiController.setInteger(chwcombo.getThinletPanel(), "colspan", 1);
 		//add the CHW combo box to the field panel
 		uiController.add(patientFields, chwcombo.getThinletPanel());
 		//add the field panel to the search panel
 		uiController.add(uiController.find(managePatientsPanel, FIELDS_PANEL_CONTAINER),patientFields);
-		setAllEnabled(patientFields,false);
+		setAllEditable(patientFields,false);
 		return managePatientsPanel;
 	}
 	
@@ -163,7 +166,7 @@ public class AdminTab implements ThinletUiEventHandler, TableActionDelegate{
 		uiController.add(chwFields,pField.getThinletPanel());		
 		uiController.setText(uiController.find(chwFields,INFO_LABEL), "CHW Info");
 		uiController.add(uiController.find(manageCHWsPanel, FIELDS_PANEL_CONTAINER),chwFields);
-		setAllEnabled(chwFields,false);
+		setAllEditable(chwFields,false);
 		return manageCHWsPanel;
 	}
 	
@@ -179,18 +182,19 @@ public class AdminTab implements ThinletUiEventHandler, TableActionDelegate{
 		Object userFields = getCoreFields();
 		uiController.setText(uiController.find(userFields,INFO_LABEL), "User Info");
 		//create a username field
-		UsernameField uField = new UsernameField(uiController,appCon,true);
+		UsernameField uField = new UsernameField(uiController,appCon,true,"");
 		//create a password field
 		PasswordTextField pwField = new PasswordTextField(uiController,"Password:");
 		//create a role combobox
 		RoleComboBox rCombo = new RoleComboBox(uiController,null);
+		setAllEnabled(rCombo.getThinletPanel(), false);
 		//add all the extra fields
 		uiController.add(userFields, uField.getThinletPanel());
 		uiController.add(userFields, pwField.getThinletPanel());
 		uiController.add(userFields, rCombo.getThinletPanel());
 		
 		uiController.add(uiController.find(manageUsersPanel,FIELDS_PANEL_CONTAINER),userFields);
-		setAllEnabled(userFields,false);
+		setAllEditable(userFields,false);
 		return manageUsersPanel;
 	}
 
@@ -209,13 +213,10 @@ public class AdminTab implements ThinletUiEventHandler, TableActionDelegate{
 	
 	private void setAllEditable(Object container, boolean editable){
 		try{
-		uiController.setEditable(container,editable);
+			uiController.setEditable(container,editable);
 		}catch(Throwable t){}
 		for(Object b : uiController.getItems(container)){
-			uiController.setEnabled(b, editable);
-			try{
 				setAllEditable(b, editable);
-			}catch(Throwable t){}
 		}
 	}
 	
@@ -285,10 +286,25 @@ public class AdminTab implements ThinletUiEventHandler, TableActionDelegate{
 	
 	private void setField(Person p, Object fieldContainer){
 		ThinletFormField ff = (ThinletFormField) uiController.getAttachedObject(fieldContainer);
+		if(ff == null){
+			return;
+		}
 		if(ff.getClass() == NameField.class){
 			ff.setResponse(p.getName());
 		}else if(ff.getClass() == BirthdateField.class){
-			
+			((BirthdateField) ff).setRawResponse(p.getBirthdate());
+		}else if(ff.getClass() == GenderComboBox.class){
+			((GenderComboBox) ff).setRawResponse(p.getGender());
+		}else if(ff.getClass() == CHWComboBox.class){
+			((CHWComboBox) ff).setRawResponse(((Patient) p).getChw());
+		}else if(ff.getClass() == PhoneNumberField.class){
+			((PhoneNumberField) ff).setResponse(((CommunityHealthWorker) p).getPhoneNumber());
+		}else if(ff.getClass() == UsernameField.class){
+			((UsernameField) ff).setResponse(((User) p).getUsername());
+		}else if(ff.getClass() == RoleComboBox.class){
+			((RoleComboBox) ff).setRawResponse(((User) p).getRole());
+		}else if(ff.getClass() == PasswordTextField.class){
+			((PasswordTextField) ff).setResponse(((User) p).getPassword());
 		}
 	}
 	
@@ -307,8 +323,8 @@ public class AdminTab implements ThinletUiEventHandler, TableActionDelegate{
 		results.addAll(cresults);
 		advancedTable.setResults(results);
 	}
-	
-	public QueryGenerator getQueryGenerator(){
-		return null;
+
+	public void resultsChanged() {
+		// TODO Auto-generated method stub
 	}
 }

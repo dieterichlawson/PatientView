@@ -4,34 +4,46 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import net.frontlinesms.plugins.medic.search.QueryGenerator;
 import net.frontlinesms.plugins.medic.search.drilldownsearch.breadcrumbs.BreadCrumb;
 import net.frontlinesms.plugins.medic.search.drilldownsearch.breadcrumbs.EntityType;
 import net.frontlinesms.plugins.medic.ui.AdvancedTable;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.context.ApplicationContext;
 
-public class DrillDownQueryGenerator {
+public class DrillDownQueryGenerator extends QueryGenerator{
+	/**
+	 * the arraylist of the breadcrumbs in the drill down search screen
+	 */
 	private ArrayList<BreadCrumb> breadCrumbs;
-	//currently searching entity type e
+	/**
+	 * the entity that is currently being searche for
+	 */
 	private EntityType e;
-	private SessionFactory sessionFactory;
-	private Session session;
-	private AdvancedTable resultsTable;
+	
+	/**
+	 * boolean that indicates whether or not 'reponses' (for Forms or Fields)
+	 * are being searched for
+	 */
 	private boolean searchingForResponses;
+	
+	/**
+	 * the index of the current column that is being sorted
+	 */
 	private int sortColumn;
+	
+	/**
+	 * a boolean that indicates whether the column is being sorted ascending or descending
+	 */
 	private boolean isAscending;
-	private String lastSearch;
 	
 	public DrillDownQueryGenerator(ApplicationContext appCon, AdvancedTable resultsTable){
-		sessionFactory = (SessionFactory) appCon.getBean("sessionFactory");
-		this.resultsTable = resultsTable;
+		super(appCon,resultsTable);
 		breadCrumbs = new ArrayList<BreadCrumb>();
 		searchingForResponses=false;
 		sortColumn = -1;
-		lastSearch = "";
 	}
+	
 	public void updateBreadCrumbs(ArrayList<BreadCrumb> breadCrumbs){
 		this.breadCrumbs = breadCrumbs;
 	}
@@ -41,6 +53,7 @@ public class DrillDownQueryGenerator {
 		removeSort();
 	}
 	
+	@Override
 	public void setSort(int column, boolean isAscending){
 		sortColumn = column;
 		this.isAscending =isAscending;
@@ -54,16 +67,15 @@ public class DrillDownQueryGenerator {
 	public void setSearchingForResponses(boolean searching){
 		searchingForResponses = searching;
 	}
-	//notify this query generator that a drill down operation has been performed
-	//this allows it to reset its session cache
+	
+	/**
+	 * a hook that allows the search screen to notify the query generator that
+	 * a drill-down operation has been performed
+	 */
 	public void notifyDrillDown(){
 		session.getTransaction().commit();
 		session.beginTransaction();
 		removeSort();
-	}
-	
-	public void refresh(){
-		startSearch(lastSearch);
 	}
 	
 	/** 
@@ -71,10 +83,9 @@ public class DrillDownQueryGenerator {
 	 * do not meddle with this lightly, my friend
 	 **/
 	public void startSearch(String param){
-		lastSearch = param;
 		String query ="";
 		if(breadCrumbs.size() != 0){
-			//step one. Make a tally of super entities:
+			//step one. Make a tally of super-entities:
 			HashSet<EntityType> superEntities = new HashSet<EntityType>();
 			for(BreadCrumb bc: breadCrumbs){
 				superEntities.addAll(bc.getRestrictedEntityTypes());
@@ -140,22 +151,12 @@ public class DrillDownQueryGenerator {
 									  + QueryConstants.getSortColumn(sortColumn, e, searchingForResponses);
 			query += isAscending? " asc":" desc";
 		}
-
-		System.out.println(query);
-		//check if session is active
-		if(session == null){
-			session = sessionFactory.openSession();
-			session.beginTransaction();
-		}
-		
-		long prevTime = System.nanoTime();
-		List results  = session.createQuery(query).setMaxResults(30).list();
-		long elapsedTime = System.nanoTime() - prevTime;
-		System.out.println("Query Time: " + elapsedTime/1000000.0);
-			resultsTable.setResults(results);
+		super.resetPaging();
+		runQuery(query);
 	}
-	
-	private BreadCrumb getCurrentBreadCrumb(){
-		return null;
+
+	@Override
+	public void startSearch() {
+		
 	}
 }
