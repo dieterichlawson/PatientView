@@ -13,9 +13,11 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import net.frontlinesms.events.EventObserver;
+import net.frontlinesms.events.FrontlineEvent;
 import net.frontlinesms.ui.UiGeneratorController;
 
-public class AdvancedTable {
+public class AdvancedTableController implements EventObserver{
 	
 	/** the thinlet table**/
 	private Object table;
@@ -25,11 +27,23 @@ public class AdvancedTable {
 	/** the headers for the table **/
 	private Map<Class,Object> headers;
 		
-	private TableActionDelegate delegate;
+	private AdvancedTableActionDelegate delegate;
+	private AdvancedTableDataSource dataSource;
 	
+	public AdvancedTableDataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(AdvancedTableDataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
 	private UiGeneratorController uiController;
 	
 	private Class currentClass;
+	
+	/** The size of the results array */
+	private int resultsSize;
 	
 	/** Objects for determining text width**/
 	private ImageIcon icon;
@@ -37,7 +51,7 @@ public class AdvancedTable {
 	private Font font;
 	private FontMetrics metrics;
 	
-	public AdvancedTable(TableActionDelegate delegate, UiGeneratorController uiController, boolean useTableMethod){
+	public AdvancedTableController(AdvancedTableActionDelegate delegate, UiGeneratorController uiController, boolean useTableMethod){
 		this.uiController = uiController;
 		this.useTableMethod = useTableMethod;
 		if(!useTableMethod){
@@ -69,12 +83,14 @@ public class AdvancedTable {
 	}
 	
 	
-	/** sets the results of the table
+	/**
+	 *  sets the results of the table
 	 * if the header for the class of the results has already been set, it will create the proper 
 	 * header and autofit it to the width of the results
 	 * @param results
 	 */
 	public void setResults(List results){
+		resultsSize = results.size();
 		if(results.size() == 0){
 			uiController.removeAll(getTable());
 			Object header = uiController.create("header");
@@ -218,11 +234,20 @@ public class AdvancedTable {
 		}
 	}
 	
+	/**
+	 * Selects the row at "index"
+	 * @param index
+	 */
 	public void setSelected(int index){
-		uiController.setSelectedIndex(getTable(),index);
-		tableSelectionChange();
+		if(index < resultsSize){
+			uiController.setSelectedIndex(getTable(),index);
+			tableSelectionChange();
+		}
 	}
 	
+	/**
+	 * @return the header object that is currently in use
+	 */
 	private Object getCurrentHeader(){
 		return headers.get(currentClass);
 	}
@@ -236,5 +261,9 @@ public class AdvancedTable {
 	
 	public void clearResults(){
 		uiController.removeAll(getTable());
+	}
+
+	public void notify(FrontlineEvent event) {
+		if(event instanceOf)
 	}
 }
