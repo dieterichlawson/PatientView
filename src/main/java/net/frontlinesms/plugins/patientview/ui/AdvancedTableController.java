@@ -264,6 +264,6 @@ public class AdvancedTableController implements EventObserver{
 	}
 
 	public void notify(FrontlineEvent event) {
-		if(event instanceOf)
+
 	}
 }
