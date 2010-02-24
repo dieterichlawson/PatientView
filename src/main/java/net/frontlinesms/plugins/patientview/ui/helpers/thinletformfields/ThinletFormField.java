@@ -79,7 +79,7 @@ public abstract class ThinletFormField<E>{
 	}
 	
 	public void setEditable(boolean editable){
-		thinlet.setEditableRecursively(getThinletPanel(), editable);
+		thinlet.setEditable(getThinletPanel(), editable);
 	}
 	
 	public void setEnabled(boolean editable){
