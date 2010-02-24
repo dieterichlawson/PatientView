@@ -1,6 +1,10 @@
-# build files
-*.class
+# Files excluded from git tracking
+
+# maven build directory
+target/
 
 # eclipse files
+bin/
 .classpath
 .project
+.settings
