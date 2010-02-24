@@ -3,16 +3,18 @@ package net.frontlinesms.plugins.patientview.ui.administration.people;
 import java.util.List;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
-import net.frontlinesms.plugins.patientview.ui.PersonPanel;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate;
+import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
+import net.frontlinesms.plugins.patientview.ui.AdvancedTableDataSource;
+import net.frontlinesms.plugins.patientview.ui.PersonPanel;
 import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
 
-public abstract class PersonAdministrationPanelController<E extends Person> implements AdministrationTabPanel, ThinletUiEventHandler, AdvancedTableActionDelegate{
+public abstract class PersonAdministrationPanelController<E extends Person> implements AdministrationTabPanel, ThinletUiEventHandler, 
+														AdvancedTableActionDelegate,AdvancedTableDataSource{
 
 	/**
 	 * The main panel of the person administration screen
@@ -29,6 +31,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	private static final String REMOVE_BUTTON = "removebutton";
 	private static final String EDIT_BUTTON = "editbutton";
 	private static final String FIELDS_PANEL = "fieldspanel";
+	private static final String SEARCH_FIELD = "searchbox";
 	
 	
 	private String UI_FILE_MANAGE_PERSON_PANEL = "/ui/plugins/patientview/admintab/search_action_panel.xml";
@@ -42,8 +45,8 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 
 	private void init(){
 		mainPanel = uiController.loadComponentFromFile(UI_FILE_MANAGE_PERSON_PANEL,this);
-		advancedTableController = new AdvancedTableController(this,uiController,true);
 		advancedTable = uiController.find(mainPanel,RESULTS_TABLE);
+		advancedTableController = new AdvancedTableController(this,uiController,true,appCon,this);
 		putHeader();
 		uiController.setText(uiController.find(mainPanel,ADD_BUTTON), "Add " + getPersonType());
 		uiController.setText(uiController.find(mainPanel,REMOVE_BUTTON), "Remove " + getPersonType());
@@ -106,7 +109,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	 */
 	public void search(String text){
 		advancedTableController.setResults(getPeopleForString(text));
-		advancedTableController.setSelected(1);
+		advancedTableController.setSelected(0);
 	}
 	
 	/** @see net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate#doubleClickAction(java.lang.Object)*/
@@ -114,4 +117,11 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	
 	/** @see net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate#resultsChanged() */
 	public void resultsChanged() {/*do nothing*/}
+	
+	/**
+	 * @see net.frontlinesms.plugins.patientview.ui.AdvancedTableDataSource#refreshResults()
+	 */
+	public void refreshResults(){
+		advancedTableController.setResults(getPeopleForString(uiController.getText(uiController.find(mainPanel, SEARCH_FIELD))));
+	}
 }

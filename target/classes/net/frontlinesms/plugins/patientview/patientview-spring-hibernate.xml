@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+							http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
+							http://www.springframework.org/schema/tx		http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+							">
+
+	<!-- turn on annotation support -->
+	<context:annotation-config />
+	<tx:annotation-driven />
+	
+	<bean id="CHWDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateCommunityHealthWorkerDao" parent="baseHibernateDao"/>
+
+	<bean id="PatientDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernatePatientDao" parent="baseHibernateDao"/>
+	<bean id="UserDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateUserDao" parent="baseHibernateDao"/>
+	<bean id="MedicFieldDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFieldDao" parent="baseHibernateDao"/>
+	<bean id="MedicFormDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormDao" parent="baseHibernateDao"/>
+	<bean id="MedicFormFieldDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormFieldDao" parent="baseHibernateDao"/>
+	<bean id="MedicFieldResponseDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFieldResponseDao" parent="baseHibernateDao"/>
+	<bean id="MedicFormResponseDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormResponseDao" parent="baseHibernateDao"/>
+	<bean id="MedicMessageResponseDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicMessageResponseDao" parent="baseHibernateDao"/>
+	<bean id="ResponseDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateResponseDao" parent="baseHibernateDao"/>
+	<bean id="TagDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateTagDao" parent="baseHibernateDao"/>
+	<bean id="TagKeywordDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateTagKeywordDao" parent="baseHibernateDao"/>
+	<bean id="HistoryEntryDao"
+		class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateHistoryEntryDao" parent="baseHibernateDao"/>
+</beans>

@@ -13,9 +13,13 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import net.frontlinesms.events.EventNotifier;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEvent;
+import net.frontlinesms.events.impl.DidUpdateNotification;
 import net.frontlinesms.ui.UiGeneratorController;
+
+import org.springframework.context.ApplicationContext;
 
 public class AdvancedTableController implements EventObserver{
 	
@@ -54,15 +58,41 @@ public class AdvancedTableController implements EventObserver{
 	public AdvancedTableController(AdvancedTableActionDelegate delegate, UiGeneratorController uiController, boolean useTableMethod){
 		this.uiController = uiController;
 		this.useTableMethod = useTableMethod;
+		this.delegate = delegate;
 		if(!useTableMethod){
 			table = uiController.create("table");
-			uiController.setAction(table, "tableSelectionChange()", null, this);
-			uiController.setPerform(table, "doubleClick()",null,this);
 			uiController.setInteger(table, "weightx", 1);
 			uiController.setInteger(table, "weighty", 1);
 		}
+		uiController.setAction(getTable(), "tableSelectionChange()", null, this);
+		uiController.setPerform(getTable(), "doubleClick()",null,this);
+		uiController.setChoice(getTable(), "selection", "single");
 		headers = new HashMap<Class, Object>();
+		
+		//initialize stuff for determining font width
+		icon = new ImageIcon();
+		icon.setImage(new BufferedImage(10,10,BufferedImage.OPAQUE));
+		graphics = icon.getImage().getGraphics();
+		font= new Font("Sans Serif",Font.PLAIN,14);
+		metrics = graphics.getFontMetrics(font);
+	}
+	
+	public AdvancedTableController(AdvancedTableActionDelegate delegate, UiGeneratorController uiController, boolean useTableMethod, ApplicationContext appcon, AdvancedTableDataSource dataSource){
+		this.uiController = uiController;
+		this.useTableMethod = useTableMethod;
+		((EventNotifier) appcon.getBean("eventNotifier")).registerObserver(this);
+		this.dataSource = dataSource;
 		this.delegate = delegate;
+		if(!useTableMethod){
+			table = uiController.create("table");
+			uiController.setInteger(table, "weightx", 1);
+			uiController.setInteger(table, "weighty", 1);
+		}
+		uiController.setAction(getTable(), "tableSelectionChange()", null, this);
+		uiController.setPerform(getTable(), "doubleClick()",null,this);
+		uiController.setChoice(getTable(), "selection", "single");
+		headers = new HashMap<Class, Object>();
+		
 		//initialize stuff for determining font width
 		icon = new ImageIcon();
 		icon.setImage(new BufferedImage(10,10,BufferedImage.OPAQUE));
@@ -227,8 +257,7 @@ public class AdvancedTableController implements EventObserver{
 	
 	public Object getTable(){
 		if(useTableMethod){
-			Object table = delegate.getTable();
-			return table;
+			return delegate.getTable();
 		}else{
 			return table;
 		}
@@ -264,6 +293,12 @@ public class AdvancedTableController implements EventObserver{
 	}
 
 	public void notify(FrontlineEvent event) {
-
+		if(event instanceof DidUpdateNotification){
+			if(dataSource !=null){
+				int selectedIndex = uiController.getSelectedIndex(getTable());
+				dataSource.refreshResults();
+				uiController.setSelectedIndex(getTable(), selectedIndex);
+			}
+		}
 	}
 }
