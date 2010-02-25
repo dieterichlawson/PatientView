@@ -1,10 +1,12 @@
-package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
+package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
 import java.util.Date;
 
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class BirthdateField extends DateField{
+public class BirthdateField extends DateField implements PersonalFormField{
 	
 	protected boolean hasChanged;
 	public static final String NAME = "birthDatefield";
@@ -32,6 +34,10 @@ public class BirthdateField extends DateField{
 	public void showDateSelector(){
 		hasChanged = true;
 		super.showDateSelector();
+	}
+
+	public void setFieldForPerson(Person p) {
+		p.setBirthdate(getDateResponse());
 	}
 
 }

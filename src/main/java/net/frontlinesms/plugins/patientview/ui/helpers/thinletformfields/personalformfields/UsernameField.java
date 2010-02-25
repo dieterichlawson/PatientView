@@ -1,11 +1,14 @@
-package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
+package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateUserDao;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
 import net.frontlinesms.ui.ExtendedThinlet;
 
 import org.springframework.context.ApplicationContext;
 
-public class UsernameField extends TextBox{
+public class UsernameField extends TextBox implements PersonalFormField{
 
 	private Object picture;
 	public static final String NAME = "usernameField";
@@ -61,5 +64,13 @@ public class UsernameField extends TextBox{
 	
 	public boolean hasChanged(){
 		return hasChanged;
+	}
+
+	public void setFieldForPerson(Person p) {
+		User u;
+		try{
+			u = (User) p;
+		}catch(Throwable t){return;}
+		u.setUsername(getRawResponse());
 	}
 }

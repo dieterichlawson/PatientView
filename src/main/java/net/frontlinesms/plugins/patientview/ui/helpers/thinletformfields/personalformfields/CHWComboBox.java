@@ -1,14 +1,17 @@
-package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
+package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
 import java.util.Collection;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
+import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateCommunityHealthWorkerDao;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.ui.ExtendedThinlet;
 
 import org.springframework.context.ApplicationContext;
 
-public class CHWComboBox extends ThinletFormField<CommunityHealthWorker>{
+public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> implements PersonalFormField{
 	
 	private CommunityHealthWorker response;
 	private Object comboBox;
@@ -107,6 +110,14 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker>{
 		}else{
 			return null;
 		}
+	}
+
+	public void setFieldForPerson(Person p) {
+		Patient pat;
+		try{
+			pat = (Patient) p;
+		}catch(Throwable t){return;}
+		pat.setChw(getRawResponse());
 	}
 	
 }

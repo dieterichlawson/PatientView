@@ -1,8 +1,10 @@
-package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
+package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class NameField extends TextBox{
+public class NameField extends TextBox implements PersonalFormField{
 
 	protected boolean hasChanged;
 	public static final String NAME = "nameField";
@@ -23,6 +25,10 @@ public class NameField extends TextBox{
 	
 	public boolean hasChanged(){
 		return hasChanged;
+	}
+
+	public void setFieldForPerson(Person p) {
+		p.setName(getRawResponse());
 	}
 
 }

@@ -1,9 +1,11 @@
-package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
+package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class GenderComboBox extends ThinletFormField<Gender>{
+public class GenderComboBox extends ThinletFormField<Gender> implements PersonalFormField{
 
 	protected Object comboBox;
 	protected boolean hasChanged;
@@ -65,5 +67,9 @@ public class GenderComboBox extends ThinletFormField<Gender>{
 	public void setResponse(String response) {
 		if(Gender.getGenderForName(response) != null)
 			setRawResponse(Gender.getGenderForName(response));
+	}
+
+	public void setFieldForPerson(Person p) {
+		p.setGender(getRawResponse());
 	}
 }

@@ -1,9 +1,12 @@
-package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
+package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.ui.ExtendedThinlet;
 
-public class RoleComboBox extends ThinletFormField<Role>{
+public class RoleComboBox extends ThinletFormField<Role> implements PersonalFormField{
 
 	protected Object comboBox;
 	protected boolean hasChanged;
@@ -59,6 +62,16 @@ public class RoleComboBox extends ThinletFormField<Role>{
 		if(Role.getRoleForName(response) != null)
 			setRawResponse(Role.getRoleForName(response));
 	}
-	
-	
+
+	/**
+	 * sets the role of the person passed in, if it is a User
+	 * @see net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PersonalFormField#setFieldForPerson(net.frontlinesms.plugins.patientview.data.domain.people.Person)
+	 */
+	public void setFieldForPerson(Person p) {
+		User user;
+		try{
+			user = (User) p;
+		}catch(Throwable t){ return;}
+		user.setRole(getRawResponse());
+	}
 }
