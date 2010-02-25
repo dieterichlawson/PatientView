@@ -47,13 +47,16 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 		PatientAdministrationPanelController patientAdmin = new PatientAdministrationPanelController(uiController,appCon);
 		CommunityHealthWorkerAdministrationPanelController chwAdmin = new CommunityHealthWorkerAdministrationPanelController(uiController,appCon);
 		UserAdministrationPanelController userAdmin = new UserAdministrationPanelController(uiController,appCon);
+		//FormAdministrationPanelController formAdmin = new FormAdministrationPanelController(uiController,appCon);
 		Object managePatientsChoice = uiController.createListItem(patientAdmin.getListItemTitle(), patientAdmin.getPanel());
 		Object manageCHWsChoice = uiController.createListItem(chwAdmin.getListItemTitle(), chwAdmin.getPanel());
 		Object manageUsersChoice = uiController.createListItem(userAdmin.getListItemTitle(), userAdmin.getPanel());
+		//Object manageFormChoice = uiController.createListItem(formAdmin.getListItemTitle(),formAdmin.getPanel());
 		//add the choices to the list
 		uiController.add(actionList, managePatientsChoice);
 		uiController.add(actionList, manageCHWsChoice);
 		uiController.add(actionList, manageUsersChoice);	
+		//uiController.add(actionList,manageFormChoice);
 		setSelection(0);
 	}
 
