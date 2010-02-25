@@ -17,11 +17,11 @@ import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.CheckBo
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.NumericTextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.PasswordTextField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.PhoneNumberField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextArea;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TimeField;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PhoneNumberField;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.ThinletUiEventHandler;
