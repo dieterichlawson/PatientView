@@ -35,11 +35,14 @@ import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.CheckBo
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.NumericTextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.PasswordTextField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.PhoneNumberField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextArea;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TimeField;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PhoneNumberField;
+import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
+import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
+import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
@@ -305,7 +308,6 @@ public class DetailedViewController implements ThinletUiEventHandler{
 		uiController.setName(panel,"buttonPanel");
 		uiController.setInteger(panel, "columns", 2);
 		uiController.add(panel,getEditDataButton(p));
-		uiController.add(panel,getEditViewButton());
 		uiController.setInteger(panel, "weightx", 1);
 		uiController.setInteger(panel, "weighty", 1);
 		uiController.setChoice(panel, "valign", "bottom");
@@ -320,11 +322,16 @@ public class DetailedViewController implements ThinletUiEventHandler{
 	 */
 	private void addPersonPanel(Person p, boolean makeCurrentPersonPanel){
 		//add the proper panel
-		PersonPanel personPanel= new PersonPanel(uiController,p,appContext);
-		if(makeCurrentPersonPanel){
-			currentPersonPanel = personPanel;
+		PersonPanel pp = null;
+		if(p instanceof Patient){
+			 pp = new PatientPanel(uiController,appContext,(Patient) p);
+		}else if(p instanceof CommunityHealthWorker){
+			 pp = new CommunityHealthWorkerPanel(uiController,appContext,(CommunityHealthWorker) p);
 		}
-		uiController.add(detailPanel,personPanel.getMainPanel());	
+		if(makeCurrentPersonPanel){
+			currentPersonPanel = pp;
+		}
+		uiController.add(detailPanel,pp.getMainPanel());	
 	}
 
 	private void switchToCHWPanel(CommunityHealthWorker chw){
