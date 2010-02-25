@@ -6,8 +6,8 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableDataSource;
-import net.frontlinesms.plugins.patientview.ui.PersonPanel;
 import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabPanel;
+import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
@@ -20,7 +20,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	 * The main panel of the person administration screen
 	 */
 	private Object mainPanel;
-	private UiGeneratorController uiController;
+	protected UiGeneratorController uiController;
 	protected ApplicationContext appCon;
 	protected AdvancedTableController advancedTableController;
 	private Object advancedTable;
@@ -48,15 +48,23 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 		advancedTable = uiController.find(mainPanel,RESULTS_TABLE);
 		advancedTableController = new AdvancedTableController(this,uiController,true,appCon,this);
 		putHeader();
+		uiController.setText(uiController.find(mainPanel,"titleLabel"), "Manage "+ getPersonType() + "s");
 		uiController.setText(uiController.find(mainPanel,ADD_BUTTON), "Add " + getPersonType());
 		uiController.setText(uiController.find(mainPanel,REMOVE_BUTTON), "Remove " + getPersonType());
 		uiController.setText(uiController.find(mainPanel,EDIT_BUTTON), "Edit " + getPersonType());
 		uiController.setAction(uiController.find(mainPanel,EDIT_BUTTON), "editButtonClicked()", null, this);
+		uiController.setAction(uiController.find(mainPanel,ADD_BUTTON), "addButtonClicked()", null, this);
 		search("");
 	}
 	
 	public void editButtonClicked(){
 		currentPersonPanel.switchToEditingPanel();
+	}
+	
+	public void addButtonClicked(){
+		currentPersonPanel = getPersonPanelForPerson(null);
+		uiController.removeAll(uiController.find(mainPanel,FIELDS_PANEL));
+		uiController.add(uiController.find(mainPanel,FIELDS_PANEL), currentPersonPanel.getMainPanel());
 	}
 	
 	/**
@@ -74,6 +82,12 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	 * @return an arraylist of people for the search string s
 	 */
 	protected abstract List<E> getPeopleForString(String s);
+	
+	/**
+	 * @param person
+	 * @return A person panel of the proper type for the parameter
+	 */
+	protected abstract PersonPanel getPersonPanelForPerson(Person person);
 
 	/**
 	 * Used by the administration tab to get the main panel
@@ -96,12 +110,12 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	 * @see net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate#selectionChanged(java.lang.Object)
 	 */
 	public void selectionChanged(Object selectedObject) {
-		PersonPanel<E> panel = new PersonPanel<E>(uiController,(E) selectedObject,appCon);
+		currentPersonPanel = getPersonPanelForPerson((Person) selectedObject);
 		uiController.removeAll(uiController.find(mainPanel,FIELDS_PANEL));
-		uiController.add(uiController.find(mainPanel,FIELDS_PANEL), panel.getMainPanel());
-		currentPersonPanel = panel;
+		uiController.add(uiController.find(mainPanel,FIELDS_PANEL), currentPersonPanel.getMainPanel());
+		
 	}
-	
+
 	/**
 	 * Called when text in the search box changes. Should
 	 * initiate the placement of the proper results in the results table

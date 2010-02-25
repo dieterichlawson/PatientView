@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
+import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
+import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
@@ -12,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 public class PatientAdministrationPanelController extends PersonAdministrationPanelController<Patient> {
 
 	private PatientDao patientDao;
+	
 	public PatientAdministrationPanelController(UiGeneratorController uiController, ApplicationContext appCon) {
 		super(uiController, appCon);	
 	}
@@ -36,6 +40,11 @@ public class PatientAdministrationPanelController extends PersonAdministrationPa
 
 	public String getListItemTitle() {
 		return "Manage Patients";
+	}
+
+	@Override
+	protected PersonPanel getPersonPanelForPerson(Person person) {
+		return new PatientPanel(uiController,appCon,(Patient) person);
 	}
 
 }

@@ -2,6 +2,7 @@ package net.frontlinesms.plugins.patientview.ui.administration;
 
 import java.util.Map;
 
+import net.frontlinesms.plugins.patientview.ui.administration.forms.FormAdministrationPanelController;
 import net.frontlinesms.plugins.patientview.ui.administration.people.CommunityHealthWorkerAdministrationPanelController;
 import net.frontlinesms.plugins.patientview.ui.administration.people.PatientAdministrationPanelController;
 import net.frontlinesms.plugins.patientview.ui.administration.people.UserAdministrationPanelController;

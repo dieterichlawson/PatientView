@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
+import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
+import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
@@ -37,6 +40,11 @@ public class CommunityHealthWorkerAdministrationPanelController extends PersonAd
 
 	public String getListItemTitle() {
 		return "Manage CHWs";
+	}
+
+	@Override
+	protected PersonPanel getPersonPanelForPerson(Person person) {
+		return new CommunityHealthWorkerPanel(uiController,appCon,(CommunityHealthWorker) person);
 	}
 
 }

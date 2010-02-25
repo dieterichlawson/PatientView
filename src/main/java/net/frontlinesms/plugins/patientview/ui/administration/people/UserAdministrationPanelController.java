@@ -3,8 +3,11 @@ package net.frontlinesms.plugins.patientview.ui.administration.people;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
+import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
+import net.frontlinesms.plugins.patientview.ui.personpanel.UserPanel;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
@@ -37,6 +40,11 @@ public class UserAdministrationPanelController extends PersonAdministrationPanel
 
 	public String getListItemTitle() {
 		return "Manage Users";
+	}
+
+	@Override
+	protected PersonPanel getPersonPanelForPerson(Person person) {
+		return new UserPanel(uiController,appCon,(User) person);
 	}
 
 }
