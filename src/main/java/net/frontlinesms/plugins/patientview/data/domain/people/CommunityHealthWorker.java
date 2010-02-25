@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import net.frontlinesms.data.DuplicateKeyException;
 import net.frontlinesms.data.domain.Contact;
 
 @Entity
@@ -19,7 +20,7 @@ public class CommunityHealthWorker extends Person {
 	@JoinColumn(name = "contact_id")
 	private Contact contactInfo;
 	
-	CommunityHealthWorker() {}
+	public CommunityHealthWorker() {}
 
 	public CommunityHealthWorker(String name,String phoneNumber, Gender gender, Date birthdate) {
 		super(name, gender, birthdate);
@@ -37,6 +38,20 @@ public class CommunityHealthWorker extends Person {
 	
 	public String getPhoneNumber(){
 		return contactInfo.getPhoneNumber();
+	}
+	
+	public void setPhoneNumber(String phoneNumber){
+		if (contactInfo == null){
+			contactInfo = new Contact(this.getName(),phoneNumber,null,null,null,true);
+		}else{
+			try {
+				contactInfo.setPhoneNumber(phoneNumber);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (DuplicateKeyException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

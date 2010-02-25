@@ -117,7 +117,9 @@ public abstract class Person{
 	}
 
 	public void setName(String name) {
-		HistoryManager.logNameChange(this, name);
+		try{
+			HistoryManager.logNameChange(this, name);
+		}catch(Exception e){}
 		this.name = name;
 	}
 
@@ -126,7 +128,9 @@ public abstract class Person{
 	}
 
 	public void setBirthdate(Date birthdate) {
-		HistoryManager.logBirthdateChange(this,birthdate.toLocaleString());
+		try{
+			HistoryManager.logBirthdateChange(this,birthdate.toLocaleString());
+		}catch(Exception e){}
 		this.birthdate = birthdate.getTime();
 	}
 
@@ -135,7 +139,9 @@ public abstract class Person{
 	}
 
 	public void setGender(Gender gender) {
-		HistoryManager.logGenderChange(this, gender);
+		try{
+			HistoryManager.logGenderChange(this, gender);
+		}catch(Exception e){}
 		this.gender = gender;
 	}
 	
@@ -174,7 +180,9 @@ public abstract class Person{
 	 }
 
 	 public void setImage(BufferedImage image, String type) {
-		HistoryManager.logImageChange(this);
+		try{
+			HistoryManager.logImageChange(this);
+		}catch(Exception e){}
 	    unscaledImageContent = ImageUtils.getByteArrayForImage(ImageUtils.getLargeImage(image), type);
 	    thumbnailImageContent = ImageUtils.getByteArrayForImage(ImageUtils.getThumbnailImage(image), type);
 	 }

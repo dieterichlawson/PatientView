@@ -25,7 +25,7 @@ public class Patient extends Person {
 	/**
 	 * Empty constructor for Hibernate
 	 */
-	Patient(){}
+	public Patient(){}
 	
 	//FIXME:make all the columns in Person.java match up to this comment with how I'm describing the nullable and stuff
 	/**
@@ -49,7 +49,10 @@ public class Patient extends Person {
 		return chw.getName();
 	}
 	public void setChw(CommunityHealthWorker chw) {
-		HistoryManager.logCHWChange(this, chw);
+		try {
+			HistoryManager.logCHWChange(this, chw);
+		} catch (Exception e) {}
+		
 		this.chw = chw;
 	}
 	

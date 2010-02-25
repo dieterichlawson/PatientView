@@ -19,6 +19,10 @@ public class MedicFormField extends MedicField{
 	
 	private int position;
 	
+	/**
+	 * The mapping of this field to certain patient fields, to allow
+	 * for the matching of forms with their subjects
+	 */
 	@Enumerated(EnumType.STRING)
 	private PatientAttributeMapping mapping;
 	
