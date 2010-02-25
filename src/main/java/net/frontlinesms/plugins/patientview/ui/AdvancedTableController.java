@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import net.frontlinesms.events.EventNotifier;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEvent;
+import net.frontlinesms.events.impl.DidSaveNotification;
 import net.frontlinesms.events.impl.DidUpdateNotification;
 import net.frontlinesms.ui.UiGeneratorController;
 
@@ -293,7 +294,7 @@ public class AdvancedTableController implements EventObserver{
 	}
 
 	public void notify(FrontlineEvent event) {
-		if(event instanceof DidUpdateNotification){
+		if(event instanceof DidUpdateNotification || event instanceof DidSaveNotification){
 			if(dataSource !=null){
 				int selectedIndex = uiController.getSelectedIndex(getTable());
 				dataSource.refreshResults();
