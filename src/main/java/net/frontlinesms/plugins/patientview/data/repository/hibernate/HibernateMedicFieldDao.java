@@ -8,10 +8,11 @@ import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicField.PersonType;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFieldDao;
 
 import org.hibernate.Query;
 
-public class HibernateMedicFieldDao extends BaseHibernateDao<MedicField>{
+public class HibernateMedicFieldDao extends BaseHibernateDao<MedicField> implements MedicFieldDao{
 
 	private static final String dvFieldsForPersonQuery = "select distinct ff from MedicField ff, MedicFieldResponse mfr where ff.isDetailViewField=true and mfr.field = ff and mfr.subject.pid =";
 	
