@@ -4,7 +4,7 @@ package net.frontlinesms.plugins.patientview.ui;
 import java.util.Collection;
 import java.util.Date;
 
-import net.frontlinesms.plugins.patientview.data.domain.response.MedicFieldResponse;
+import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Millisecond;
@@ -21,7 +21,7 @@ public class ChartGenerator {
 	
 	public ChartGenerator(){}
 	
-	public static TimeSeriesCollection generateDataSet(Collection<MedicFieldResponse> responses, CalcType calcType, TimeSpan timeSpan,ChartType chartType){
+	public static TimeSeriesCollection generateDataSet(Collection<MedicFormFieldResponse> responses, CalcType calcType, TimeSpan timeSpan,ChartType chartType){
 		Date previousDate = null;
 		double currentTotal = 0;
 		double currentTotal2 = 0;
@@ -55,7 +55,7 @@ public class ChartGenerator {
 			
 		}
 		//iterate through all the responses
-		for(MedicFieldResponse mfr: responses){
+		for(MedicFormFieldResponse mfr: responses){
 			//you do the calculations different for numbers and boolean types
 			if (chartType == ChartType.NUMBER) {
 				if (isDifferent(mfr.getDateSubmitted(), previousDate, timeSpan)) {

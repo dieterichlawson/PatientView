@@ -10,11 +10,11 @@ public class FieldBreadCrumb extends BreadCrumb {
 
 	private MedicField field;
 
-	private static final String patientQuery = "select distinct p from Patient p, MedicFieldResponse mfieldr where p = mfieldr.subject and mfieldr.field.fid=";
+	private static final String patientQuery = "select distinct p from Patient p, MedicFormFieldResponse mfieldr where p = mfieldr.subject and mfieldr.field.fid=";
 
-	private static final String chwQuery = "select distinct chw from CommunityHealthWorker chw, MedicFieldResponse mfieldr where chw = mfieldr.submitter and mfieldr.field.fid=";
+	private static final String chwQuery = "select distinct chw from CommunityHealthWorker chw, MedicFormFieldResponse mfieldr where chw = mfieldr.submitter and mfieldr.field.fid=";
 	
-	private static final String fieldResponseQuery = "select mfieldr from MedicFieldResponse mfieldr where mfieldr.field.fid =";
+	private static final String fieldResponseQuery = "select mfieldr from MedicFormFieldResponse mfieldr where mfieldr.field.fid =";
 	
 	public FieldBreadCrumb(MedicField field) {
 		restrictedEntities = new ArrayList<EntityType>();
@@ -35,9 +35,9 @@ public class FieldBreadCrumb extends BreadCrumb {
 	@Override
 	public String getQueryForEntityType(EntityType e) {
 		if (e == EntityType.PATIENT) {
-			return patientQuery + field.getFid();
+			return patientQuery + field.getAid();
 		} else if (e == EntityType.CHW) {
-			return chwQuery + field.getFid();
+			return chwQuery + field.getAid();
 		}
 		return null;
 	}
@@ -45,7 +45,7 @@ public class FieldBreadCrumb extends BreadCrumb {
 	@Override
 	public String getResponseQueryForEntityType(EntityType e) {
 		if(e == EntityType.FIELD){
-			return fieldResponseQuery + field.getFid();
+			return fieldResponseQuery + field.getAid();
 		}
 		return null;
 	}

@@ -24,7 +24,7 @@ public class QueryConstants {
 	private static final String messageTableName = "MedicMessageResponse";
 	private static final String messageTableAlias = "mmr";
 	
-	private static final String fieldResponseTableName = "MedicFieldResponse";
+	private static final String fieldResponseTableName = "MedicFormFieldResponse";
 	private static final String fieldResponseTableAlias = "mfieldr";
 	
 	private static final String formResponseTableName = "MedicFormResponse";

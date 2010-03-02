@@ -10,11 +10,11 @@ public class CommunityHealthWorkerBreadCrumb extends BreadCrumb {
 	
 	private static final String formResponseQuery = "select mformr from MedicFormResponse mformr, CommunityHealthWorker chw where mformr.submitter = chw and chw.pid =";
 	
-	private static final String fieldResponseQuery = "select mfieldr from MedicFieldResponse mfieldr where mfieldr.submitter.pid =";
+	private static final String fieldResponseQuery = "select mfieldr from MedicFormFieldResponse mfieldr where mfieldr.submitter.pid =";
 	
 	private static final String patientQuery = "select p from Patient p, CommunityHealthWorker chw where p.chw = chw and chw.pid =";
 	
-	private static final String fieldQuery = "select distinct ff from MedicField ff, MedicFieldResponse mfieldr where mfieldr.field = ff and mfieldr.submitter.pid =";
+	private static final String fieldQuery = "select distinct ff from PersonAttribute ff, MedicFormFieldResponse mfieldr where mfieldr.field = ff and mfieldr.submitter.pid =";
 	
 	private static final String formQuery = "select distinct ff from MedicForm ff, MedicFormResponse mformr where mformr.form = ff and mformr.submitter.pid =";
 	
