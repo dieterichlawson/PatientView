@@ -1,6 +1,3 @@
-#build files
-*.class
-
 # Files excluded from git tracking
 
 # maven build directory
