@@ -1,4 +1,4 @@
-package net.frontlinesms.plugins.patientview.ui.administration.forms;
+package net.frontlinesms.plugins.patientview.ui.administration;
 
 import java.util.Collection;
 
@@ -6,9 +6,9 @@ import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.forms.data.repository.FormDao;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
-import net.frontlinesms.plugins.patientview.data.repository.MedicFieldDao;
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField.PatientFieldMapping;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
-import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabPanel;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
@@ -37,11 +37,14 @@ public class FormAdministrationPanelController implements
 	/** The panel that displays information about the field that is selected in the field list*/
 	private Object fieldInfoPanel;
 	
+	/** The combo box that holds the choices for the form field -> patient field mapping*/
+	private Object mappingComboBox;
+	
 	
 	//Daos
 	FormDao frontlineFormDao;
 	MedicFormDao patientViewFormDao;
-	MedicFieldDao patientViewFieldDao;
+	MedicFormFieldDao patientViewFieldDao;
 	public String getListItemTitle() {
 		return InternationalisationUtils.getI18NString(FORM_PANEL_TITLE);
 	}
@@ -58,10 +61,11 @@ public class FormAdministrationPanelController implements
 		patientViewFormList = uiController.find(mainPanel,"patientViewFormList");
 		fieldList = uiController.find(mainPanel,"fieldList");
 		fieldInfoPanel = uiController.find(mainPanel,"fieldInfoPanel");
+		mappingComboBox = uiController.find(mainPanel,"mappingComboBox");
 		//initialize the daos
 		frontlineFormDao = (FormDao) appCon.getBean("formDao");
 		patientViewFormDao = (MedicFormDao) appCon.getBean("MedicFormDao");
-		patientViewFieldDao = (MedicFieldDao) appCon.getBean("MedicFieldDao");
+		patientViewFieldDao = (MedicFormFieldDao) appCon.getBean("MedicFormFieldDao");
 		//initialize the lists, etc..
 		populateFrontlineFormList();
 		populatePatientViewFormList();
@@ -76,6 +80,7 @@ public class FormAdministrationPanelController implements
 		Collection<Form> frontlineForms = frontlineFormDao.getAllForms();
 		Collection<MedicForm> pvForms = patientViewFormDao.getAllMedicForms();
 		for(MedicForm mf : pvForms){
+			patientViewFormDao.reattach(mf);
 			frontlineForms.remove(mf.getForm());
 		}
 		uiController.removeAll(frontlineFormList);
@@ -111,17 +116,54 @@ public class FormAdministrationPanelController implements
 	}
 	
 	/**
+	 * Called when the field list selection is changed.
+	 */
+	public void fieldListSelectionChanged(){
+		MedicFormField field = (MedicFormField) uiController.getAttachedObject(uiController.getSelectedItem(fieldList));
+		populateFieldMappingPanel(field);
+	}
+	
+	/**
 	 * Populates the field list with the fields of the form that is passed into
 	 * this method
 	 * @param form
 	 */
 	private void populateFieldList(MedicForm form){
 		uiController.removeAll(fieldList);
-		for(MedicFormField mff: form.getFields()){
+		for(MedicFormField mff: patientViewFieldDao.getFieldsOnForm(form)){
 			Object item = uiController.createListItem(mff.getLabel(), mff);
 			uiController.add(fieldList,item);
 		}
 		uiController.setSelectedIndex(fieldList, 0);
+	}
+	
+	/**
+	 * Called when the field selection is changed. Populates the field mapping panel 
+	 * with the combo box and selects the propper mapping choice based on the value stored
+	 * @param field
+	 */
+	private void populateFieldMappingPanel(MedicFormField field){
+		uiController.removeAll(mappingComboBox);
+		uiController.setAction(mappingComboBox, "mappingComboBoxSelectionChanged()", null, this);
+		for(PatientFieldMapping m : PatientFieldMapping.values()){
+			Object choice = uiController.createComboboxChoice(m.toString(), m);
+			uiController.add(mappingComboBox,choice);
+			if(field.getMapping() == m){
+				uiController.setSelectedItem(mappingComboBox, choice);
+				uiController.setText(mappingComboBox, m.toString());
+			}
+		}
+		uiController.add(mappingComboBox,uiController.createComboboxChoice("None",null));
+	}
+	
+	/**
+	 * Called when the mapping combo box selection is changed. It saves the new mapping selection
+	 */
+	public void mappingComboBoxSelectionChanged(){
+		PatientFieldMapping mapping = (PatientFieldMapping) uiController.getAttachedObject(uiController.getSelectedItem(mappingComboBox));
+		MedicFormField field = (MedicFormField) uiController.getAttachedObject(uiController.getSelectedItem(fieldList));
+		field.setMapping(mapping);
+		patientViewFieldDao.updateField(field);
 	}
 
 	public Object getPanel() {

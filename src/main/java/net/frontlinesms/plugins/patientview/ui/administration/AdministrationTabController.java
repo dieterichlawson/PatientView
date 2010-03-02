@@ -1,11 +1,5 @@
 package net.frontlinesms.plugins.patientview.ui.administration;
 
-import java.util.Map;
-
-import net.frontlinesms.plugins.patientview.ui.administration.forms.FormAdministrationPanelController;
-import net.frontlinesms.plugins.patientview.ui.administration.people.CommunityHealthWorkerAdministrationPanelController;
-import net.frontlinesms.plugins.patientview.ui.administration.people.PatientAdministrationPanelController;
-import net.frontlinesms.plugins.patientview.ui.administration.people.UserAdministrationPanelController;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
@@ -25,7 +19,7 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 	private static final String UI_FILE_MAINTAB =  "/ui/plugins/patientview/admintab/admin_tab.xml";
 	private static final String TASK_LIST = "tasklist";
 	private static final String SPLIT_PANEL = "splitpanel";
-	private static final String ACTION_PANEL = "actionpanel";
+	private static final String ACTION_PANEL = "actionPanel";
 		
 	UiGeneratorController uiController;
 	ApplicationContext appCon;
@@ -47,16 +41,19 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 		PatientAdministrationPanelController patientAdmin = new PatientAdministrationPanelController(uiController,appCon);
 		CommunityHealthWorkerAdministrationPanelController chwAdmin = new CommunityHealthWorkerAdministrationPanelController(uiController,appCon);
 		UserAdministrationPanelController userAdmin = new UserAdministrationPanelController(uiController,appCon);
-		//FormAdministrationPanelController formAdmin = new FormAdministrationPanelController(uiController,appCon);
+		FormAdministrationPanelController formAdmin = new FormAdministrationPanelController(uiController,appCon);
+		AttributeAdministrationPanelController attributeAdmin = new AttributeAdministrationPanelController(uiController,appCon);
 		Object managePatientsChoice = uiController.createListItem(patientAdmin.getListItemTitle(), patientAdmin.getPanel());
 		Object manageCHWsChoice = uiController.createListItem(chwAdmin.getListItemTitle(), chwAdmin.getPanel());
 		Object manageUsersChoice = uiController.createListItem(userAdmin.getListItemTitle(), userAdmin.getPanel());
-		//Object manageFormChoice = uiController.createListItem(formAdmin.getListItemTitle(),formAdmin.getPanel());
+		Object manageFormChoice = uiController.createListItem(formAdmin.getListItemTitle(),formAdmin.getPanel());
+		Object manageAttributeChoice = uiController.createListItem(attributeAdmin.getListItemTitle(), attributeAdmin.getPanel());
 		//add the choices to the list
 		uiController.add(actionList, managePatientsChoice);
 		uiController.add(actionList, manageCHWsChoice);
 		uiController.add(actionList, manageUsersChoice);	
-		//uiController.add(actionList,manageFormChoice);
+		uiController.add(actionList, manageAttributeChoice);
+		uiController.add(actionList,manageFormChoice);
 		setSelection(0);
 	}
 
@@ -67,15 +64,15 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 	
 	private void setSelection(int index){
 		Object panel = uiController.getAttachedObject(uiController.getItem(actionList, index));
-		uiController.remove(getActionPanel());
-		uiController.add(splitPanel, panel);
+		uiController.removeAll(getActionPanel());
+		uiController.add(getActionPanel(), panel);
 		uiController.setSelectedIndex(actionList, index);
 	}
 	
 	public void listSelectionChanged(){
 		Object panel = uiController.getAttachedObject(uiController.getSelectedItem(actionList));
-		uiController.remove(getActionPanel());
-		uiController.add(splitPanel, panel);
+		uiController.removeAll(getActionPanel());
+		uiController.add(getActionPanel(), panel);
 	}
 	
 	public Object getMainPanel(){

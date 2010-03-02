@@ -131,7 +131,7 @@ public class DetailedViewController implements ThinletUiEventHandler{
 		furtherOptionsPanel = uiController.find(controller.getTab(),"furtherOptionsPanel");
 		//initialize the daos
 		fieldResponseDao = (HibernateMedicFieldResponseDao) appContext.getBean("MedicFieldResponseDao");
-		fieldDao = (HibernateMedicFieldDao) appContext.getBean("MedicFieldDao");
+		fieldDao = (HibernateMedicFieldDao) appContext.getBean("MedicFormFieldDao");
 		chwDao = (CommunityHealthWorkerDao) appContext.getBean("CHWDao");
 		patientDao = (PatientDao) appContext.getBean("PatientDao");
 		
@@ -627,7 +627,7 @@ public class DetailedViewController implements ThinletUiEventHandler{
 		//next, check and save the detail view fields
 		for(ThinletFormField tff : dvResponseObjects){
 			if(tff.hasResponse() && tff.isValid()){
-					HistoryManager.logDetailViewChange((Person) currentEntity, tff.getField(), tff.getResponse());
+					HistoryManager.logAttributeChange((Person) currentEntity, tff.getField(), tff.getResponse());
 					MedicFieldResponse response = new MedicFieldResponse(tff.getResponse(),tff.getField(),(Person) currentEntity,
 							UserSessionManager.getUserSessionManager().getCurrentUser());
 					fieldResponseDao.saveMedicFieldResponse(response);

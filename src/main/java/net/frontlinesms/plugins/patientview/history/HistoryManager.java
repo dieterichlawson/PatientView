@@ -1,8 +1,8 @@
 package net.frontlinesms.plugins.patientview.history;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.HistoryEntry;
-import net.frontlinesms.plugins.patientview.data.domain.framework.MedicField;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
+import net.frontlinesms.plugins.patientview.data.domain.framework.PersonAttribute;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
@@ -61,8 +61,8 @@ public class HistoryManager {
 		logEntryWithCurrentUser(subject,message);
 	}
 	
-	public static void logDetailViewChange(Person subject, MedicField field, String newValue){
-		String message = "changed the detail view field labelled "+ field.getLabel() +" for " +subject.getName() + 
+	public static void logAttributeChange(Person subject, PersonAttribute attribute, String newValue){
+		String message = "changed the detail view field labelled "+ attribute.getLabel() +" for " +subject.getName() + 
 						 " to " + newValue;
 		logEntryWithCurrentUser(subject,message);
 	}
@@ -77,13 +77,8 @@ public class HistoryManager {
 		logEntryWithCurrentUser(subject,message);
 	}
 	
-	public static void logDetailViewFieldCreated(MedicField field){
-		String message = "a new detail view field was created for persontype " + field.getDetailViewPersonType() +", labelled "+ field.getLabel();
-		logEntryWithCurrentUser(null,message);
-	}
-	
-	public static void logDetailViewFieldRemoved(MedicField field){
-		String message = "a detail view field was deleted for persontype " + field.getDetailViewPersonType() +", labelled "+ field.getLabel();
+	public static void logAttributeCreated(PersonAttribute attribute){
+		String message = "a new detail view field was created for persontype " + attribute.getPersonType() +", labelled "+ attribute.getLabel();
 		logEntryWithCurrentUser(null,message);
 	}
 	

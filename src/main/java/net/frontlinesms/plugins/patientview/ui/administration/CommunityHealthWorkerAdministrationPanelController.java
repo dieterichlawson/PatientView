@@ -1,4 +1,4 @@
-package net.frontlinesms.plugins.patientview.ui.administration.people;
+package net.frontlinesms.plugins.patientview.ui.administration;
 
 import java.util.ArrayList;
 import java.util.List;

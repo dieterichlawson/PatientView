@@ -1,4 +1,4 @@
-package net.frontlinesms.plugins.patientview.ui.administration.people;
+package net.frontlinesms.plugins.patientview.ui.administration;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableDataSource;
-import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;

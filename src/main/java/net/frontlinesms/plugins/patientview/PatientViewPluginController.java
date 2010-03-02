@@ -27,22 +27,21 @@ import net.frontlinesms.plugins.forms.data.repository.FormDao;
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
-import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField.PatientAttributeMapping;
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField.PatientFieldMapping;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
-import net.frontlinesms.plugins.patientview.data.domain.response.MedicFieldResponse;
+import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
+import net.frontlinesms.plugins.patientview.data.repository.MedicMessageResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
-import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormDao;
+import net.frontlinesms.plugins.patientview.data.repository.UserDao;
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormResponseDao;
-import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicMessageResponseDao;
-import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateUserDao;
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.PatientViewThinletTabController;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
@@ -68,12 +67,12 @@ public class PatientViewPluginController extends BasePluginController implements
 	private ApplicationContext applicationContext;
 	
 	/** Message Response Dao for saving message responses when they come in**/
-	HibernateMedicMessageResponseDao messageResponseDao;
+	MedicMessageResponseDao messageResponseDao;
 	/**Community Health worker dao for fetching CHWs**/
 	CommunityHealthWorkerDao chwDao;
 	PatientDao patientDao;
 	FormDao vanillaFormDao;
-	HibernateMedicFormDao formDao;
+	MedicFormDao formDao;
 	
 	/**the main panel of the box that is used to display progress about creating dummy data **/
 	Object mainPanel;
@@ -125,11 +124,11 @@ public class PatientViewPluginController extends BasePluginController implements
 		this.applicationContext = applicationContext;
 		UserSessionManager.getUserSessionManager().init(applicationContext);
 		HistoryManager.getHistoryManager().init(applicationContext);
-		messageResponseDao = (HibernateMedicMessageResponseDao) applicationContext.getBean("MedicMessageResponseDao");
+		messageResponseDao = (MedicMessageResponseDao) applicationContext.getBean("MedicMessageResponseDao");
 		chwDao = (CommunityHealthWorkerDao) applicationContext.getBean("CHWDao");
 		patientDao = (PatientDao) applicationContext.getBean("PatientDao");
 		vanillaFormDao = (FormDao) applicationContext.getBean("formDao");
-		formDao =(HibernateMedicFormDao) applicationContext.getBean("MedicFormDao");
+		formDao =(MedicFormDao) applicationContext.getBean("MedicFormDao");
 		
 		try {
 			testing();
@@ -137,7 +136,7 @@ public class PatientViewPluginController extends BasePluginController implements
 			log.warn("Unable to load Medic plugin", t);
 			throw new PluginInitialisationException(t);
 		}	
-		testFormHandling();
+	//	testFormHandling();
 	}
 
 	/**
@@ -233,8 +232,8 @@ public class PatientViewPluginController extends BasePluginController implements
 		ArrayList<MedicForm> forms = new ArrayList<MedicForm>();
 		// create new Patient Entry form
 		MedicForm f1 = new MedicForm("Patient Entry");
-		f1.addField(new MedicFormField(f1, DataType.TEXT_FIELD, "Patient Name", PatientAttributeMapping.NAMEFIELD));
-		f1.addField(new MedicFormField(f1, DataType.DATE_FIELD, "Patient Birthdate", PatientAttributeMapping.BIRTHDATEFIELD));
+		f1.addField(new MedicFormField(f1, DataType.TEXT_FIELD, "Patient Name", PatientFieldMapping.NAMEFIELD));
+		f1.addField(new MedicFormField(f1, DataType.DATE_FIELD, "Patient Birthdate", PatientFieldMapping.BIRTHDATEFIELD));
 		f1.addField(new MedicFormField(f1, DataType.TEXT_FIELD, "Patient Gender"));
 		f1.addField(new MedicFormField(f1, DataType.TEXT_FIELD, "Patient Height"));
 		f1.addField(new MedicFormField(f1, DataType.TRUEFALSE, "Patient HIV Status"));
@@ -372,36 +371,36 @@ public class PatientViewPluginController extends BasePluginController implements
 				Patient p = ps.get(rand.nextInt(ps.size()));
 				CommunityHealthWorker  chw = p.getChw();
 				//generate response values
-				List<MedicFieldResponse> rvs = new ArrayList<MedicFieldResponse>();
+				List<MedicFormFieldResponse> rvs = new ArrayList<MedicFormFieldResponse>();
 				for (MedicFormField ff : f.getFields()) {
 					//if the field is a checkbox, randomly answer yes and no
 					if (ff.getDatatype() == DataType.CHECK_BOX) {
-						rvs.add(new MedicFieldResponse(new Boolean(rand
+						rvs.add(new MedicFormFieldResponse(new Boolean(rand
 								.nextBoolean()).toString(), ff,p,chw));
 					} else if (ff.getDatatype() == DataType.TEXT_FIELD) {
 						if (ff.getLabel().equals("Patient Name")) {
-							rvs.add(new MedicFieldResponse(p.getName(), ff,p,chw));
+							rvs.add(new MedicFormFieldResponse(p.getName(), ff,p,chw));
 						} else {
-							rvs.add(new MedicFieldResponse("response for text field",ff,p,chw));
+							rvs.add(new MedicFormFieldResponse("response for text field",ff,p,chw));
 						}
 					} else if (ff.getDatatype() == DataType.TEXT_AREA) {
-						rvs.add(new MedicFieldResponse(
+						rvs.add(new MedicFormFieldResponse(
 								"I'm entering additional notes for a text area", ff,p,chw));
 					} else if (ff.getDatatype() == DataType.DATE_FIELD) {
 						if (ff.getLabel().equals("Patient Birthdate")) {
-							rvs.add(new MedicFieldResponse(p.getBirthdate().toString(), ff,p,chw));
+							rvs.add(new MedicFormFieldResponse(p.getBirthdate().toString(), ff,p,chw));
 						} else {
-							rvs.add(new MedicFieldResponse(getRandomDate().toString(), ff,p,chw));
+							rvs.add(new MedicFormFieldResponse(getRandomDate().toString(), ff,p,chw));
 						}
 					}else if(ff.getDatatype() == DataType.NUMERIC_TEXT_FIELD){
-						rvs.add(new MedicFieldResponse(rand.nextInt(500)+"" , ff,p,chw));	
+						rvs.add(new MedicFormFieldResponse(rand.nextInt(500)+"" , ff,p,chw));	
 					}
 				}
 				
 				MedicFormResponse fr = new MedicFormResponse(f, rvs,chw,p);
 				Date dsumbitted= getRandomDate();
 				fr.setDateSubmitted(dsumbitted);
-				for(MedicFieldResponse mfr: fr.getResponses()){
+				for(MedicFormFieldResponse mfr: fr.getResponses()){
 					mfr.setDateSubmitted(dsumbitted);
 				}
 				fresponses.add(fr);
@@ -479,7 +478,7 @@ public class PatientViewPluginController extends BasePluginController implements
 		User user = new User("Alex Harsha",Gender.FEMALE, new Date(),"aHarsha","medic",Role.ADMIN);
 		User user2 = new User("Aisha Moniba ",Gender.FEMALE, new Date(),"aMoniba","medic",Role.READWRITE);
 		User user3 = new User("Daniel Kayiwa ",Gender.MALE, new Date(),"dKayiwa","medic",Role.READ);
-		HibernateUserDao userDao = (HibernateUserDao) applicationContext.getBean("UserDao");
+		UserDao userDao = (UserDao) applicationContext.getBean("UserDao");
 		userDao.saveUser(user);
 		userDao.saveUser(user2);
 		userDao.saveUser(user3);
@@ -547,7 +546,7 @@ public class PatientViewPluginController extends BasePluginController implements
 	public void testFormHandling(){
 		try{
 		Message mess = Message.createIncomingMessage(24342, "2088473937", "234234234", "wtf mate");
-		Form parentForm = formDao.getMedicFormsForString("Patient Entry").iterator().next().getForm();
+		Form parentForm = formDao.getMedicFormsByName("Patient Entry").iterator().next().getForm();
 		List<ResponseValue> rvs = new ArrayList<ResponseValue>();
 		rvs.add(new ResponseValue("drew Chavez"));
 		rvs.add(new ResponseValue("06/23/1970"));
@@ -586,19 +585,19 @@ public class PatientViewPluginController extends BasePluginController implements
 		//e.g. Birthdate, Name, and Patient ID
 		for(MedicFormField formField : mForm.getFields()){
 			//if it is mapped to a namefield, score it as a name
-			if(formField.getMapping() == PatientAttributeMapping.NAMEFIELD){
+			if(formField.getMapping() == PatientFieldMapping.NAMEFIELD){
 				for(int i = 0; i < patients.size(); i++){
 					scores[i] += scoreName(patients.get(i).getName(),formResponse.getResults().get(formField.getPosition()).toString());
 				}
 				numberOfFields++;
 			//if it is mapped to an id field, score it as an ID
-			}else if(formField.getMapping() == PatientAttributeMapping.IDFIELD){
+			}else if(formField.getMapping() == PatientFieldMapping.IDFIELD){
 				for(int i = 0; i < patients.size(); i++){
 					scores[i] += getEditDistance(patients.get(i).getStringID(),formResponse.getResults().get(formField.getPosition()).toString());
 				}
 				numberOfFields++;
 			//if it is mapped as a bday field, score it as a bday
-			}else if(formField.getMapping() == PatientAttributeMapping.BIRTHDATEFIELD){
+			}else if(formField.getMapping() == PatientFieldMapping.BIRTHDATEFIELD){
 				float[] dateScores = getCombinedBirthdateDistances(patients,formResponse.getResults().get(formField.getPosition()).toString());
 				for(int i = 0; i < dateScores.length; i++){
 					scores[i] += dateScores[i] * 0.6f;
