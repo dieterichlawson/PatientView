@@ -15,6 +15,7 @@ public class PatientPanel extends PersonPanel<Patient> {
 	private static final String EDIT_PATIENT= "personpanel.labels.edit.patient";
 	private static final String ADD_PATIENT = "personpanel.labels.add.a.patient";
 	private static final String CHW_FIELD = "medic.common.chw";
+	private static final String DEMO_CHW = "editdetailview.demo.chw";
 	private PatientDao patientDao;
 	
 	/**
@@ -36,6 +37,14 @@ public class PatientPanel extends PersonPanel<Patient> {
 	public PatientPanel(UiGeneratorController uiController, ApplicationContext appCon, Patient p) {
 		super(uiController, appCon,p);
 		patientDao = (PatientDao) appCon.getBean("PatientDao");
+	}
+	
+	/**
+	 * Used for creating a demo panel
+	 * @param uiController
+	 */
+	public PatientPanel(UiGeneratorController uiController){
+		super(uiController);
 	}
 
 	/**
@@ -99,6 +108,11 @@ public class PatientPanel extends PersonPanel<Patient> {
 	@Override
 	protected String getAddingTitle() {
 		return InternationalisationUtils.getI18NString(ADD_PATIENT);
+	}
+
+	@Override
+	protected void addAdditionalDemoFields() {
+		addLabelToLabelPanel(getI18NString(CHW_FIELD) + ": " + getI18NString(DEMO_CHW));
 	}
 
 }

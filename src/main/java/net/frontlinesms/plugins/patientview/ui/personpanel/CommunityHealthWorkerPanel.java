@@ -14,6 +14,7 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	private static final String EDIT_CHW_DATA = "personpanel.labels.edit.chw";
 	private static final String ADD_CHW = "personpanel.labels.add.a.chw";
 	private static final String PHONE_NUMBER_FIELD = "medic.common.labels.phone.number";
+	private static final String DEMO_PHONE_NUMBER = "editdetailview.demo.phone.number";
 	
 	private CommunityHealthWorkerDao chwDao;
 	
@@ -25,6 +26,10 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	public CommunityHealthWorkerPanel(UiGeneratorController uiController, ApplicationContext appCon) {
 		super(uiController,appCon);
 		chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
+	}
+	
+	public CommunityHealthWorkerPanel(UiGeneratorController uiController){
+		super(uiController);
 	}
 
 	/**
@@ -87,6 +92,11 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	@Override
 	protected String getAddingTitle() {
 		return InternationalisationUtils.getI18NString(ADD_CHW);
+	}
+
+	@Override
+	protected void addAdditionalDemoFields() {
+		addLabelToLabelPanel(InternationalisationUtils.getI18NString(PHONE_NUMBER_FIELD)+": " + InternationalisationUtils.getI18NString(DEMO_PHONE_NUMBER));
 	}
 
 }

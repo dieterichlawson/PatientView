@@ -5,7 +5,7 @@ import net.frontlinesms.plugins.patientview.data.repository.UserDao;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.RoleComboBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.UsernameField;
 import net.frontlinesms.ui.UiGeneratorController;
-import net.frontlinesms.ui.i18n.InternationalisationUtils;
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
 import org.springframework.context.ApplicationContext;
 
@@ -16,6 +16,8 @@ public class UserPanel extends PersonPanel<User> {
 	private static final String ADD_USER = "personpanel.labels.add.a.user";
 	private static final String ROLE_LABEL = "medic.common.labels.role";
 	private static final String USERNAME_LABEL = "medic.common.labels.username";
+	private static final String DEMO_USERNAME = "editdetailview.demo.username";
+	private static final String DEMO_ROLE = "roles.readwrite";
 	
 	private UserDao userDao;
 	
@@ -27,6 +29,13 @@ public class UserPanel extends PersonPanel<User> {
 	public UserPanel(UiGeneratorController uiController, ApplicationContext appCon) {
 		super(uiController,appCon);
 		userDao = (UserDao) appCon.getBean("UserDao");
+	}
+	/**
+	 * Used to create  a demo panel
+	 * @param uiController
+	 */
+	public UserPanel(UiGeneratorController uiController){
+		super(uiController);
 	}
 
 	/**
@@ -45,8 +54,8 @@ public class UserPanel extends PersonPanel<User> {
 	 */
 	@Override
 	protected void addAdditionalFields() {
-		addLabelToLabelPanel(InternationalisationUtils.getI18NString(USERNAME_LABEL) + ": "+ person.getUsername());
-		addLabelToLabelPanel(InternationalisationUtils.getI18NString(ROLE_LABEL) + ": " + person.getRoleName());
+		addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": "+ person.getUsername());
+		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": " + person.getRoleName());
 	}
 
 	/**
@@ -59,12 +68,12 @@ public class UserPanel extends PersonPanel<User> {
 
 	@Override
 	protected String getDefaultTitle() {
-		return InternationalisationUtils.getI18NString(USER_AAG);
+		return getI18NString(USER_AAG);
 	}
 
 	@Override
 	protected String getEditingTitle() {
-		return InternationalisationUtils.getI18NString(EDIT_USER_DATA_BUTTON);
+		return getI18NString(EDIT_USER_DATA_BUTTON);
 	}
 
 	@Override
@@ -79,7 +88,14 @@ public class UserPanel extends PersonPanel<User> {
 
 	@Override
 	protected String getAddingTitle() {
-		return InternationalisationUtils.getI18NString(ADD_USER);
+		return getI18NString(ADD_USER);
+	}
+
+	@Override
+	protected void addAdditionalDemoFields() {
+		addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": "+ getI18NString(DEMO_USERNAME));
+		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": " + getI18NString(DEMO_ROLE));
+
 	}
 
 }

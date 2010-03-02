@@ -36,6 +36,10 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 	private static final String AGE_LABEL = "medic.common.labels.age";
 	private static final String ID_LABEL = "medic.common.labels.id";
 	private static final String PICTURE_TITLE_SUFFIX = "detailview.picture.title.suffix";
+	private static final String DEMO_NAME = "editdetailview.demo.name";
+	private static final String DEMO_ID = "editdetailview.demo.id";
+	private static final String DEMO_GENDER = "medic.common.male";
+	private static final String DEMO_AGE = "editdetailview.demo.age";
 	
 	/**
 	 * The general constructor that creates a panel for person p. If person p is null,
@@ -74,7 +78,35 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 		addEditableFields();
 	}
 	
+	/**
+	 * Constructor for creating demo person panes
+	 * @param uiController
+	 */
+	public PersonPanel(UiGeneratorController uiController){
+		this.uiController = uiController;
+		initDemoPanel();
+	}
 	
+	private void initDemoPanel(){
+		mainPanelContainer = uiController.create("panel");
+		uiController.setInteger(mainPanelContainer, "weightx", 1);
+		uiController.removeAll(mainPanelContainer);
+		inEditingMode = false;
+		mainPanel = uiController.loadComponentFromFile(PERSON_PANEL_XML,this);
+		//add the core fields
+		addLabelToLabelPanel(getI18NString(DEMO_NAME));
+		addLabelToLabelPanel(getI18NString(ID_LABEL) + ": "+ getI18NString(DEMO_ID));
+		addLabelToLabelPanel(getI18NString(DEMO_GENDER));
+		addLabelToLabelPanel(getI18NString(AGE_LABEL) + ": " + getI18NString(DEMO_AGE));
+		//let the subclasses add additional fields
+		addAdditionalDemoFields();
+		uiController.add(mainPanelContainer,mainPanel);
+		uiController.setText(mainPanel, getDefaultTitle());
+	}
+	
+	
+	protected abstract void addAdditionalDemoFields();
+
 	/**
 	 * Should perform a save operation on whatever person type the implementing class is for
 	 */
@@ -196,9 +228,9 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 		addAdditionalEditableFields();
 		inEditingMode = true;
 		if(isNewPersonPanel){
-			uiController.setText(mainPanel, getEditingTitle());
+			uiController.setText(mainPanel, getAddingTitle());
 		}else{
-			uiController.setText(mainPanel, getAddingTitle());			
+			uiController.setText(mainPanel, getEditingTitle());			
 		}
 		uiController.add(getLabelPanel(),getSaveCancelButtons());
 		uiController.add(mainPanelContainer,mainPanel);
@@ -319,6 +351,9 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 		uiController.add(getLabelPanel(),label);
 	}
 	
+	protected void setNameLabel(String name){
+		uiController.setText(uiController.find(mainPanel,"nameLabel"), name);
+	}
 	
 	
 }
