@@ -7,10 +7,11 @@
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.people.User" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.HistoryEntry" />
-		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.MedicField" />
+		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.PersonAttribute" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField" />
-		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.MedicFieldResponse" />
+		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse" />
+		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.PersonAttributeResponse" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.Response" />
