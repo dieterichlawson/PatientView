@@ -21,6 +21,7 @@ public class PasswordTextField extends TextBox{
 	}
 	
 	public void textBoxKeyPressed(String typed){
+		super.textBoxKeyPressed(typed);
 		String newText = typed.substring(typed.lastIndexOf("*") + 1);
 		if(typed.lastIndexOf("*") <  response.length() -1){
 			response = response.substring(0, typed.lastIndexOf("*") + 1) + newText;

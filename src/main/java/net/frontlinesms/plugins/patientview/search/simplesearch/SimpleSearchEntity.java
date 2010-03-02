@@ -1,19 +1,25 @@
 package net.frontlinesms.plugins.patientview.search.simplesearch;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
-import net.frontlinesms.plugins.patientview.data.domain.framework.MedicField;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
-import net.frontlinesms.plugins.patientview.data.domain.people.User;
-import net.frontlinesms.plugins.patientview.data.domain.response.MedicFieldResponse;
+import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
+import net.frontlinesms.plugins.patientview.data.domain.response.PersonAttributeResponse;
 import net.frontlinesms.plugins.patientview.search.FieldDescriptor;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
+/**
+ * This class sets out all the input possibilities and database information needed for the Simple search
+ * Each entry in this enum is an Entity that can be searchedfor in the system.
+ * Each FieldDescriptor supplied with that entry is a field that can be filtered upon
+ * @author Dieterich
+ *
+ */
 public enum SimpleSearchEntity {
 
 	PATIENT("medic.common.patients",  //Display name
@@ -48,9 +54,10 @@ public enum SimpleSearchEntity {
 	     
 	FIELD("medic.common.fields",
 		  "field",
-		  "MedicField",
-		   MedicField.class,
-		   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.field.label","label",SimpleSearchDataType.STRING)}),
+		  "MedicFormField",
+		   MedicFormField.class,
+		   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.field.label","label",SimpleSearchDataType.STRING),
+		   						  new FieldDescriptor(null,"simplesearch.fields.fields.form.name","parentForm.name",SimpleSearchDataType.STRING)}),
 		   
 	FORM_RESPONSE("medic.common.form.responses",
 				   "formr",
@@ -63,14 +70,23 @@ public enum SimpleSearchEntity {
 					   
     FIELD_RESPONSE("medic.common.field.responses",
 				   "fieldr",
-				   "MedicFieldResponse",
-				   MedicFieldResponse.class,
+				   "MedicFormFieldResponse",
+				   MedicFormFieldResponse.class,
 				   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.field.label","field.label",SimpleSearchDataType.STRING),
     			   new FieldDescriptor(null,"simplesearch.fields.submitter.name","submitter.name",SimpleSearchDataType.STRING),
     			   new FieldDescriptor(null,"simplesearch.fields.subject.name","subject.name",SimpleSearchDataType.STRING),
     			   new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmited",SimpleSearchDataType.DATE),
-				   new FieldDescriptor(null,"simplesearch.fields.response","value",SimpleSearchDataType.STRING)});
-	
+				   new FieldDescriptor(null,"simplesearch.fields.response","value",SimpleSearchDataType.STRING)}),
+				   
+	ATTRIBUTE_RESPONSE("medic.common.attribute.responses",
+					   "attribute",
+				       "PersonAttributeResponse",
+					   PersonAttributeResponse.class,
+					   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.attribute.name","attribute.label",SimpleSearchDataType.STRING),
+											  new FieldDescriptor(null,"simplesearch.fields.submitter.name","submitter.name",SimpleSearchDataType.STRING),
+											  new FieldDescriptor(null,"simplesearch.fields.subject.name","subject.name",SimpleSearchDataType.STRING),
+											  new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmited",SimpleSearchDataType.DATE),
+											  new FieldDescriptor(null,"simplesearch.fields.response","value",SimpleSearchDataType.STRING)});
 	
 	private String displayName;
 	private String databaseName;

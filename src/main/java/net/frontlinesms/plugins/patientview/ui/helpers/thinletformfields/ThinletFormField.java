@@ -1,9 +1,12 @@
 package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
-import net.frontlinesms.plugins.patientview.data.domain.framework.MedicField;
+import net.frontlinesms.plugins.patientview.data.domain.framework.Field;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PhoneNumberField;
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.UiGeneratorController;
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
 public abstract class ThinletFormField<E>{
 	
@@ -12,7 +15,7 @@ public abstract class ThinletFormField<E>{
 	/**the label for the box**/
 	protected String label;
 	/** the associated field **/
-	protected MedicField field;	
+	protected Field field;	
 	/** the main thinlet panel**/
 	protected Object mainPanel;
 	/** the string that represents the response of the field **/
@@ -52,6 +55,8 @@ public abstract class ThinletFormField<E>{
 	/**expansion point for validating the fields **/
 	public abstract boolean isValid();
 	
+	public abstract boolean hasChanged();
+	
 	/**returns true if the field currently has a response **/
 	public boolean hasResponse(){
 		return getResponse() !=null && getResponse()!="";
@@ -67,27 +72,75 @@ public abstract class ThinletFormField<E>{
 	/**gets the response in the field's designated format **/
 	public abstract E getRawResponse();
 	
+	/**
+	 * should set the response of the thinlet field, in it's designated format
+	 * @param response
+	 */
 	public abstract void setRawResponse(E response);
-	
-	
-	public MedicField getField(){
+
+	/**
+	 * @return The field that this ThinletFormField is linked to
+	 */
+	public Field getField(){
 		return field;
 	}
 	
-	public void setField(MedicField field){
+	/**
+	 * Links this ThinletFormField to a field
+	 * @param field
+	 */
+	public void setField(Field field){
 		this.field = field;
 	}
 	
+	/**
+	 * Sets this field editable based on the boolean parameter
+	 * @param editable
+	 */
 	public void setEditable(boolean editable){
 		thinlet.setEditableRecursively(getThinletPanel(), editable);
 	}
 	
+	/**
+	 * Sets all components of this field editable based on the boolean parameter
+	 * @param editable
+	 */
 	public void setEnabled(boolean editable){
 		thinlet.setEnabledRecursively(getThinletPanel(), editable);
 	}
 		
-	public static ThinletFormField getThinletFormFieldForDataType(DataType t){
-		//TODO:make this work
+	/**
+	 * Should return the ThinletFormField that corresponds to the datatype provided
+	 * Should also figure out a better way to do this
+	 * @param datatype
+	 * @param uiController
+	 * @param label
+	 * @return The ThinletFormField
+	 */
+	public static ThinletFormField getThinletFormFieldForDataType(DataType datatype, UiGeneratorController uiController, String label){
+		if(datatype == DataType.CHECK_BOX){ 
+			return new CheckBox(uiController,label);
+		}else if(datatype ==  DataType.DATE_FIELD){
+			return new DateField(uiController,label);
+		}else if(datatype == DataType.NUMERIC_TEXT_FIELD){
+			return new NumericTextField(uiController,label);
+		}else if(datatype == DataType.PASSWORD_FIELD){
+			return new PasswordTextField(uiController,label);
+		}else if(datatype == DataType.PHONE_NUMBER_FIELD){
+			return new PhoneNumberField(uiController,label);
+		}else if(datatype == DataType.TIME_FIELD){
+			return new TimeField(uiController,label);
+		}else if(datatype == DataType.TEXT_AREA){
+			return new TextArea(uiController,label);
+		}else if(datatype == DataType.TEXT_FIELD){
+			return new TextBox(uiController,label);
+		}else if(datatype == DataType.POSITIVENEGATIVE){
+			return new ButtonGroup(uiController,label,getI18NString("datatype.positive"),getI18NString("datatype.negative"));
+		}else if(datatype == DataType.TRUEFALSE){
+			return new ButtonGroup(uiController,label,getI18NString("datatype.true"),getI18NString("datatype.false"));
+		}else if(datatype == DataType.YESNO){
+			return new ButtonGroup(uiController,label,getI18NString("datatype.yes"),getI18NString("datatype.no"));
+		}
 		return null;
 	}
 }

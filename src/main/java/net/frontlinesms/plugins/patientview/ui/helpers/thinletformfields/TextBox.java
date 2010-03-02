@@ -5,6 +5,7 @@ import net.frontlinesms.ui.ExtendedThinlet;
 public class TextBox extends ThinletFormField<String>{
 	
 	protected Object textBox;
+	protected boolean hasChanged;
 	public static final String NAME = "textBoxField";
 	
 	public TextBox(ExtendedThinlet thinlet, String label){
@@ -17,6 +18,7 @@ public class TextBox extends ThinletFormField<String>{
 		thinlet.setInteger(mainPanel, "colspan", 1);
 		thinlet.setAttachedObject(mainPanel, this);
 		thinlet.setAction(textBox, "textBoxKeyPressed(this.text)", null, this);
+		hasChanged= false;
 	}
 	
 	protected TextBox(ExtendedThinlet thinlet, String label, String name){
@@ -27,9 +29,16 @@ public class TextBox extends ThinletFormField<String>{
 		thinlet.add(mainPanel,textBox);
 		thinlet.setInteger(textBox, "weightx", 1);
 		thinlet.setInteger(mainPanel, "colspan", 1);
+		thinlet.setAction(textBox, "textBoxKeyPressed(this.text)", null, this);
+		hasChanged= false;
 	}
 	
 	public void textBoxKeyPressed(String text){
+		hasChanged =true;
+	}
+	
+	public boolean hasChanged(){
+		return hasChanged;
 	}
 	
 	/** Text Boxes are always valid**/

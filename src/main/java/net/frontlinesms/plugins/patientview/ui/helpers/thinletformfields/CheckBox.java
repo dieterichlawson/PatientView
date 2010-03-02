@@ -6,6 +6,7 @@ public class CheckBox extends ThinletFormField<Boolean>{
 	
 	private Object checkbox;
 	public static final String NAME = "checkBox";
+	protected boolean hasChanged;
 	
 	public CheckBox(ExtendedThinlet thinlet, String label){
 		super(thinlet,label, NAME);
@@ -14,8 +15,10 @@ public class CheckBox extends ThinletFormField<Boolean>{
 		this.thinlet.setInteger(checkbox, "colspan", 1);
 		this.thinlet.setChoice(checkbox, "halign", "left");
 		this.thinlet.setChoice(mainPanel, "halign", "left");
+		this.thinlet.setAction(checkbox, "checkboxClicked()", null, this);
 		thinlet.add(mainPanel,checkbox);
 		thinlet.setAttachedObject(mainPanel, this);
+		hasChanged = false;
 	}
 
 	public boolean hasResponse() {
@@ -24,6 +27,13 @@ public class CheckBox extends ThinletFormField<Boolean>{
 
 	public boolean isValid() {
 		return true;
+	}
+	
+	public boolean hasChanged(){
+		return hasChanged;
+	}
+	public void checkboxClicked(){
+		hasChanged=true;
 	}
 	
 	@Override

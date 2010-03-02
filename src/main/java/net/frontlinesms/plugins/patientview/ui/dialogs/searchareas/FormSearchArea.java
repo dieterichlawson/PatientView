@@ -25,7 +25,7 @@ public class FormSearchArea extends EntitySearchArea<MedicForm>{
 	
 	@Override
 	protected Collection<MedicForm> getEntitiesForString(String s) {
-		return formDao.getMedicFormsForString(s);
+		return formDao.getMedicFormsByName(s);
 	}
 
 	@Override

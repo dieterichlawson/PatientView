@@ -5,6 +5,7 @@ import net.frontlinesms.ui.ExtendedThinlet;
 public class TextArea extends ThinletFormField<String>{
 
 	private Object textArea;
+	protected boolean hasChanged;
 	public static final String NAME = "textAreaField";
 	
 	public TextArea(ExtendedThinlet thinlet, String label){
@@ -15,8 +16,10 @@ public class TextArea extends ThinletFormField<String>{
 		thinlet.setInteger(textArea, "colspan", 1);
 		thinlet.setInteger(mainPanel, "colspan", 1);
 		thinlet.setInteger(mainPanel, "columns", 1);
+		thinlet.setInteger(mainPanel, "gap", 4);
 		thinlet.setAttachedObject(mainPanel, this);
-
+		thinlet.setAction(textArea, "textAreaKeyPressed(this.text)", null, this);
+		hasChanged = false;
 	}
 	
 	protected TextArea(ExtendedThinlet thinlet, String label, String name){
@@ -27,11 +30,17 @@ public class TextArea extends ThinletFormField<String>{
 		thinlet.setInteger(textArea, "colspan", 1);
 		thinlet.setInteger(mainPanel, "colspan", 1);
 		thinlet.setInteger(mainPanel, "columns", 1);
+		thinlet.setAction(textArea, "textAreaKeyPressed(this.text)", null, this);
+		hasChanged = false;
 	}
 	
 	/** Text Areas are always valid**/
 	public boolean isValid() {
 		return true;
+	}
+	
+	public void textAreaKeyPressed(String text){
+		hasChanged = true;
 	}
 
 	@Override
@@ -53,6 +62,11 @@ public class TextArea extends ThinletFormField<String>{
 	@Override
 	public void setResponse(String response) {
 		thinlet.setText(textArea, response);
+	}
+
+	@Override
+	public boolean hasChanged() {
+		return hasChanged;
 	}
 	
 }

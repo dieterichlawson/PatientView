@@ -8,7 +8,7 @@ import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
-import net.frontlinesms.plugins.patientview.data.domain.response.MedicFieldResponse;
+import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.ui.dialogs.searchareas.FormSearchArea;
@@ -179,13 +179,13 @@ public class SubmitFormDialog implements ThinletUiEventHandler{
 		//The form response that is going to contain all the field responses
 		MedicFormResponse response = new MedicFormResponse(currentForm,UserSessionManager.getUserSessionManager().getCurrentUser(),currentPatient);
 		for(ThinletFormField f:fields){
-			MedicFieldResponse rv = null;
+			MedicFormFieldResponse rv = null;
 			if(!f.isValid()){
 				setWarningLabel(InternationalisationUtils.getI18NString(BAD_FORMATTING_MESSAGE_PREFIX)+" \"" + f.getLabel() +"\" "+InternationalisationUtils.getI18NString(BAD_FORMATTING_MESSAGE_SUFFIX));
 				return;
 			}else{	
 				//create the field response
-				rv = new MedicFieldResponse(f.getResponse(), f.getField(),response,currentPatient,UserSessionManager.getUserSessionManager().getCurrentUser());
+				rv = new MedicFormFieldResponse(f.getResponse(), (MedicFormField) f.getField(),response,currentPatient,UserSessionManager.getUserSessionManager().getCurrentUser());
 				//and add it to the form response
 				response.addFieldResponse(rv);
 			}
