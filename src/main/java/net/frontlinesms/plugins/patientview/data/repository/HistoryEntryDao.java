@@ -22,8 +22,16 @@ public interface HistoryEntryDao {
 	/** @return all History Entries saved in the data source */
 	public Collection<HistoryEntry> getAllHistoryEntrys();
 	
+	/**
+	 * @param p
+	 * @return all history entries about subject p
+	 */
 	public Collection<HistoryEntry> getHistoryEntriesForSubject(Person p);
 	
+	/**
+	 * @param p
+	 * @return All history entries about actor p
+	 */
 	public Collection<HistoryEntry> getHistoryEntriesForActor(Person p);
 	
 }

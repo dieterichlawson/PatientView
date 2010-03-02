@@ -8,11 +8,9 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
-import net.frontlinesms.plugins.forms.data.domain.FormResponse;
-import net.frontlinesms.plugins.forms.data.domain.ResponseValue;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
@@ -21,32 +19,32 @@ import net.frontlinesms.plugins.patientview.history.HistoryManager;
 @DiscriminatorValue("formresponse")
 public class MedicFormResponse extends Response{
 
-	@OneToOne(fetch=FetchType.EAGER,cascade={})
+	@ManyToOne(fetch=FetchType.EAGER,cascade={})
 	@JoinColumn(name="form" )
 	private MedicForm form;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="formResponse",cascade=CascadeType.ALL)
-	private List<MedicFieldResponse> responses;
+	private List<MedicFormFieldResponse> responses;
 	
 	public MedicFormResponse(){}
 	
-	public MedicFormResponse(MedicForm form, List<MedicFieldResponse> responses,Person submitter, Person subject) {
+	public MedicFormResponse(MedicForm form, List<MedicFormFieldResponse> responses,Person submitter, Person subject) {
 		super(submitter,subject);
 		this.form = form;
-		for(MedicFieldResponse mfr : responses){
+		for(MedicFormFieldResponse mfr : responses){
 			mfr.setFormResponse(this);
 		}
 		this.responses = responses;
 		HistoryManager.logFormSubmssion(subject, form);
 	}
 
-	public List<MedicFieldResponse> getResponses() {
+	public List<MedicFormFieldResponse> getResponses() {
 		return responses;
 	}
 
-	public void setResponses(List<MedicFieldResponse> responses) {
+	public void setResponses(List<MedicFormFieldResponse> responses) {
 		this.responses = responses;
-		for(MedicFieldResponse mfr : responses){
+		for(MedicFormFieldResponse mfr : responses){
 			mfr.setFormResponse(this);
 		}
 	}
@@ -54,7 +52,7 @@ public class MedicFormResponse extends Response{
 	public MedicFormResponse(MedicForm form, Person submitter, Person subject) {
 		super(submitter, subject);
 		this.form = form;
-		responses = new ArrayList<MedicFieldResponse>();
+		responses = new ArrayList<MedicFormFieldResponse>();
 		HistoryManager.logFormSubmssion(subject, form);
 	}
 
@@ -70,19 +68,19 @@ public class MedicFormResponse extends Response{
 		this.form = form;
 	}
 	
-	public void addFieldResponse(MedicFieldResponse response){
+	public void addFieldResponse(MedicFormFieldResponse response){
 		responses.add(response);
 		response.setFormResponse(this);
 	}
 	
-	public void removeFieldResponse(MedicFieldResponse response){
+	public void removeFieldResponse(MedicFormFieldResponse response){
 		responses.remove(response);
 	}
 	
 	@Override
 	public void setSubject(Person p){
 		super.setSubject(p);
-		for(MedicFieldResponse mfr: responses){
+		for(MedicFormFieldResponse mfr: responses){
 			mfr.setSubject(p);
 		}
 	}
@@ -90,7 +88,7 @@ public class MedicFormResponse extends Response{
 	@Override
 	public void setSubmitter(Person p){
 		super.setSubmitter(p);
-		for(MedicFieldResponse mfr: responses){
+		for(MedicFormFieldResponse mfr: responses){
 			mfr.setSubmitter(p);
 		}
 	}

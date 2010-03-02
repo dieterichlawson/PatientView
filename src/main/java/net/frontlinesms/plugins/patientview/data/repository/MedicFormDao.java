@@ -15,7 +15,20 @@ public interface MedicFormDao {
 	
 	public Collection<MedicForm> getAllMedicForms();
 	
-	public Collection<MedicForm> getMedicFormsForString(String s);
+	/**
+	 * Performs a like query with %'s around the s's
+	 * select * from MedicForm where name like '%s%'
+	 * @param s
+	 * @return All Medic Forms with a name like s
+	 */
+	public Collection<MedicForm> getMedicFormsByName(String s);
 	
+	/**
+	 * Returns the MedicForm that corresponds to the supplied FrontlineSMS form
+	 * @param form the FrontlineSMS form
+	 * @return the corresponding Medic Form
+	 */
 	public MedicForm getMedicFormForForm(Form form);
+	
+	public void reattach(MedicForm mf);
 }

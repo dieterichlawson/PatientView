@@ -1,36 +1,63 @@
 package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 
-import java.util.Collection;
+import java.util.List;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 
-public class HibernateMedicFormFieldDao extends BaseHibernateDao<MedicFormField>{
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 
-	private static final String fieldsByName = "select mf from MedicFormField mf where mf.label like ";
+public class HibernateMedicFormFieldDao extends BaseHibernateDao<MedicFormField> implements MedicFormFieldDao{
 	
 	protected HibernateMedicFormFieldDao() {
 		super(MedicFormField.class);
 	}
 
-	public void deleteMedicFormField(MedicFormField field) {
-		super.delete(field);
-	}
-
-	public Collection<MedicFormField> getAllMedicFormFields() {
+	public List<MedicFormField> getAllFields() {
 		return super.getAll();
 	}
-
-	public void saveMedicFormField(MedicFormField field) {
-		super.saveWithoutDuplicateHandling(field);
-	}
-
-	public void updateMedicFormField(MedicFormField field) {
-		super.updateWithoutDuplicateHandling(field);
-	}
 	
-	public Collection<MedicFormField> getFieldsByName(String s){
-		String q = fieldsByName + "'%" + s + "%'";
-		return super.getSession().createQuery(q).list();
+	/* (non-javadoc)
+	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao#getFieldsByName(java.lang.String)
+	 */
+	public List<MedicFormField> getFieldsByName(String s){
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormField.class);
+		c.add(Restrictions.like("label", "%" + s+ "%"));
+		return super.getList(c);
+	}
+
+	/* (non-javadoc)
+	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao#getAttributePanelFields()
+	 */
+	public List<MedicFormField> getAttributePanelFields() {
+		DetachedCriteria c = super.getCriterion();
+		c.add(Restrictions.eq("isAttributePanelField", new Boolean(true)));
+		return super.getList(c);
+	}
+
+	/* (non-javadoc)
+	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao#getAnsweredAttributePanelFieldsForPerson(net.frontlinesms.plugins.patientview.data.domain.people.Person)
+	 */
+	public List<MedicFormField> getAnsweredAttributePanelFieldsForPerson(Person p) {
+		DetachedCriteria c = super.getCriterion().add(Restrictions.eq("isAttributePanelField", new Boolean(true)))
+		.createCriteria("responses")
+		.add(Restrictions.eq("subject", p));	
+		return super.getList(c);
+	}
+
+	public void updateField(MedicFormField mff) {
+		super.updateWithoutDuplicateHandling(mff);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao#getFieldsOnForm(net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm)
+	 */
+	public List<MedicFormField> getFieldsOnForm(MedicForm f) {
+		DetachedCriteria c = super.getCriterion().add(Restrictions.eq("parentForm", f));
+		return super.getList(c);
 	}
 }

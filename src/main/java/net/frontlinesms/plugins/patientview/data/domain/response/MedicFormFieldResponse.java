@@ -7,17 +7,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import net.frontlinesms.plugins.patientview.data.domain.framework.MedicField;
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
-import net.frontlinesms.plugins.patientview.history.HistoryManager;
 
 @Entity
 @DiscriminatorValue("fieldresponse")
-public class MedicFieldResponse extends Response {
+public class MedicFormFieldResponse extends Response {
 	
-	@OneToOne(targetEntity=MedicField.class,cascade ={})
+	@ManyToOne(targetEntity=MedicFormField.class,cascade ={},fetch=FetchType.EAGER)
 	@JoinColumn(name="field")
-	private MedicField field;
+	private MedicFormField field;
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = true, cascade = {})
 	@JoinColumn(name="form_response", nullable=true)
@@ -25,22 +24,22 @@ public class MedicFieldResponse extends Response {
 
 	private String value;
 
-	public MedicFieldResponse(){}
+	public MedicFormFieldResponse(){}
 	
-	public MedicFieldResponse(String value, MedicField field, Person subject, Person submitter) {
+	public MedicFormFieldResponse(String value, MedicFormField field, Person subject, Person submitter) {
 		super(submitter, subject);
 		this.value = value;
 		this.field = field;
 	}
 
-	public MedicFieldResponse(String value, MedicField field, MedicFormResponse formResponse,Person subject, Person submitter) {
+	public MedicFormFieldResponse(String value, MedicFormField field, MedicFormResponse formResponse,Person subject, Person submitter) {
 		super(submitter, subject);
 		this.value = value;
 		this.field = field;
 		this.formResponse = formResponse;
 	}
 
-	public MedicField getField() {
+	public MedicFormField getField() {
 		return field;
 	}
 	
@@ -56,7 +55,7 @@ public class MedicFieldResponse extends Response {
 		return value;
 	}
 
-	public void setField(MedicField field) {
+	public void setField(MedicFormField field) {
 		this.field = field;
 	}
 

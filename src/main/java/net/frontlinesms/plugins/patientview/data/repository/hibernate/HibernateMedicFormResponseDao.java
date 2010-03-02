@@ -1,40 +1,57 @@
 package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 
-import java.util.Collection;
 import java.util.List;
-
-import org.hibernate.Query;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao;
 
-public class HibernateMedicFormResponseDao extends BaseHibernateDao<MedicFormResponse>{
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 
-	private String responseForSubjectQuery = "select mformr from MedicFormResponse mformr where mformr.subject.pid =";
+public class HibernateMedicFormResponseDao extends BaseHibernateDao<MedicFormResponse> implements MedicFormResponseDao{
 
 	protected HibernateMedicFormResponseDao() {
 		super(MedicFormResponse.class);
 	}
 
-	public void deleteMedicFormResponse(MedicFormResponse response) {
-		super.delete(response);
-	}
-
-	public Collection<MedicFormResponse> getAllFormResponses() {
+	/* (non-javadoc)
+	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#getAllFormResponses()
+	 */
+	public List<MedicFormResponse> getAllFormResponses() {
 		return super.getAll();
 	}
 
+	/* (non-javadoc)
+	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#saveMedicFormResponse(net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse)
+	 */
 	public void saveMedicFormResponse(MedicFormResponse response) {
 		super.saveWithoutDuplicateHandling(response);
 	}
 
+	/* (non-javadoc)
+	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#updateMedicFormResponse(net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse)
+	 */
 	public void updateMedicFormResponse(MedicFormResponse response) {
 		super.updateWithoutDuplicateHandling(response);
 	}
 	
+	/* (non-javadoc)
+	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#getFormResponsesForSubject(net.frontlinesms.plugins.patientview.data.domain.people.Person)
+	 */
 	public List<MedicFormResponse> getFormResponsesForSubject(Person p){
-		Query q = super.getSession().createQuery(responseForSubjectQuery + p.getPid());
-		return q.list();
+		DetachedCriteria c = super.getCriterion();
+		c.add(Restrictions.like("subject", p));
+		return super.getList(c);
+	}
+	
+	/* (non-javadoc)
+	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#getFormResponsesForSubmitter(net.frontlinesms.plugins.patientview.data.domain.people.Person)
+	 */
+	public List<MedicFormResponse> getFormResponsesForSubmitter(Person p){
+		DetachedCriteria c = super.getCriterion();
+		c.add(Restrictions.like("submitter", p));
+		return super.getList(c);
 	}
 }

@@ -2,6 +2,7 @@ package net.frontlinesms.plugins.patientview.data.domain.framework;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 
 import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.forms.data.domain.FormField;
+import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 
 import org.hibernate.annotations.IndexColumn;
 
@@ -34,6 +36,9 @@ public class MedicForm {
 	
 	@OneToMany(fetch = FetchType.EAGER,cascade=CascadeType.ALL, mappedBy="parentForm")
 	private List<MedicFormField> fields;
+	
+	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY, mappedBy="form")
+	private Set<MedicFormResponse> responses;
 	
 	@OneToOne(fetch=FetchType.LAZY, cascade={})
 	@JoinColumn(name="vanilla_form_id", nullable=true)
@@ -138,5 +143,11 @@ public class MedicForm {
 		fields.remove(field);
 	}
 	
+	/**
+	 * @return All the responses to this form
+	 */
+	public Set<MedicFormResponse> getResponses(){
+		return responses;
+	}
 	
 }
