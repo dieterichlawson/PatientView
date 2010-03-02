@@ -1,6 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.administration;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.forms.data.repository.FormDao;
@@ -103,6 +104,7 @@ public class FormAdministrationPanelController implements
 			uiController.add(patientViewFormList,item);
 		}
 		uiController.setSelectedIndex(patientViewFormList, 0);
+		patientViewFormListSelectionChanged();
 	}
 	
 	/**
@@ -135,6 +137,7 @@ public class FormAdministrationPanelController implements
 			uiController.add(fieldList,item);
 		}
 		uiController.setSelectedIndex(fieldList, 0);
+		fieldListSelectionChanged();
 	}
 	
 	/**
@@ -145,15 +148,18 @@ public class FormAdministrationPanelController implements
 	private void populateFieldMappingPanel(MedicFormField field){
 		uiController.removeAll(mappingComboBox);
 		uiController.setAction(mappingComboBox, "mappingComboBoxSelectionChanged()", null, this);
-		for(PatientFieldMapping m : PatientFieldMapping.values()){
+		uiController.add(mappingComboBox,uiController.createComboboxChoice("None",null));
+		uiController.setSelectedIndex(mappingComboBox,0);
+		uiController.setText(mappingComboBox, "None");
+		for(int i = 0; i < PatientFieldMapping.values().length; i++){
+			PatientFieldMapping m = PatientFieldMapping.values()[i];
 			Object choice = uiController.createComboboxChoice(m.toString(), m);
 			uiController.add(mappingComboBox,choice);
 			if(field.getMapping() == m){
-				uiController.setSelectedItem(mappingComboBox, choice);
+				uiController.setSelectedIndex(mappingComboBox, i+1);
 				uiController.setText(mappingComboBox, m.toString());
 			}
 		}
-		uiController.add(mappingComboBox,uiController.createComboboxChoice("None",null));
 	}
 	
 	/**
