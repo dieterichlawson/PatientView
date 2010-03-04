@@ -1,11 +1,16 @@
 package net.frontlinesms.plugins.patientview.data.domain.response;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import net.frontlinesms.data.domain.Message;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
@@ -14,9 +19,9 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 
 
 @Entity
-@DiscriminatorValue("messageresponse")
+@DiscriminatorValue(value="messageresponse")
 public class MedicMessageResponse extends Response{
-	
+
 	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="message")
 	private Message message;

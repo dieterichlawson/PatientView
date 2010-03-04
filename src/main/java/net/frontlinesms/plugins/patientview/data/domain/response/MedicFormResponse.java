@@ -10,13 +10,14 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 
 @Entity
-@DiscriminatorValue("formresponse")
+@DiscriminatorValue(value="formresponse")
 public class MedicFormResponse extends Response{
 
 	@ManyToOne(fetch=FetchType.EAGER,cascade={})

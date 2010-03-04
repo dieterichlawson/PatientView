@@ -3,14 +3,11 @@ package net.frontlinesms.plugins.patientview.data.domain.framework;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import net.frontlinesms.plugins.patientview.data.domain.response.PersonAttributeResponse;
@@ -25,6 +22,7 @@ import net.frontlinesms.plugins.patientview.data.domain.response.PersonAttribute
  *
  */
 @Entity
+@DiscriminatorValue(value="attribute")
 public class PersonAttribute extends Field{
 
 	/**

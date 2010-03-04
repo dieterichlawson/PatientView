@@ -2,7 +2,6 @@ package net.frontlinesms.plugins.patientview.data.domain.people;
 
 import java.awt.image.BufferedImage;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -19,7 +18,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageUtils;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
@@ -28,10 +26,10 @@ import org.hibernate.annotations.IndexColumn;
 
 
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn( name="persontype",discriminatorType=DiscriminatorType.STRING)
-@DiscriminatorValue("person")
 @Table(name="medic_people")
+@DiscriminatorColumn(name="person_type", discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorValue(value="person")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class Person{
 	
 	
@@ -60,31 +58,31 @@ public abstract class Person{
 	/** Unique id for this entity.  This is for hibernate usage. */
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique=true,nullable=false,updatable=false)
-	private long pid;
+	protected long pid;
 	
 	/**
 	 * Name of this person
 	 */
 	@IndexColumn(name="name_index")
-	private String name;
+	protected String name;
 	
 	/**
 	 * Birthdate of this person
 	 */
-	private long birthdate;
+	protected long birthdate;
 	
 	/**
 	 * Gender of this person. Right now, possibilities are m,f,t.
 	 * Should figure out a better way to do this
 	 */
 	@Enumerated(EnumType.ORDINAL)
-	private Gender gender;
+	protected Gender gender;
 	
 	@Lob
-	private byte[] unscaledImageContent;
+	protected byte[] unscaledImageContent;
 
 	@Lob
-	private byte[] thumbnailImageContent;
+	protected byte[] thumbnailImageContent;
 	
 	/**
 	 * skeleton constructor for hibernate

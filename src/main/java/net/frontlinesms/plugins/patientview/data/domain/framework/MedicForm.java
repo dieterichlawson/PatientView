@@ -92,7 +92,7 @@ public class MedicForm {
 		fields = new ArrayList<MedicFormField>();
 		for(FormField field : f.getFields()){
 			fields.add(new MedicFormField(this,
-					DataType.getDataTypeForString(field.getType().toString()),
+					DataType.getDataTypeForString(field.getType().name()),
 					field.getLabel()));
 		}
 	}

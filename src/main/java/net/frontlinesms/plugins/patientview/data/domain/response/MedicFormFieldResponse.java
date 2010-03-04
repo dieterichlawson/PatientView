@@ -5,15 +5,15 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 
 @Entity
-@DiscriminatorValue("fieldresponse")
+@DiscriminatorValue(value="fieldresponse")
 public class MedicFormFieldResponse extends Response {
-	
+
 	@ManyToOne(targetEntity=MedicFormField.class,cascade ={},fetch=FetchType.EAGER)
 	@JoinColumn(name="field")
 	private MedicFormField field;
@@ -36,7 +36,7 @@ public class MedicFormFieldResponse extends Response {
 		super(submitter, subject);
 		this.value = value;
 		this.field = field;
-		this.formResponse = formResponse;
+	//	this.formResponse = formResponse;
 	}
 
 	public MedicFormField getField() {

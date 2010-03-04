@@ -1,6 +1,9 @@
 package net.frontlinesms.plugins.patientview.data.domain.framework;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,24 +21,26 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="medic_fields")
+@DiscriminatorColumn(name="field_type", discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorValue(value="field")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class Field {
 
 	/** Unique id for this entity.  This is for hibernate usage. */
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique=true,nullable=false,updatable=false)
-	private long fid;
+	protected long fid;
 	
 	/**
 	 * The label of this field. e.g. HIV status
 	 */
-	private String label;
+	protected String label;
 	
 	/**
 	 * The datatype of this field
 	 */
 	@Enumerated(EnumType.STRING)
-	private DataType datatype;
+	protected DataType datatype;
 	
 	public Field(){}
 	

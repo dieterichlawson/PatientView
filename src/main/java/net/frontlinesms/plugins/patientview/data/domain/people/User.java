@@ -6,10 +6,11 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Table;
 
 
 @Entity
-@DiscriminatorValue("user")
+@DiscriminatorValue(value="user")
 public class User extends Person {
 	
 	private String username;
@@ -19,7 +20,7 @@ public class User extends Person {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	
-	public enum Role{ READ(),READWRITE(),ADMIN(); 	
+	public enum Role{ READ(),READWRITE(),ADMIN(),REGISTRAR(); 	
 		public static String getRoleName(Role r){
 			if(r == READ){
 				return "Read Only";
@@ -27,6 +28,8 @@ public class User extends Person {
 				return "Read/Write";
 			}else if(r == ADMIN){
 				return "Administrator";
+			}else if(r == REGISTRAR){
+				return "Registrar";
 			}
 			return null;
 		}
@@ -38,6 +41,8 @@ public class User extends Person {
 				return Role.READWRITE;
 			}else if(name == Role.getRoleName(Role.READ)){
 				return Role.READ;
+			}else if(name == Role.getRoleName(Role.REGISTRAR)){
+				return Role.REGISTRAR;
 			}
 			return null;
 		}

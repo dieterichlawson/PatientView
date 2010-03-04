@@ -1,16 +1,21 @@
 package net.frontlinesms.plugins.patientview.data.domain.response;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.PersonAttribute;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 
 @Entity
-@DiscriminatorValue("attributeresponse")
+@DiscriminatorValue(value="attributeresponse")
 public class PersonAttributeResponse extends Response {
 
 	/**
@@ -50,6 +55,10 @@ public class PersonAttributeResponse extends Response {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	public String getAttributeLabel(){
+		return attribute.getLabel();
 	}
 
 }

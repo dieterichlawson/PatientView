@@ -11,7 +11,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -20,38 +19,37 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.swing.text.DateFormatter;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 
 
 @Entity
+@DiscriminatorColumn(name="response_type",discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorValue(value="response")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn( name="responsetype",discriminatorType=DiscriminatorType.STRING)
-@DiscriminatorValue("response")
 @Table(name="medic_responses")
-public class Response {
+public abstract class Response { 
 
 	/** Unique id for this entity.  This is for hibernate usage. */
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Id @GeneratedValue
 	@Column(unique=true,nullable=false,updatable=false)
-	private long rid;
+	protected long responseId;
 	
 	@OneToOne(fetch=FetchType.LAZY,cascade={})
 	@JoinColumn(name="submitter",nullable=true )
-	private Person submitter;
+	protected Person submitter;
 	
 	@OneToOne(fetch=FetchType.LAZY,optional=true, cascade={})
 	@JoinColumn(name="subject",nullable=true )
-	private Person subject;
+	protected Person subject;
 	
-	private long dateSubmitted;
+	protected long dateSubmitted;
 	
 	@ManyToMany(cascade={},fetch=FetchType.LAZY)
 	@JoinTable(name="tag_map",
 			joinColumns= @JoinColumn(name="response"),
 			inverseJoinColumns=@JoinColumn(name="tag"))
-	private List<Tag> tags;
+	protected List<Tag> tags;
 
 	public Response(){}
 	
@@ -59,10 +57,6 @@ public class Response {
 		this.submitter = submitter;
 		this.subject = subject;
 		dateSubmitted = new Date().getTime();
-	}
-	
-	public long getRid() {
-		return rid;
 	}
 
 	public Person getSubmitter() {

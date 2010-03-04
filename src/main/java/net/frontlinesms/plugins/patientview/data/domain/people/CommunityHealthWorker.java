@@ -8,12 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import net.frontlinesms.data.DuplicateKeyException;
 import net.frontlinesms.data.domain.Contact;
 
 @Entity
-@DiscriminatorValue("chw")
+@DiscriminatorValue(value="chw")
 public class CommunityHealthWorker extends Person {
 
 	@OneToOne(targetEntity = Contact.class, fetch = FetchType.LAZY,cascade=CascadeType.ALL)
