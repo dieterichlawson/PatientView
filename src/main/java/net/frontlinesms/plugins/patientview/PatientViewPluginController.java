@@ -9,7 +9,12 @@ import java.util.List;
 import java.util.Random;
 
 import net.frontlinesms.FrontlineSMS;
+import net.frontlinesms.FrontlineSMSConstants;
+import net.frontlinesms.data.DuplicateKeyException;
+import net.frontlinesms.data.domain.Group;
 import net.frontlinesms.data.domain.Message;
+import net.frontlinesms.data.repository.GroupDao;
+import net.frontlinesms.data.repository.GroupMembershipDao;
 import net.frontlinesms.data.repository.MessageDao;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEvent;
@@ -38,15 +43,16 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormRespon
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicMessageResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
-import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.PatientViewThinletTabController;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.UiGeneratorController;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -73,6 +79,8 @@ public class PatientViewPluginController extends BasePluginController implements
 	PatientDao patientDao;
 	FormDao vanillaFormDao;
 	MedicFormDao formDao;
+	/**the community health worker group*/
+	private Group chwgroup;
 	
 	/**the main panel of the box that is used to display progress about creating dummy data **/
 	Object mainPanel;
@@ -131,12 +139,12 @@ public class PatientViewPluginController extends BasePluginController implements
 		formDao =(MedicFormDao) applicationContext.getBean("MedicFormDao");
 		
 		try {
-			testing();
+			createDummyData();
 		} catch (Throwable t) {
 			log.warn("Unable to load Medic plugin", t);
 			throw new PluginInitialisationException(t);
 		}	
-	//	testFormHandling();
+		//testFormHandling();
 	}
 
 	/**
@@ -164,13 +172,12 @@ public class PatientViewPluginController extends BasePluginController implements
 	/**
 	 * Creates dummy data and writes it to the database
 	 */
-	private void testing() {
-		//initialize chw dao
+	private void createDummyData() {
 		if(chwDao.getAllCommunityHealthWorkers().size() !=0){
 			return;
 		}
 		MessageDao messageDao = (MessageDao) applicationContext.getBean("messageDao");
-		HibernateMedicFormResponseDao formResponseDao =(HibernateMedicFormResponseDao) applicationContext.getBean("MedicFormResponseDao");
+		MedicFormResponseDao formResponseDao =(MedicFormResponseDao) applicationContext.getBean("MedicFormResponseDao");
 		thinlet = new ExtendedThinlet();
 		mainPanel = thinlet.createPanel("mainPanel");
 		textArea = thinlet.create("textarea");
@@ -200,6 +207,7 @@ public class PatientViewPluginController extends BasePluginController implements
 		
 		ArrayList<CommunityHealthWorker> chws = new ArrayList<CommunityHealthWorker>();
 		ArrayList<Patient> ps = new ArrayList<Patient>();
+		//create the group
 		// create 80 chws with 100 patients each
 		for (int i = 0; i < 35; i++) {
 			String name = firsts[rand.nextInt(firsts.length)] + " "
@@ -228,7 +236,27 @@ public class PatientViewPluginController extends BasePluginController implements
 				e.printStackTrace();
 			}
 		}
-
+		log("creating the CHW group and adding all CHWs to it");
+		//create a CHW group and add all the chws to it
+		Group rootGroup = new Group(null, null) {
+			@Override
+			/** Provide an internationalised version of this group's name */
+			public String getName() {
+				return InternationalisationUtils.getI18NString(FrontlineSMSConstants.CONTACTS_ALL);
+			}
+		};
+		GroupDao gd = (GroupDao) applicationContext.getBean("groupDao");
+		chwgroup = new Group(rootGroup,"Community Health Workers");
+		try {
+			gd.saveGroup(chwgroup);
+		} catch (DuplicateKeyException e1) {
+			e1.printStackTrace();
+		}
+		GroupMembershipDao gmd = (GroupMembershipDao) applicationContext.getBean("groupMembershipDao");
+		for(CommunityHealthWorker chw:chws){
+			gmd.addMember(chwgroup, chw.getContactInfo());
+		}
+		
 		ArrayList<MedicForm> forms = new ArrayList<MedicForm>();
 		// create new Patient Entry form
 		MedicForm f1 = new MedicForm("Patient Entry");
@@ -236,35 +264,29 @@ public class PatientViewPluginController extends BasePluginController implements
 		f1.addField(new MedicFormField(f1, DataType.DATE_FIELD, "Patient Birthdate", PatientFieldMapping.BIRTHDATEFIELD));
 		f1.addField(new MedicFormField(f1, DataType.TEXT_FIELD, "Patient Gender"));
 		f1.addField(new MedicFormField(f1, DataType.TEXT_FIELD, "Patient Height"));
-		f1.addField(new MedicFormField(f1, DataType.TRUEFALSE, "Patient HIV Status"));
+		f1.addField(new MedicFormField(f1, DataType.CHECK_BOX, "Patient HIV Status"));
 		
-		Form f1b = new Form("Patient Entry");
-		f1b.addField(new FormField(FormFieldType.TEXT_FIELD, "Patient Name"));
-		f1b.addField(new FormField(FormFieldType.DATE_FIELD, "Patient Birthdate"));
-		f1b.addField(new FormField(FormFieldType.TEXT_FIELD, "Patient ID"));
-		f1b.addField(new FormField(FormFieldType.TEXT_FIELD, "Patient Gender"));
-		f1b.addField(new FormField(FormFieldType.TEXT_FIELD, "Patient Height"));
-		f1b.addField(new FormField(FormFieldType.CHECK_BOX, "Patient HIV Status"));
-		f1.setForm(f1b);
-		vanillaFormDao.saveForm(f1b);
 		
 		// create patient weight form
 		MedicForm f2 = new MedicForm("Patient Weight");
 		f2.addField(new MedicFormField(f2, DataType.TEXT_FIELD, "Patient Name"));
 		f2.addField(new MedicFormField(f2, DataType.DATE_FIELD, "Patient Birthdate"));
 		f2.addField(new MedicFormField(f2, DataType.NUMERIC_TEXT_FIELD, "Patient Weight"));
+		
 		// create patient death form
 		MedicForm f3 = new MedicForm("Patient Death");
 		f3.addField(new MedicFormField(f3, DataType.TEXT_FIELD, "Patient Name"));
 		f3.addField(new MedicFormField(f3, DataType.DATE_FIELD, "Patient Birthdate"));
 		f3.addField(new MedicFormField(f3, DataType.DATE_FIELD, "Date of Death"));
 		f3.addField(new MedicFormField(f3, DataType.TEXT_AREA, "Probable Cause"));
+		
 		// create patient ARV adherence form
 		MedicForm f4 = new MedicForm("ARV adherence");
 		f4.addField(new MedicFormField(f4, DataType.TEXT_FIELD, "Patient Name"));
 		f4.addField(new MedicFormField(f4, DataType.DATE_FIELD, "Patient Birthdate"));
 		f4.addField(new MedicFormField(f4, DataType.CHECK_BOX, "ARVs taken?"));
 		f4.addField(new MedicFormField(f4, DataType.TEXT_AREA, "Additional notes"));
+		
 		// create birth form
 		MedicForm f5 = new MedicForm("Patient Birth");
 		f5.addField(new MedicFormField(f5, DataType.TEXT_FIELD, "Patient Name"));
@@ -272,6 +294,7 @@ public class PatientViewPluginController extends BasePluginController implements
 		f5.addField(new MedicFormField(f5, DataType.CHECK_BOX, "Check if baby healthy"));
 		f5.addField(new MedicFormField(f5, DataType.CHECK_BOX, "Check if mother healthy"));
 		f5.addField(new MedicFormField(f5, DataType.TEXT_AREA, "Additional notes"));
+		
 		// create rash form
 		MedicForm f6 = new MedicForm("Unknown Rash");
 		f6.addField(new MedicFormField(f6, DataType.TEXT_FIELD, "Patient Name"));
@@ -312,7 +335,7 @@ public class PatientViewPluginController extends BasePluginController implements
 		f9.addField(new MedicFormField(f9, DataType.TEXT_FIELD, "Field 8"));
 
 		// create other form
-		MedicForm f0 = new MedicForm("CheckBox Long Test Form");
+		MedicForm f0 = new MedicForm("Checkbox Long Test Form");
 		f0.addField(new MedicFormField(f0, DataType.TEXT_FIELD, "Patient Name"));
 		f0.addField(new MedicFormField(f0, DataType.DATE_FIELD, "Patient Birthdate"));
 		f0.addField(new MedicFormField(f0, DataType.TEXT_FIELD, "Field 1"));
@@ -347,6 +370,19 @@ public class PatientViewPluginController extends BasePluginController implements
 		f13.addField(new MedicFormField(f13, DataType.DATE_FIELD, "Patient Birthdate"));
 		f13.addField(new MedicFormField(f13, DataType.TEXT_AREA, "Complaints"));
 		
+		createFSMSFormFromMedicForm(f1);
+		createFSMSFormFromMedicForm(f2);
+		createFSMSFormFromMedicForm(f3);
+		createFSMSFormFromMedicForm(f4);
+		createFSMSFormFromMedicForm(f5);
+		createFSMSFormFromMedicForm(f6);
+		createFSMSFormFromMedicForm(f7);
+		createFSMSFormFromMedicForm(f8);
+		createFSMSFormFromMedicForm(f9);
+		createFSMSFormFromMedicForm(f0);
+		createFSMSFormFromMedicForm(f11);
+		createFSMSFormFromMedicForm(f12);
+		createFSMSFormFromMedicForm(f13);
 		forms.add(f1);
 		forms.add(f2);
 		forms.add(f3);
@@ -361,7 +397,7 @@ public class PatientViewPluginController extends BasePluginController implements
 		forms.add(f12);
 		forms.add(f13);
 		
-		log("Forms Created");
+		log("Forms Created, creating form responses");
 		ArrayList<MedicFormResponse> fresponses = new ArrayList<MedicFormResponse>();
 		
 		for (MedicForm f : forms) {
@@ -422,7 +458,7 @@ public class PatientViewPluginController extends BasePluginController implements
 		log("Messages Created");
 		
 		
-		log("Information generated, saving Forms...");
+		log("All data created, beginning to save Forms");
 		for(MedicForm f: forms){
 			try{
 				formDao.saveMedicForm(f);
@@ -487,6 +523,23 @@ public class PatientViewPluginController extends BasePluginController implements
 		userDao.saveUser(user9);
 
 	}
+	
+	/**
+	 * Creates a FrontlineSMS form from a Medic form.
+	 * Also finalizes the form after setting it's group to the CHW
+	 * group
+	 * @param mf
+	 */
+	private void createFSMSFormFromMedicForm(MedicForm mf){
+		Form form = new Form(mf.getName());
+		for(MedicFormField mff: mf.getFields()){
+			form.addField(new FormField(FormFieldType.valueOf(mff.getDatatype().name()),mff.getLabel()));
+		}
+		form.setPermittedGroup(chwgroup);
+		vanillaFormDao.saveForm(form);
+		vanillaFormDao.finaliseForm(form);
+		mf.setForm(form);
+	}
 
 	/**
 	 * Random object used for generating random numbers and dates
@@ -544,18 +597,21 @@ public class PatientViewPluginController extends BasePluginController implements
 	}
 	
 	public void testFormHandling(){
-		try{
-		Message mess = Message.createIncomingMessage(24342, "2088473937", "234234234", "wtf mate");
-		Form parentForm = formDao.getMedicFormsByName("Patient Entry").iterator().next().getForm();
-		List<ResponseValue> rvs = new ArrayList<ResponseValue>();
-		rvs.add(new ResponseValue("drew Chavez"));
-		rvs.add(new ResponseValue("06/23/1970"));
-		rvs.add(new ResponseValue("male"));
-		rvs.add(new ResponseValue("500 inches"));
-		rvs.add(new ResponseValue("HIV Positive"));
-		FormResponse fr = new FormResponse(mess,parentForm,rvs);
-		handleFormResponse(fr);
-		}catch(Exception e){}
+		try {
+			Message mess = Message.createIncomingMessage(24342, "2088473937",
+					"234234234", "wtf mate");
+			Form parentForm = formDao.getMedicFormsByName("Patient Entry")
+					.iterator().next().getForm();
+			List<ResponseValue> rvs = new ArrayList<ResponseValue>();
+			rvs.add(new ResponseValue("drew Chavez"));
+			rvs.add(new ResponseValue("06/23/1970"));
+			rvs.add(new ResponseValue("male"));
+			rvs.add(new ResponseValue("500 inches"));
+			rvs.add(new ResponseValue("HIV Positive"));
+			FormResponse fr = new FormResponse(mess, parentForm, rvs);
+			handleFormResponse(fr);
+		} catch (Exception e) {
+		}
 	}
 	
 	/**
