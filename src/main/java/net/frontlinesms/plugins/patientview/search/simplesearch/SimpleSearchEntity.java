@@ -79,7 +79,7 @@ public enum SimpleSearchEntity {
 				   new FieldDescriptor(null,"simplesearch.fields.response","value",SimpleSearchDataType.STRING)}),
 				   
 	ATTRIBUTE_RESPONSE("medic.common.attribute.responses",
-					   "attribute",
+					   "attributeResponse",
 				       "PersonAttributeResponse",
 					   PersonAttributeResponse.class,
 					   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.attribute.name","attribute.label",SimpleSearchDataType.STRING),
