@@ -19,6 +19,17 @@ public class PatientPanel extends PersonPanel<Patient> {
 	private PatientDao patientDao;
 	
 	/**
+	 * Creates a PatientPanel used for creating new Patients.
+	 * Uses a delegate
+	 * @param uiController
+	 * @param appCon
+	 */
+	public PatientPanel(UiGeneratorController uiController, ApplicationContext appCon, PersonPanelDelegate delegate) {
+		super(uiController,appCon, delegate);
+		patientDao = (PatientDao) appCon.getBean("PatientDao");
+	}
+	
+	/**
 	 * Creates a PatientPanel used for creating new Patients
 	 * @param uiController
 	 * @param appCon

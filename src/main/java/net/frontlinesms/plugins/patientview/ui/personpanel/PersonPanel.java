@@ -31,6 +31,8 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 	protected boolean isNewPersonPanel;
 	protected ApplicationContext appCon;
 	
+	protected PersonPanelDelegate delegate;
+	
 	private static String PERSON_PANEL_XML = "/ui/plugins/patientview/AtAGlance/person_AAG.xml";
 	//i18n constants
 	private static final String AGE_LABEL = "medic.common.labels.age";
@@ -62,6 +64,22 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 			inEditingMode=true;
 			addEditableFields();
 		}
+	}
+	
+	/**
+	 * A constructor for creating person panels that are meant to add new people to the system.
+	 * This constructor includes a delegate for callbacks
+	 * @param uiController the UI controller
+	 */
+	public PersonPanel(UiGeneratorController uiController, ApplicationContext appCon, PersonPanelDelegate delegate){
+		this.uiController= uiController;
+		this.appCon = appCon;
+		this.mainPanelContainer = uiController.create("panel");
+		this.delegate = delegate;
+		isNewPersonPanel=true;
+		inEditingMode=true;
+		uiController.setInteger(mainPanelContainer, "weightx", 1);
+		addEditableFields();
 	}
 	
 	/**
@@ -158,11 +176,13 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 		if(inEditingMode){
 			ImageChooser chooser = new ImageChooser();
 			if(chooser.getImage() != null){
+				if(person == null){
+					createPerson();
+				}
 				person.setImage(chooser.getImage(), chooser.getExtension());
+				uiController.setIcon(uiController.find(mainPanel, "imagePanel"), person.getResizedImage());
 			}
-			savePerson();
-		}
-		else if(person.hasImage()){
+		}else if(person.hasImage()){
 			Thinlet thinlet = new Thinlet();
 			Object panel = Thinlet.create("panel");
 			BufferedImage image = person.getImage();
@@ -240,25 +260,36 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 	 * Updates the person to reflect all the responses to the fields
 	 * and then writes the changes to the database
 	 */
-	private void validateAndSaveFieldResponses(){
-		if(isNewPersonPanel){
+	private boolean validateAndSaveFieldResponses(){
+		if(isNewPersonPanel && person ==null){
 			createPerson();
 		}
 		//get all the fields
+		boolean isValid = true;
 		ArrayList<PersonalFormField> fields = getFieldsInLabelPanel();
 		for(PersonalFormField pff: fields){
 			//if the field is valid, and has changed, then set the value
 			if(pff.isValid() && pff.hasChanged()){
 				pff.setFieldForPerson(person);
+			}else if(!pff.isValid()){
+				uiController.alert("The field \""+pff.getLabel()+"\" is entered incorrectly.");
+				isValid=false;
+				break;
 			}
 		}
-		//now, save the fields
-		if(isNewPersonPanel){
-			savePerson();
-			isNewPersonPanel = false;
-		}else{
-			updatePerson();
+		if(isValid){
+			//now, save the fields
+			if(isNewPersonPanel){
+				savePerson();
+				isNewPersonPanel = false;
+				if(delegate !=null){
+					delegate.didCreatePerson();
+				}
+			}else{
+				updatePerson();
+			}
 		}
+		return isValid;
 	}
 	
 	/**
@@ -278,7 +309,9 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 		uiController.setAction(cancelButton, "stopEditingWithoutSave()", null, this);
 		uiController.setChoice(cancelButton, "halign", "right");
 		uiController.add(saveCancelPanel, saveButton);
-		uiController.add(saveCancelPanel, cancelButton);
+		if(delegate == null){
+			uiController.add(saveCancelPanel, cancelButton);
+		}
 		return saveCancelPanel;
 	}
 	
@@ -320,8 +353,9 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 	 * Switches from editing mode back to normal mode, saving any changes that have occurred
 	 */
 	public void stopEditingWithSave(){
-		validateAndSaveFieldResponses();
-		addNonEditableFields();
+		if(validateAndSaveFieldResponses()){
+			addNonEditableFields();
+		}
 	}
 	
 	/**
@@ -353,6 +387,10 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 	
 	protected void setNameLabel(String name){
 		uiController.setText(uiController.find(mainPanel,"nameLabel"), name);
+	}
+	
+	public void setPanelTitle(String title){
+		uiController.setText(mainPanel,title);
 	}
 	
 	
