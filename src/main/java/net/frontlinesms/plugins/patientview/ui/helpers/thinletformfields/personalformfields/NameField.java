@@ -26,6 +26,11 @@ public class NameField extends TextBox implements PersonalFormField{
 	public boolean hasChanged(){
 		return hasChanged;
 	}
+	
+	@Override
+	public boolean isValid(){
+		return super.getResponse() !="" && super.getResponse() != null;
+	}
 
 	public void setFieldForPerson(Person p) {
 		p.setName(getRawResponse());

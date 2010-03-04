@@ -3,6 +3,7 @@ package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
 import net.frontlinesms.plugins.patientview.data.domain.framework.Field;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PasswordTextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PhoneNumberField;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.UiGeneratorController;

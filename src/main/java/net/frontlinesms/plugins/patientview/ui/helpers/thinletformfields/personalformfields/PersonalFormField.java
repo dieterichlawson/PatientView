@@ -27,4 +27,5 @@ public interface PersonalFormField {
 	 */
 	public boolean hasChanged();
 	
+	public String getLabel();
 }

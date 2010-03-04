@@ -11,7 +11,7 @@ import net.frontlinesms.ui.ExtendedThinlet;
 public class DateField extends TextBox {
 
 	protected DateSelectorDialog ds;
-	protected SimpleDateFormat df;
+	protected DateFormat df;
 	Object btn;
 	public static final String NAME = "dateField";
 
@@ -23,8 +23,7 @@ public class DateField extends TextBox {
 		thinlet.add(mainPanel, btn);
 		thinlet.setInteger(mainPanel, "columns", 3);
 		ds = new DateSelectorDialog(thinlet, textBox);
-		df =  new SimpleDateFormat();
-		df.applyLocalizedPattern("dd/MM/yyyy");
+		df =  DateFormat.getDateInstance(DateFormat.SHORT);
 		thinlet.setAttachedObject(mainPanel, this);
 	}
 
@@ -35,8 +34,7 @@ public class DateField extends TextBox {
 		thinlet.setAction(btn, "showDateSelector()", null, this);
 		thinlet.add(mainPanel, btn);
 		thinlet.setInteger(mainPanel, "columns", 3);
-		df =  new SimpleDateFormat();
-		df.applyLocalizedPattern("dd/MM/yyyy");
+		df =  DateFormat.getDateInstance(DateFormat.SHORT);
 		ds = new DateSelectorDialog(thinlet, textBox);
 	}
 
@@ -66,8 +64,6 @@ public class DateField extends TextBox {
 
 	public boolean isValid() {
 		try {
-			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-			df.setLenient(false);
 			Date date = df.parse(this.getResponse());
 		} catch (Exception e) {
 			return false;
