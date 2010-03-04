@@ -277,16 +277,6 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 			}
 		}
 	}
-	
-	public void expandDetailView(Object view){
-		uiController.removeAll(uiController.find(mainTab,"medic"));
-		uiController.add(uiController.find(mainTab,"medic"),view);	
-	}
-
-	public void collapseDetailView(){
-		uiController.removeAll(uiController.find(mainTab,"medic"));
-		uiController.add(uiController.find(mainTab,"medic"),mainPanel);
-	}
 
 	/**
 	 * action method for left page button

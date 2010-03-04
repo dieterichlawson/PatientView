@@ -2,12 +2,10 @@ package net.frontlinesms.plugins.patientview.ui.detailview;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
-import java.awt.Component;
 import java.util.HashMap;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
-import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonAttributePanel;
 import net.frontlinesms.ui.UiGeneratorController;
 
@@ -37,14 +35,28 @@ public class CommunityHealthWorkerDetailViewPanelController implements
 		return CommunityHealthWorker.class;
 	}
 
+	/**
+	 * Returns a string-string map describing the further options buttons.
+	 * In this case, the only further option is a 'message this chw' option
+	 * that allows the user to send that chw a text message.
+	 * @see net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController#getFurtherOptions()
+	 */
 	public HashMap<String, String> getFurtherOptions() {
-		return null;
+		HashMap<String,String> fOptions = new HashMap<String,String>();
+		fOptions.put("Message this CHW", "messageCHWButtonClicked");
+		return fOptions;
 	}
 
 	public Object getPanel() {
 		return mainPanel;
 	}
 
+	/**
+	 * Puts in a CHW person panel and the attribute panel
+	 * to go with it.
+	 * 
+	 * @see net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController#viewWillAppear(java.lang.Object)
+	 */
 	public void viewWillAppear(CommunityHealthWorker p) {
 		mainPanel = uiController.create("panel");
 		uiController.setWeight(mainPanel, 1, 1);
@@ -56,6 +68,11 @@ public class CommunityHealthWorkerDetailViewPanelController implements
 		uiController.add(mainPanel, getBottomButtons());
 	}
 	
+	/**
+	 * @return The buttons that go at the bottom of the panel,
+	 * currently an "Edit this info" button if not in editing mode
+	 * and a save/cancel pair if in editing mode.
+	 */
 	private Object getBottomButtons(){
 		Object buttonPanel = uiController.create("panel");
 		uiController.setName(buttonPanel, "buttonPanel");
@@ -84,6 +101,9 @@ public class CommunityHealthWorkerDetailViewPanelController implements
 		return buttonPanel;
 	}
 
+	/**
+	 * Action method for the edit button
+	 */
 	public void editButtonClicked(){
 		inEditingMode=true;
 		currentAttributePanel.switchToEditingPanel();
@@ -91,6 +111,9 @@ public class CommunityHealthWorkerDetailViewPanelController implements
 		uiController.add(mainPanel,getBottomButtons());
 	}
 	
+	/**
+	 * Action method for the save button
+	 */
 	public void saveButtonClicked(){
 		inEditingMode=false;
 		currentAttributePanel.stopEditingWithSave();
@@ -98,6 +121,9 @@ public class CommunityHealthWorkerDetailViewPanelController implements
 		uiController.add(mainPanel,getBottomButtons());
 	}
 	
+	/**
+	 * Action method for the cancel button
+	 */
 	public void cancelButtonClicked(){
 		inEditingMode=false;
 		currentAttributePanel.stopEditingWithoutSave();

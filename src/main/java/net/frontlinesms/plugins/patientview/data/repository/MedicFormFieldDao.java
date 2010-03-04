@@ -51,6 +51,14 @@ public interface MedicFormFieldDao {
 	 * @return
 	 */
 	public List<MedicFormField> getFieldsByName(String s);
+
+	/**
+	 * Returns limit # of fields that have a label that matches a like %s% query
+	 * @param s the string to match
+	 * @param limit the limit
+	 * @return
+	 */
+	public List<MedicFormField> getFieldsByName(String s, int limit);
 	
 	/**
 	 * Returns all the fields on the form supplied. The fields

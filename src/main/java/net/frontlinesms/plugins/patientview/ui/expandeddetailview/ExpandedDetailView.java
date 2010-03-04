@@ -15,6 +15,8 @@ public abstract class ExpandedDetailView implements ThinletUiEventHandler{
 	protected Object rightPanel;
 	protected Object middlePanel;
 	
+	protected Object stashedPanel;
+	
 	//controllers
 	protected UiGeneratorController uiController;
 	protected ApplicationContext appCon;
@@ -31,5 +33,20 @@ public abstract class ExpandedDetailView implements ThinletUiEventHandler{
 	public Object getMainPanel(){
 		return mainPanel;
 	}
+	
+	
+	protected void expandDetailView(){
+		stashedPanel = uiController.find("medicTabMainPanel");
+		uiController.removeAll(uiController.find("medic"));
+		uiController.add(uiController.find("medic"),getMainPanel());	
+	}
+
+	protected void collapseDetailView(){
+		uiController.removeAll(uiController.find("medic"));
+		uiController.add(uiController.find("medic"),stashedPanel);
+	}
+
+
+	
 }
 

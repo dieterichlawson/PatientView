@@ -2,6 +2,7 @@ package net.frontlinesms.plugins.patientview.data.repository;
 
 import java.util.List;
 
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 
@@ -36,4 +37,12 @@ public interface MedicFormResponseDao {
 	 * @return All Form Responses submitted by p
 	 */
 	public List<MedicFormResponse> getFormResponsesForSubmitter(Person p);
+	
+	/**
+	 * @param form
+	 * @return All the form responses for MedicForm form
+	 */
+	public List<MedicFormResponse> getFormResponsesForForm(MedicForm form);
+	
+	public MedicFormResponse reattach(MedicFormResponse mf);
 }

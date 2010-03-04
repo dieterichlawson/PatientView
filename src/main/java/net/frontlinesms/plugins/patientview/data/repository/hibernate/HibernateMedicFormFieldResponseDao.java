@@ -11,6 +11,7 @@ import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
+import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
 
 public class HibernateMedicFormFieldResponseDao extends BaseHibernateDao<MedicFormFieldResponse> implements MedicFormFieldResponseDao{
@@ -63,6 +64,12 @@ public class HibernateMedicFormFieldResponseDao extends BaseHibernateDao<MedicFo
 
 	public void saveFieldResponse(MedicFormFieldResponse s) {
 		super.saveWithoutDuplicateHandling(s);
+	}
+
+	public List<MedicFormFieldResponse> getResponsesForForm(MedicFormResponse mfr) {	
+		DetachedCriteria c = super.getCriterion();
+		c.add(Restrictions.eq("formResponse", mfr));
+		return super.getList(c);
 	}
 
 }

@@ -10,6 +10,7 @@ import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.ResultTransformer;
 
 public class HibernateMedicFormFieldDao extends BaseHibernateDao<MedicFormField> implements MedicFormFieldDao{
 	
@@ -59,5 +60,14 @@ public class HibernateMedicFormFieldDao extends BaseHibernateDao<MedicFormField>
 	public List<MedicFormField> getFieldsOnForm(MedicForm f) {
 		DetachedCriteria c = super.getCriterion().add(Restrictions.eq("parentForm", f));
 		return super.getList(c);
+	}
+
+	//FIXME: make this work
+	public List<MedicFormField> getFieldsByName(String s, int limit) {
+//		DetachedCrite//ria c = DetachedCriteria.forClass(MedicFormField.class);
+//		c.add(Restrictions.like("label", "%" + s+ "%"));
+//
+//		return super.getList(c);
+		return null;
 	}
 }

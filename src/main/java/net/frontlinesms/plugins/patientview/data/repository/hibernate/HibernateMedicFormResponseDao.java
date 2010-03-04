@@ -3,6 +3,7 @@ package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 import java.util.List;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao;
@@ -53,5 +54,16 @@ public class HibernateMedicFormResponseDao extends BaseHibernateDao<MedicFormRes
 		DetachedCriteria c = super.getCriterion();
 		c.add(Restrictions.like("submitter", p));
 		return super.getList(c);
+	}
+
+	public List<MedicFormResponse> getFormResponsesForForm(MedicForm form) {
+		DetachedCriteria c = super.getCriterion();
+		c.add(Restrictions.eq("form", form));
+		return super.getList(c);
+	}
+	
+	public MedicFormResponse reattach(MedicFormResponse mf){
+		super.getSession().update(mf);
+		return mf;
 	}
 }

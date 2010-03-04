@@ -6,6 +6,7 @@ import java.util.List;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
+import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 
 /**
  * This dao is fairly stripped down since, in general, you should not be deleting or
@@ -42,5 +43,14 @@ public interface MedicFormFieldResponseDao {
 	 * @return
 	 */
 	public List<MedicFormFieldResponse> getResponsesForfield(MedicFormField mff);
+	
+	/**
+	 * Returns all form field responses on that form response.
+	 * This method should be destroyed as soon as we figure out a
+	 * better way to fix the Lazy Loading exceptions 
+	 * @param mfr
+	 * @return
+	 */
+	public List<MedicFormFieldResponse> getResponsesForForm(MedicFormResponse mfr);
 	
 }

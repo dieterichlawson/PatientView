@@ -5,9 +5,9 @@ import java.util.Collection;
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
-import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -50,7 +50,9 @@ public class HibernateMedicFormDao extends BaseHibernateDao<MedicForm> implement
 	 */
 	public Collection<MedicForm> getMedicFormsByName(String s){
 		DetachedCriteria c = DetachedCriteria.forClass(MedicForm.class);
-		c.add(Restrictions.like("name", "%" + s+ "%"));
+		c.add(Restrictions.like("name", "%"+s+"%"))
+		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
 		return super.getList(c);
 	}
 

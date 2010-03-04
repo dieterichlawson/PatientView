@@ -5,6 +5,8 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import java.util.HashMap;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.ui.dialogs.SubmitFormDialog;
+import net.frontlinesms.plugins.patientview.ui.expandeddetailview.PersonExpandedDetailView;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonAttributePanel;
@@ -19,7 +21,9 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	private static final String EDIT_PATIENT_ATTRIBUTES = "detailview.buttons.edit.patient.attributes";
 	private static final String SAVE_PATIENT_ATTRIBUTES = "detailview.buttons.save";
 	private static final String CANCEL = "detailview.buttons.cancel";
+	private static final String SEE_MORE = "detailview.buttons.see.more";
 	private Object mainPanel;
+	private Patient currentPatient;
 	private UiGeneratorController uiController;
 	private ApplicationContext appCon;
 	private boolean inEditingMode;
@@ -38,15 +42,22 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	}
 
 	public HashMap<String, String> getFurtherOptions() {
-		return null;
+		HashMap<String,String> furtherOptions = new HashMap<String,String>();
+		furtherOptions.put("Submit a Form for this Patient", "submitForm()");
+		return furtherOptions;
 	}
 
 	public Object getPanel() {
 		return mainPanel;
 	}
+	
+	public void submitForm(){
+		SubmitFormDialog sfd = new SubmitFormDialog(uiController,appCon,null,currentPatient);
+	}
 
 	public void viewWillAppear(Patient p) {
 		inEditingMode=false;
+		currentPatient= p;
 		mainPanel = uiController.create("panel");
 		uiController.setWeight(mainPanel, 1, 1);
 		uiController.setColumns(mainPanel, 1);
@@ -64,24 +75,23 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 		uiController.setName(buttonPanel, "buttonPanel");
 		uiController.setColumns(buttonPanel, 3);
 		Object leftButton = uiController.createButton(!inEditingMode?getI18NString(EDIT_PATIENT_ATTRIBUTES):getI18NString(SAVE_PATIENT_ATTRIBUTES));
+		Object rightButton = uiController.createButton(!inEditingMode?getI18NString(SEE_MORE):getI18NString(CANCEL));
 		if(inEditingMode){
 			uiController.setAction(leftButton, "saveButtonClicked", null, this);
+			uiController.setAction(rightButton, "cancelButtonClicked", null, this);
 		}else{
 			uiController.setAction(leftButton, "editButtonClicked", null, this);
+			uiController.setAction(rightButton, "showPatientDashboard", null, this);
 		}
 		uiController.setHAlign(leftButton, Thinlet.LEFT);
 		uiController.setVAlign(leftButton, Thinlet.BOTTOM);
 		uiController.add(buttonPanel,leftButton);
-		if(inEditingMode){
-			Object spacerLabel = uiController.createLabel("");
-			uiController.setWeight(spacerLabel, 1, 0);
-			uiController.add(buttonPanel,spacerLabel);
-			Object rightButton = uiController.createButton(getI18NString(CANCEL));
-			uiController.setHAlign(rightButton, Thinlet.RIGHT);
-			uiController.setVAlign(rightButton, Thinlet.BOTTOM);
-			uiController.setAction(rightButton, "cancelButtonClicked", null, this);
-			uiController.add(buttonPanel, rightButton);
-		}
+		Object spacerLabel = uiController.createLabel("");
+		uiController.setWeight(spacerLabel, 1, 0);
+		uiController.add(buttonPanel,spacerLabel);
+		uiController.setHAlign(rightButton, Thinlet.RIGHT);
+		uiController.setVAlign(rightButton, Thinlet.BOTTOM);
+		uiController.add(buttonPanel, rightButton);
 		uiController.setWeight(buttonPanel, 1, 1);
 		uiController.setVAlign(buttonPanel, Thinlet.BOTTOM);
 		return buttonPanel;
@@ -106,6 +116,10 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 		currentAttributePanel.stopEditingWithoutSave();
 		uiController.remove(uiController.find(mainPanel,"buttonPanel"));
 		uiController.add(mainPanel,getBottomButtons());
+	}
+	
+	public void showPatientDashboard(){
+		PersonExpandedDetailView pedv = new PersonExpandedDetailView(uiController,appCon,currentPatient);
 	}
 	public void viewWillDisappear() {/* do nothing */}
 
