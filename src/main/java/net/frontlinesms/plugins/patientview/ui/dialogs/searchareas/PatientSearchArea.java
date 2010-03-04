@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
-import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernatePatientDao;
+import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
 import net.frontlinesms.plugins.patientview.ui.dialogs.SubmitFormDialog;
 import net.frontlinesms.ui.ExtendedThinlet;
 
@@ -13,22 +13,18 @@ import org.springframework.context.ApplicationContext;
 public class PatientSearchArea extends EntitySearchArea<Patient>{
 
 	private SubmitFormDialog fofDialog;
-	private HibernatePatientDao patientDao;
+	private PatientDao patientDao;
 	private CommunityHealthWorker chw;
 
 	public PatientSearchArea(Patient entity, ExtendedThinlet uiController,SubmitFormDialog fofDialog,ApplicationContext appCon) {
 		super(entity, uiController);
 		this.fofDialog= fofDialog;
-		patientDao = (HibernatePatientDao) appCon.getBean("PatientDao");
+		patientDao = (PatientDao) appCon.getBean("PatientDao");
 	}
 
 	@Override
 	protected Collection<Patient> getEntitiesForString(String s) {
-		if(chw == null){
 			return patientDao.getPatientsByNameWithLimit(s,20);
-		}else{
-			return patientDao.getPatientsByCHWAndName(s, chw);
-		}
 	}
 	
 	public void setCommunityHealthWorker(CommunityHealthWorker chw){
