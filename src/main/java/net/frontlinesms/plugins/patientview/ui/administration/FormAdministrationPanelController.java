@@ -56,10 +56,11 @@ public class FormAdministrationPanelController implements
 	FormDao frontlineFormDao;
 	MedicFormDao patientViewFormDao;
 	MedicFormFieldDao patientViewFieldDao;
+	
 	public String getListItemTitle() {
 		return InternationalisationUtils.getI18NString(FORM_PANEL_TITLE);
 	}
-	
+
 	public FormAdministrationPanelController(UiGeneratorController uiController, ApplicationContext appCon){
 		this.uiController = uiController;
 		this.appCon = appCon;
