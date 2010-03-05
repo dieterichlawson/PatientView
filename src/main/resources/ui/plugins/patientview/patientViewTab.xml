@@ -25,9 +25,9 @@
             	<button name="rightPageButton" icon="/icons/right.png" action="pageRight()"/>
             </panel> 
         </panel>
-        <panel  columns="1" gap="7" weightx="1" halign="fill" left="5">
-            <panel border="true" name="detailPanelMedic" weightx="1" weighty="5" halign="fill" columns="1" gap="5" left ="5" right="5" bottom="5" top="5"/>
-            <panel border="true" name="furtherOptionsPanel" weightx="1" weighty="1" top="5" bottom="5" left="5" right="5" gap="6"/>
+        <panel  columns="1" gap="7" weightx="1" halign="fill" left="5" name="detailViewPanel">
+            <panel border="true" name="mainDetailPanel" weightx="1" weighty="5" halign="fill" columns="1" gap="5" left ="5" right="5" bottom="5" top="5"/>
+            <panel border="true" name="furtherOptionsPanel" weightx="1" weighty="1" top="5" bottom="5" left="5" right="5" gap="6" columns="2"/>
         </panel>
     </splitpane>
     </panel>

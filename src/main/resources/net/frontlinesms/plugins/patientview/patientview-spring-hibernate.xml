@@ -31,4 +31,5 @@
 	<bean id="TagKeywordDao" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateTagKeywordDao" parent="baseHibernateDao"/>
 	
 	<bean id="HistoryEntryDao" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateHistoryEntryDao" parent="baseHibernateDao"/>
+
 </beans>
