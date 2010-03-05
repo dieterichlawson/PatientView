@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField.PatientFieldMapping;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
@@ -16,11 +17,11 @@ import net.frontlinesms.plugins.patientview.ui.dialogs.searchareas.PatientSearch
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.CheckBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.NumericTextField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.PasswordTextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextArea;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TimeField;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PasswordTextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PhoneNumberField;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.ExtendedThinlet;
@@ -157,12 +158,22 @@ public class SubmitFormDialog implements ThinletUiEventHandler{
 	}
 	
 	private void autoFillPatient(){
-		if(currentPatient!= null && currentForm !=null){
-			fields.get(0).setResponse(currentPatient.getName());
-			fields.get(0).setEnabled(false);
-			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-			fields.get(1).setResponse(df.format(currentPatient.getBirthdate()));
-			fields.get(1).setEnabled(false);
+		int nonRespondable=0;
+		for(int i = 0; i < currentForm.getFields().size(); i++){
+			MedicFormField mff = currentForm.getFields().get(i);
+			if(!mff.getDatatype().isRespondable()){
+				nonRespondable++;
+			}
+			if(mff.getMapping()== PatientFieldMapping.NAMEFIELD){
+				fields.get(i-nonRespondable).setResponse(currentPatient.getName());
+			}else if(mff.getMapping()== PatientFieldMapping.BIRTHDATEFIELD){
+				((DateField) fields.get(i-nonRespondable)).setRawResponse(currentPatient.getBirthdate());
+			}else if(mff.getMapping()== PatientFieldMapping.IDFIELD){
+				fields.get(i-nonRespondable).setResponse(String.valueOf(currentPatient.getPid()));
+			}
+			if(mff.getMapping() !=null){
+				fields.get(i-nonRespondable).setEnabled(false);
+			}
 		}
 	}
 	
