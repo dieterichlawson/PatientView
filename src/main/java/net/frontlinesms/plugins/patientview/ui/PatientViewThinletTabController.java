@@ -13,11 +13,12 @@ import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
+import net.frontlinesms.plugins.patientview.data.domain.response.PersonAttributeResponse;
 import net.frontlinesms.plugins.patientview.search.QueryGenerator;
-import net.frontlinesms.plugins.patientview.search.drilldownsearch.DrillDownSearchController;
 import net.frontlinesms.plugins.patientview.search.simplesearch.SimpleSearchController;
 import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabController;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewController;
+import net.frontlinesms.plugins.patientview.ui.registrar.RegistrationScreenController;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager.AuthenticationResult;
 import net.frontlinesms.ui.ThinletUiEventHandler;
@@ -143,7 +144,9 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 		uiController.add(uiController.find(mainTab,"medicTabMainPanel"),loginScreen);
 		uiController.setText(uiController.find(loginScreen, "UsernameField"), "");
 		uiController.setText(uiController.find(loginScreen, "PasswordField"), "");
-		uiController.remove(adminTab.getMainPanel());
+		if(adminTab != null){
+			uiController.remove(adminTab.getMainPanel());
+		}
 		loginText="";
 	}
 	
@@ -171,13 +174,19 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	public void init() {
 			uiController.removeAll(uiController.find(mainTab,"medic"));
 			uiController.add(uiController.find(mainTab,"medic"),uiController.find(uiController.loadComponentFromFile(XML_MEDIC_TAB, this),"medicTabMainPanel"));
-			detailViewController = new DetailViewController(uiController.find(mainTab,"detailPanelMedic"),uiController,pluginController.getApplicationContext());
+			detailViewController = new DetailViewController(uiController.find(mainTab,"detailViewPanel"),uiController,pluginController.getApplicationContext());
 			uiController.setInteger(uiController.find(mainTab,"splitPanel"), "divider", (int) (uiController.getWidth() * 0.56));
+			mainPanel =  uiController.find(mainTab,"medicTabMainPanel");
 			//if user is an admin, add the admin tab
 			if(UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.ADMIN){
 				adminTab = new AdministrationTabController(uiController,pluginController.getApplicationContext());
 				uiController.add(uiController.getParent(getTab()),adminTab.getMainPanel());
 			}
+			if(UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.REGISTRAR){
+				uiController.removeAll(mainPanel);
+				RegistrationScreenController rsc = new RegistrationScreenController(uiController,pluginController.getApplicationContext(),this);
+				uiController.add(mainPanel,rsc.getMainPanel());
+			}else{
 			//initialize the results table
 			tableController = new AdvancedTableController(this, uiController,true);
 			String nameLabel= getI18NString(NAME_COLUMN);
@@ -199,6 +208,7 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 			tableController.putHeader(Patient.class, new String[]{nameLabel,ageLabel,genderLabel, chwLabel}, new String[]{"getName", "getStringAge","getStringGender","getCHWName"});
 			tableController.putHeader(MedicForm.class, new String[]{nameLabel}, new String[]{"getName"});
 			tableController.putHeader(PersonAttribute.class, new String[]{labelLabel}, new String[]{"getLabel"});
+			tableController.putHeader(PersonAttributeResponse.class, new String[]{labelLabel, senderLabel,subjectLabel, dateSubmittedLabel,responseLabel}, new String[]{"getAttributeLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"});
 			tableController.putHeader(MedicFormField.class, new String[]{labelLabel, parentFormLabel}, new String[]{"getLabel","getParentFormName"});
 			tableController.putHeader(MedicMessageResponse.class, new String[]{senderLabel,dateSentLabel, messageContentLabel}, new String[]{"getSubmitterName","getStringDateSubmitted","getMessageContent"});
 			tableController.putHeader(MedicFormResponse.class, new String[]{formNameLabel, senderLabel,subjectLabel, dateSubmittedLabel}, new String[]{"getFormName","getSubmitterName","getSubjectName","getStringDateSubmitted"});
@@ -214,8 +224,8 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 			//set the login label
 			uiController.setText(uiController.find(mainTab,"userStatusLabel"), getI18NString(LOGGED_IN_MESSAGE)+ " "+
 								 UserSessionManager.getUserSessionManager().getCurrentUser().getName());
-			mainPanel =  uiController.find(mainTab,"medicTabMainPanel");
 			updatePagingControls();
+			}
 	}
 	
 	//TableActionDelegate methods
@@ -235,20 +245,15 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	}
 
 	public QueryGenerator getQueryGenerator() {
-		if(currentSearchState == SearchState.SIMPLESEARCH && simpleSearch !=null){
+		if (simpleSearch != null) {
 			return simpleSearch.getQueryGenerator();
-		}//else if (currentSearchState == SearchState.DRILLDOWNSEARCH && drillDownSearch !=null){
-			//return drillDownSearch.getQueryGenerator();
-		//}
-		return null;
+		} else {
+			return null;
+		}
 	}
 	
 	public void refresh(){
-		if(currentSearchState == SearchState.SIMPLESEARCH){
 			simpleSearch.searchButtonPressed();
-		}else{
-			//drillDownSearch.refresh();
-		}
 	}
 	
 	/**
