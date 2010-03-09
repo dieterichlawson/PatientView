@@ -13,7 +13,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
-import net.frontlinesms.events.EventNotifier;
+import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEvent;
 import net.frontlinesms.events.impl.DidSaveNotification;
@@ -125,7 +125,7 @@ public class AdvancedTableController implements EventObserver{
 	public AdvancedTableController(AdvancedTableActionDelegate delegate, UiGeneratorController uiController, boolean useTableMethod, ApplicationContext appcon, AdvancedTableDataSource dataSource){
 		this.uiController = uiController;
 		this.useTableMethod = useTableMethod;
-		((EventNotifier) appcon.getBean("eventNotifier")).registerObserver(this);
+		((EventBus) appcon.getBean("eventBus")).registerObserver(this);
 		this.dataSource = dataSource;
 		this.delegate = delegate;
 		if(!useTableMethod){

@@ -2,7 +2,7 @@ package net.frontlinesms.plugins.patientview.ui.administration;
 
 import java.util.Collection;
 
-import net.frontlinesms.events.EventNotifier;
+import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEvent;
 import net.frontlinesms.events.impl.DidDeleteNotification;
@@ -27,7 +27,7 @@ import org.springframework.context.ApplicationContext;
 public class FormAdministrationPanelController implements
 		AdministrationTabPanel, ThinletUiEventHandler, EventObserver{
 
-	private EventNotifier eventNotifier;
+	private EventBus eventNotifier;
 	
 	private static final String FORM_PANEL_TITLE = "admin.tabs.form.panel.title";
 	
@@ -78,7 +78,7 @@ public class FormAdministrationPanelController implements
 		frontlineFormDao = (FormDao) appCon.getBean("formDao");
 		patientViewFormDao = (MedicFormDao) appCon.getBean("MedicFormDao");
 		patientViewFieldDao = (MedicFormFieldDao) appCon.getBean("MedicFormFieldDao");
-		eventNotifier = (EventNotifier) appCon.getBean("eventNotifier");
+		eventNotifier = (EventBus) appCon.getBean("eventBus");
 		eventNotifier.registerObserver(this);
 		//initialize the lists, etc..
 		populateFrontlineFormList();
@@ -228,19 +228,19 @@ public class FormAdministrationPanelController implements
 	public void notify(FrontlineEvent event) {
 		if(event instanceof DidSaveNotification){
 			DidSaveNotification castEvent = (DidSaveNotification) event;
-			if(castEvent.getSavedObject() instanceof Form || castEvent.getSavedObject() instanceof MedicForm){
+			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
 				populateFrontlineFormList();
 				populatePatientViewFormList();
 			}
 		}else if(event instanceof DidUpdateNotification){
 			DidUpdateNotification castEvent = (DidUpdateNotification) event;
-			if(castEvent.getUpdatedObject() instanceof Form || castEvent.getUpdatedObject() instanceof MedicForm){
+			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
 				populateFrontlineFormList();
 				populatePatientViewFormList();
 			}
 		}else if(event instanceof DidDeleteNotification){
 			DidDeleteNotification castEvent = (DidDeleteNotification) event;
-			if(castEvent.getDeletedObject() instanceof Form || castEvent.getDeletedObject() instanceof MedicForm){
+			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
 				populateFrontlineFormList();
 				populatePatientViewFormList();
 			}
