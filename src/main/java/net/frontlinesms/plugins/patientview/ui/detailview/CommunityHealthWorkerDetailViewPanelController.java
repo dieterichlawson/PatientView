@@ -44,7 +44,7 @@ public class CommunityHealthWorkerDetailViewPanelController implements
 	public HashMap<String, String> getFurtherOptions() {
 		HashMap<String,String> fOptions = new HashMap<String,String>();
 		fOptions.put("Message this CHW", "messageCHWButtonClicked");
-		return fOptions;
+		return null;
 	}
 
 	public Object getPanel() {

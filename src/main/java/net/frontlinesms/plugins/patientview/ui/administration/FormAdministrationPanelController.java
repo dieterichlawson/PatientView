@@ -23,6 +23,7 @@ import net.frontlinesms.ui.i18n.InternationalisationUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.context.ApplicationContext;
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
 public class FormAdministrationPanelController implements
 		AdministrationTabPanel, ThinletUiEventHandler, EventObserver{
@@ -32,6 +33,10 @@ public class FormAdministrationPanelController implements
 	private static final String FORM_PANEL_TITLE = "admin.tabs.form.panel.title";
 	
 	private static final String FORM_PANEL_XML = "/ui/plugins/patientview/admintab/manageFormsPanel.xml";
+
+	private static final String FIELDS_ON_FORM_PREFIX = "admin.forms.fields.on.form.prefix";
+
+	private static final String FORM_ALREADY_RESPONDED_TO_DIALG = "admin.forms.form.already.responded.to.dialog";
 	
 	private UiGeneratorController uiController;
 	private ApplicationContext appCon;
@@ -108,6 +113,11 @@ public class FormAdministrationPanelController implements
 		uiController.setSelectedIndex(frontlineFormList, 0);
 	}
 	
+	/**
+	 * Takes a hibernate proxy object and returns the real object
+	 * @param entity
+	 * @return
+	 */
 	public static Form initializeAndUnproxy(Form entity) {
 	    if (entity == null) {
 	        throw new 
@@ -162,7 +172,7 @@ public class FormAdministrationPanelController implements
 	 * @param form
 	 */
 	private void populateFieldList(MedicForm form){
-		uiController.setText(uiController.find(mainPanel,"fieldListTitle"), "Fields on \"" + form.getName()+"\"");
+		uiController.setText(uiController.find(mainPanel,"fieldListTitle"),getI18NString(FIELDS_ON_FORM_PREFIX)+ " \"" + form.getName()+"\"");
 		uiController.removeAll(fieldList);
 		for(MedicFormField mff: patientViewFieldDao.getFieldsOnForm(form)){
 			Object item = uiController.createListItem(mff.getLabel(), mff);
@@ -221,7 +231,7 @@ public class FormAdministrationPanelController implements
 			patientViewFormDao.deleteMedicForm(mf);
 			populatePatientViewFormList();
 		}else{
-			uiController.alert("You cannot delete Forms that have been responded to");
+			uiController.alert(getI18NString(FORM_ALREADY_RESPONDED_TO_DIALG));
 		}
 	}
 

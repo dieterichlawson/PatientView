@@ -272,7 +272,8 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 			if(pff.isValid() && pff.hasChanged()){
 				pff.setFieldForPerson(person);
 			}else if(!pff.isValid()){
-				uiController.alert("The field \""+pff.getLabel()+"\" is entered incorrectly.");
+				uiController.alert(getI18NString("personpanel.edit.details.error.prefix")+" \""+pff.getLabel()+"\" "+getI18NString("personpanel.edit.details.error.suffix"));
+				
 				isValid=false;
 				break;
 			}
@@ -302,10 +303,10 @@ public abstract class PersonPanel<E extends Person> implements ThinletUiEventHan
 		uiController.setInteger(saveCancelPanel, "right", 10);
 		uiController.setChoice(saveCancelPanel, "halign", "fill");
 		uiController.setInteger(saveCancelPanel, "weightx", 1);
-		Object saveButton = uiController.createButton("Save");
+		Object saveButton = uiController.createButton(getI18NString("detailview.buttons.save"));
 		uiController.setAction(saveButton, "stopEditingWithSave()", null, this);
 		uiController.setChoice(saveButton, "halign", "left");
-		Object cancelButton = uiController.createButton("Cancel");
+		Object cancelButton = uiController.createButton(getI18NString("detailview.buttons.cancel"));
 		uiController.setAction(cancelButton, "stopEditingWithoutSave()", null, this);
 		uiController.setChoice(cancelButton, "halign", "right");
 		uiController.add(saveCancelPanel, saveButton);

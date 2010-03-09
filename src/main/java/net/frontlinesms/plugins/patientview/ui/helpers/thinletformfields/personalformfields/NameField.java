@@ -3,6 +3,7 @@ package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.person
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 public class NameField extends TextBox implements PersonalFormField{
 
@@ -10,7 +11,7 @@ public class NameField extends TextBox implements PersonalFormField{
 	public static final String NAME = "nameField";
 	
 	public NameField(ExtendedThinlet thinlet, String initialText) {
-		super(thinlet, "Name:", NAME);
+		super(thinlet, InternationalisationUtils.getI18NString("medic.common.labels.name")+":", NAME);
 		hasChanged = false;
 		if(initialText != null){
 			thinlet.setText(textBox, initialText);

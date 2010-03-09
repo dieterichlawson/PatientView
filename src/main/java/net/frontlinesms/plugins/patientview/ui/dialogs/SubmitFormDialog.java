@@ -206,19 +206,6 @@ public class SubmitFormDialog implements ThinletUiEventHandler{
 		updateFormPanel();
 	}
 	
-	@SuppressWarnings("unused")
-	private void setAllEditable(Object container, boolean editable){
-		try{
-		thinlet.setEditable(container,editable);
-		}catch(Throwable t){}
-		for(Object b : thinlet.getItems(container)){
-			thinlet.setEnabled(b, editable);
-			try{
-				setAllEditable(b, editable);
-			}catch(Throwable t){}
-		}
-	}
-	
 	public void setForm(MedicForm f){
 		currentForm = f;
 		updateFormPanel();
