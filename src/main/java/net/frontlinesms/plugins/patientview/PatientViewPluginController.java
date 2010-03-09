@@ -137,7 +137,6 @@ public class PatientViewPluginController extends BasePluginController implements
 		patientDao = (PatientDao) applicationContext.getBean("PatientDao");
 		vanillaFormDao = (FormDao) applicationContext.getBean("formDao");
 		formDao =(MedicFormDao) applicationContext.getBean("MedicFormDao");
-		
 		try {
 			createDummyData();
 		} catch (Throwable t) {
@@ -170,8 +169,9 @@ public class PatientViewPluginController extends BasePluginController implements
 	}
 
 	/**
-	 * Creates dummy data and writes it to the database
+	 * Creates dummy data and writes it to the database.
 	 */
+	@SuppressWarnings("serial")
 	private void createDummyData() {
 		if(chwDao.getAllCommunityHealthWorkers().size() !=0){
 			return;
@@ -180,14 +180,14 @@ public class PatientViewPluginController extends BasePluginController implements
 		MedicFormResponseDao formResponseDao =(MedicFormResponseDao) applicationContext.getBean("MedicFormResponseDao");
 		thinlet = new ExtendedThinlet();
 		mainPanel = thinlet.createPanel("mainPanel");
-		textArea = thinlet.create("textarea");
+		textArea = Thinlet.create("textarea");
 		thinlet.setWeight(mainPanel, 1, 1);
 		thinlet.setWeight(textArea, 1, 1);
 		thinlet.add(mainPanel,textArea);
 		thinlet.add(Thinlet.create("panel"));
 		thinlet.add(mainPanel);
-		//you have to use a special framelauncher class because otherwise it will close all open windows
-		FrameLauncher framel = new FrameLauncher("Creating Dummy Data",thinlet,500,500,null)
+		// you have to use a special framelauncher class because otherwise it will close all open windows
+		new FrameLauncher("Creating Dummy Data",thinlet,500,500,null)
 		{ public void windowClosing(WindowEvent e){  dispose(); }}; 
 		
 		log("Creating dummy data..");
@@ -231,12 +231,12 @@ public class PatientViewPluginController extends BasePluginController implements
 				for (Patient pe : patients) {
 					patientDao.savePatient(pe);
 				}
-				log("CHW saved " + i);
+				log("CHW " + i + " saved");
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
-		log("creating the CHW group and adding all CHWs to it");
+		log("Creating the CHW group and adding all CHWs to it...");
 		//create a CHW group and add all the chws to it
 		Group rootGroup = new Group(null, null) {
 			@Override
@@ -257,6 +257,7 @@ public class PatientViewPluginController extends BasePluginController implements
 			gmd.addMember(chwgroup, chw.getContactInfo());
 		}
 		
+		log("Group created.  Creating forms...");
 		ArrayList<MedicForm> forms = new ArrayList<MedicForm>();
 		// create new Patient Entry form
 		MedicForm f1 = new MedicForm("Patient Entry");
@@ -265,13 +266,14 @@ public class PatientViewPluginController extends BasePluginController implements
 		f1.addField(new MedicFormField(f1, DataType.TEXT_FIELD, "Patient Gender"));
 		f1.addField(new MedicFormField(f1, DataType.TEXT_FIELD, "Patient Height"));
 		f1.addField(new MedicFormField(f1, DataType.CHECK_BOX, "Patient HIV Status"));
-		
+		log("Patient Entry Form created.");
 		
 		// create patient weight form
 		MedicForm f2 = new MedicForm("Patient Weight");
 		f2.addField(new MedicFormField(f2, DataType.TEXT_FIELD, "Patient Name"));
 		f2.addField(new MedicFormField(f2, DataType.DATE_FIELD, "Patient Birthdate"));
 		f2.addField(new MedicFormField(f2, DataType.NUMERIC_TEXT_FIELD, "Patient Weight"));
+		log("Patient Weight Form created.");
 		
 		// create patient death form
 		MedicForm f3 = new MedicForm("Patient Death");
@@ -279,13 +281,15 @@ public class PatientViewPluginController extends BasePluginController implements
 		f3.addField(new MedicFormField(f3, DataType.DATE_FIELD, "Patient Birthdate"));
 		f3.addField(new MedicFormField(f3, DataType.DATE_FIELD, "Date of Death"));
 		f3.addField(new MedicFormField(f3, DataType.TEXT_AREA, "Probable Cause"));
+		log("Patient Death Form created.");
 		
 		// create patient ARV adherence form
-		MedicForm f4 = new MedicForm("ARV adherence");
+		MedicForm f4 = new MedicForm("ARV Adherence");
 		f4.addField(new MedicFormField(f4, DataType.TEXT_FIELD, "Patient Name"));
 		f4.addField(new MedicFormField(f4, DataType.DATE_FIELD, "Patient Birthdate"));
 		f4.addField(new MedicFormField(f4, DataType.CHECK_BOX, "ARVs taken?"));
 		f4.addField(new MedicFormField(f4, DataType.TEXT_AREA, "Additional notes"));
+		log("ARV Adherence Form created.");
 		
 		// create birth form
 		MedicForm f5 = new MedicForm("Patient Birth");
@@ -294,6 +298,7 @@ public class PatientViewPluginController extends BasePluginController implements
 		f5.addField(new MedicFormField(f5, DataType.CHECK_BOX, "Check if baby healthy"));
 		f5.addField(new MedicFormField(f5, DataType.CHECK_BOX, "Check if mother healthy"));
 		f5.addField(new MedicFormField(f5, DataType.TEXT_AREA, "Additional notes"));
+		log("Patient Birth Form created.");
 		
 		// create rash form
 		MedicForm f6 = new MedicForm("Unknown Rash");
@@ -304,6 +309,8 @@ public class PatientViewPluginController extends BasePluginController implements
 		f6.addField(new MedicFormField(f6, DataType.TEXT_FIELD,
 				"Location of Rash"));
 		f6.addField(new MedicFormField(f6, DataType.TEXT_AREA, "Other notes"));
+		log("Unknown Rash Form created.");
+		
 		// create other form
 		MedicForm f7 = new MedicForm("Diarrheal Disease");
 		f7.addField(new MedicFormField(f7, DataType.TEXT_FIELD, "Patient Name"));
@@ -312,7 +319,9 @@ public class PatientViewPluginController extends BasePluginController implements
 		f7.addField(new MedicFormField(f7,DataType.TEXT_FIELD,"Frequency"));
 		f7.addField(new MedicFormField(f7, DataType.CHECK_BOX, "Is patient dehydrated?"));
 		f7.addField(new MedicFormField(f7, DataType.CHECK_BOX, "Check if bloody"));
-		f7.addField(new MedicFormField(f7, DataType.TEXT_AREA, "additional notes"));
+		f7.addField(new MedicFormField(f7, DataType.TEXT_AREA, "Additional Notes"));
+		log("Diarrheal Disease Form created.");
+		
 		// create other form
 		MedicForm f8 = new MedicForm("Joint Pain");
 		f8.addField(new MedicFormField(f8, DataType.TEXT_FIELD, "Patient Name"));
@@ -320,8 +329,10 @@ public class PatientViewPluginController extends BasePluginController implements
 		f8.addField(new MedicFormField(f8, DataType.TEXT_FIELD, "Joints affected"));
 		f8.addField(new MedicFormField(f8, DataType.TEXT_FIELD, "Type of Pain"));
 		f8.addField(new MedicFormField(f8, DataType.TEXT_AREA, "Additional Notes"));
+		log("Joint Pain Form created.");
+		
 		// create other form
-		MedicForm f9 = new MedicForm("Long Test Form");
+		MedicForm f9 = new MedicForm("Long Text Form");
 		f9.addField(new MedicFormField(f9, DataType.TEXT_FIELD, "Patient Name"));
 		f9.addField(new MedicFormField(f9, DataType.DATE_FIELD, "Patient Birthdate"));
 		f9.addField(new MedicFormField(f9, DataType.TEXT_FIELD, "Field 1"));
@@ -333,9 +344,10 @@ public class PatientViewPluginController extends BasePluginController implements
 		f9.addField(new MedicFormField(f9, DataType.TEXT_FIELD, "Field 6"));
 		f9.addField(new MedicFormField(f9, DataType.TEXT_FIELD, "Field 7"));
 		f9.addField(new MedicFormField(f9, DataType.TEXT_FIELD, "Field 8"));
+		log("Long Text Form created.");
 
 		// create other form
-		MedicForm f0 = new MedicForm("Checkbox Long Test Form");
+		MedicForm f0 = new MedicForm("Long Checkbox Form");
 		f0.addField(new MedicFormField(f0, DataType.TEXT_FIELD, "Patient Name"));
 		f0.addField(new MedicFormField(f0, DataType.DATE_FIELD, "Patient Birthdate"));
 		f0.addField(new MedicFormField(f0, DataType.TEXT_FIELD, "Field 1"));
@@ -347,6 +359,7 @@ public class PatientViewPluginController extends BasePluginController implements
 		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 5"));
 		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 6"));
 		f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 7"));
+		log("Long Checkbox Form created.");
 		
 		MedicForm f11 = new MedicForm("Side Effects");
 		f11.addField(new MedicFormField(f11, DataType.TEXT_FIELD, "Patient Name"));
@@ -358,31 +371,34 @@ public class PatientViewPluginController extends BasePluginController implements
 		f11.addField(new MedicFormField(f11, DataType.CHECK_BOX, "Check for internal bleeding"));
 		f11.addField(new MedicFormField(f11, DataType.CHECK_BOX, "Check for sores"));
 		f11.addField(new MedicFormField(f11, DataType.CHECK_BOX, "Check for dizziness"));
+		log("Side Effects Form created.");
 		
 		MedicForm f12 = new MedicForm("Morphine Adherence");
 		f12.addField(new MedicFormField(f12, DataType.TEXT_FIELD, "Patient Name"));
 		f12.addField(new MedicFormField(f12, DataType.DATE_FIELD, "Patient Birthdate"));
 		f12.addField(new MedicFormField(f12, DataType.CHECK_BOX, "Check if Morphine taken"));
 		f12.addField(new MedicFormField(f12, DataType.TEXT_AREA, "Additional notes"));
+		log("Morphine Adherence Form created.");
 		
 		MedicForm f13 = new MedicForm("Present Complaints of Patient");
 		f13.addField(new MedicFormField(f13, DataType.TEXT_FIELD, "Patient Name"));
 		f13.addField(new MedicFormField(f13, DataType.DATE_FIELD, "Patient Birthdate"));
 		f13.addField(new MedicFormField(f13, DataType.TEXT_AREA, "Complaints"));
+		log("Complaints Form created.");
 		
-		createFSMSFormFromMedicForm(f1);
-		createFSMSFormFromMedicForm(f2);
-		createFSMSFormFromMedicForm(f3);
-		createFSMSFormFromMedicForm(f4);
-		createFSMSFormFromMedicForm(f5);
-		createFSMSFormFromMedicForm(f6);
-		createFSMSFormFromMedicForm(f7);
-		createFSMSFormFromMedicForm(f8);
-		createFSMSFormFromMedicForm(f9);
-		createFSMSFormFromMedicForm(f0);
-		createFSMSFormFromMedicForm(f11);
-		createFSMSFormFromMedicForm(f12);
-		createFSMSFormFromMedicForm(f13);
+//		createFSMSFormFromMedicForm(f1);
+//		createFSMSFormFromMedicForm(f2);
+//		createFSMSFormFromMedicForm(f3);
+//		createFSMSFormFromMedicForm(f4);
+//		createFSMSFormFromMedicForm(f5);
+//		createFSMSFormFromMedicForm(f6);
+//		createFSMSFormFromMedicForm(f7);
+//		createFSMSFormFromMedicForm(f8);
+//		createFSMSFormFromMedicForm(f9);
+//		createFSMSFormFromMedicForm(f0);
+//		createFSMSFormFromMedicForm(f11);
+//		createFSMSFormFromMedicForm(f12);
+//		createFSMSFormFromMedicForm(f13);
 		forms.add(f1);
 		forms.add(f2);
 		forms.add(f3);
@@ -397,7 +413,7 @@ public class PatientViewPluginController extends BasePluginController implements
 		forms.add(f12);
 		forms.add(f13);
 		
-		log("Forms Created, creating form responses");
+		log("Forms created. Creating form responses...");
 		ArrayList<MedicFormResponse> fresponses = new ArrayList<MedicFormResponse>();
 		
 		for (MedicForm f : forms) {
@@ -524,22 +540,23 @@ public class PatientViewPluginController extends BasePluginController implements
 
 	}
 	
-	/**
-	 * Creates a FrontlineSMS form from a Medic form.
-	 * Also finalizes the form after setting it's group to the CHW
-	 * group
-	 * @param mf
-	 */
-	private void createFSMSFormFromMedicForm(MedicForm mf){
-		Form form = new Form(mf.getName());
-		for(MedicFormField mff: mf.getFields()){
-			form.addField(new FormField(FormFieldType.valueOf(mff.getDatatype().name()),mff.getLabel()));
-		}
-		form.setPermittedGroup(chwgroup);
-		vanillaFormDao.saveForm(form);
-		vanillaFormDao.finaliseForm(form);
-		mf.setForm(form);
-	}
+//	/**
+//	 * Creates a FrontlineSMS form from a Medic form.
+//	 * Also finalizes the form after setting it's group to the CHW
+//	 * group
+//	 * @param mf
+//	 */
+//	private void createFSMSFormFromMedicForm(MedicForm mf){
+//		Form form = new Form(mf.getName());
+//		for(MedicFormField mff: mf.getFields()){
+//			form.addField(new FormField(FormFieldType.valueOf(mff.getDatatype().name()),mff.getLabel()));
+//		}
+//		form.setPermittedGroup(chwgroup);
+//		vanillaFormDao.saveForm(form);
+// 
+//		mf.setForm(form);
+//		
+//	}
 
 	/**
 	 * Random object used for generating random numbers and dates
