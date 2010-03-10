@@ -21,7 +21,7 @@ import net.frontlinesms.events.impl.DidUpdateNotification;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
-
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 /**
  * This class provides a controller for a thinlet table that can handle creating
  * headers, doing all the thinlet grunt-work, and autofitting columns.
@@ -40,6 +40,9 @@ public class AdvancedTableController implements EventObserver{
 		
 	private AdvancedTableActionDelegate delegate;
 	private AdvancedTableDataSource dataSource;
+	
+	/** the message displayed when there are no results**/
+	private String noResultsMessage;
 	
 	public AdvancedTableDataSource getDataSource() {
 		return dataSource;
@@ -173,10 +176,10 @@ public class AdvancedTableController implements EventObserver{
 		if(results.size() == 0){
 			uiController.removeAll(getTable());
 			Object header = uiController.create("header");
-			uiController.add(header,uiController.createColumn("No results to display", null));
+			uiController.add(header,uiController.createColumn(getI18NString("advancedtable.no.results.to.display"), null));
 			uiController.add(getTable(),header);
 			Object row = uiController.createTableRow(null);
-			uiController.add(row, uiController.createTableCell("There were no results matching your search..."));
+			uiController.add(row, uiController.createTableCell(noResultsMessage==null?getI18NString("advancedtable.no.search.results"):noResultsMessage));
 			uiController.add(getTable(),row);
 			delegate.resultsChanged();
 			return;
@@ -388,5 +391,9 @@ public class AdvancedTableController implements EventObserver{
 				uiController.setSelectedIndex(getTable(), selectedIndex);
 			}
 		}
+	}
+	
+	public void setNoResultsMessage(String message){
+		this.noResultsMessage = message;
 	}
 }

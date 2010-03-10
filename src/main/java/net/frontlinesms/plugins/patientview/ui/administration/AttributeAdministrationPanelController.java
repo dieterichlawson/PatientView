@@ -19,6 +19,7 @@ import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorker
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -93,6 +94,7 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 		
 		currentItemTableController.putHeader(Field.class, new String[]{getI18NString(LABEL_COLUMN), getI18NString(DATA_TYPE_COLUMN)},
 				   										  new String[]{"getLabel","getDataTypeName"});
+		currentItemTableController.setNoResultsMessage(getI18NString("admin.attributes.advancedtable.no.results.message"));
 		//initialize the combo box choices
 		uiController.removeAll(dataTypeComboBox);
 		for(DataType d: DataType.values()){

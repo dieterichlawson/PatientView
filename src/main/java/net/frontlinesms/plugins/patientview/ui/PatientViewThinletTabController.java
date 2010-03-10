@@ -308,7 +308,7 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 		if(this.getQueryGenerator().getTotalResults() == 0){
 			uiController.setEnabled(uiController.find(mainTab, "rightPageButton"),false);
 			uiController.setEnabled(uiController.find(mainTab, "leftPageButton"),false);
-			uiController.setText(uiController.find(mainTab, "resultsLabel"),"No Results");
+			uiController.setText(uiController.find(mainTab, "resultsLabel"),getI18NString("pagingcontrols.no.results"));
 			return;
 		}
 		if(this.getQueryGenerator().hasPreviousPage()){
@@ -322,8 +322,8 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 		}else{
 			uiController.setEnabled(uiController.find(mainTab, "rightPageButton"),false);
 		}
-		String pagingLabel = "Results " + getQueryGenerator().getFirstResultOnPage() + " to " +
-							 getQueryGenerator().getLastResultOnPage() + " of " + getQueryGenerator().getTotalResults();
+		String pagingLabel = getI18NString("pagingcontrols.results")+" " + getQueryGenerator().getFirstResultOnPage() + " "+getI18NString("pagingcontrols.to")+" " +
+							 getQueryGenerator().getLastResultOnPage() + " "+getI18NString("pagingcontrols.of")+" " + getQueryGenerator().getTotalResults();
 		uiController.setText(uiController.find(mainTab, "resultsLabel"),pagingLabel);
 	}
 

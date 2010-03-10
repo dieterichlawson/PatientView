@@ -16,7 +16,7 @@ import net.frontlinesms.ui.UiGeneratorController;
 import org.springframework.context.ApplicationContext;
 
 import thinlet.Thinlet;
-
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 public class RegistrationScreenController implements ThinletUiEventHandler, AdvancedTableActionDelegate, PersonPanelDelegate {
 
 	private UiGeneratorController uiController;
@@ -43,11 +43,11 @@ public class RegistrationScreenController implements ThinletUiEventHandler, Adva
 		mainPanel = uiController.loadComponentFromFile(UI_FILE_XML, this);
 		patientDao = (PatientDao) appCon.getBean("PatientDao");
 		patientTable = new AdvancedTableController(this,uiController,uiController.find(mainPanel,"resultsTable"));
-		patientTable.putHeader(Patient.class, new String[]{"Name","Age","Gender", "CHW"}, new String[]{"getName","getStringAge","getStringGender", "getCHWName"});
+		patientTable.putHeader(Patient.class, new String[]{getI18NString("medic.common.labels.name"),getI18NString("medic.common.labels.age"), getI18NString("medic.common.labels.gender"), getI18NString("medic.common.chw")}, new String[]{"getName","getStringAge","getStringGender", "getCHWName"});
 		PatientPanel panel = new PatientPanel(uiController,appCon,this);
 		uiController.add(uiController.find(mainPanel,"bottomPanel"),panel.getMainPanel());
 		searchKeyPressed();
-		uiController.setText(uiController.find(mainPanel,"loginLabel"), "Logged in as "+ UserSessionManager.getUserSessionManager().getCurrentUser().getName());
+		uiController.setText(uiController.find(mainPanel,"loginLabel"), getI18NString("login.logged.in.as")+" "+ UserSessionManager.getUserSessionManager().getCurrentUser().getName());
 	}
 	
 	public void searchKeyPressed(){
@@ -88,11 +88,11 @@ public class RegistrationScreenController implements ThinletUiEventHandler, Adva
 	}
 
 	public void didCreatePerson() {
-		Object button = uiController.createButton("Create Another Patient");
+		Object button = uiController.createButton(getI18NString("registration.create.another.patient"));
 		uiController.setAction(button, "createAnotherPatient()", null, this);
 		uiController.setWeight(button, 1, 0);
 		uiController.setHAlign(button,Thinlet.CENTER);
-		Object label = uiController.createLabel("Patient Created Succsessfully");
+		Object label = uiController.createLabel(getI18NString("registration.patient.created.successfully"));
 		uiController.setWeight(label, 1, 0);
 		uiController.setHAlign(label,Thinlet.CENTER);
 		uiController.add(uiController.find(mainPanel,"bottomPanel"),label);
