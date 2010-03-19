@@ -13,15 +13,10 @@ public class PasswordTextField extends TextBox implements PersonalFormField {
 
 	public static final String NAME = "passwordField";
 	private String response;
-	
-	public PasswordTextField(ExtendedThinlet thinlet, String password){
-		super(thinlet, InternationalisationUtils.getI18NString("login.password")+":", NAME);
-		response = "";
-		thinlet.setInteger(mainPanel, "colspan", 1);
-		thinlet.setAttachedObject(mainPanel, this);
 
+	
 	public PasswordTextField(ExtendedThinlet thinlet, String label) {
-		this(thinlet, label, NAME);
+		this(thinlet, InternationalisationUtils.getI18NString("login.password")+":", NAME);
 	}
 
 	protected PasswordTextField(ExtendedThinlet thinlet, String label,
@@ -29,6 +24,7 @@ public class PasswordTextField extends TextBox implements PersonalFormField {
 		super(thinlet, label, name);
 		response = "";
 		thinlet.setInteger(mainPanel, "colspan", 1);
+		thinlet.setAttachedObject(mainPanel, this);
 	}
 
 	public void textBoxKeyPressed(String typed) {
