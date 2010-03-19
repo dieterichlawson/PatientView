@@ -4,6 +4,7 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 public class GenderComboBox extends ThinletFormField<Gender> implements PersonalFormField{
 
@@ -12,12 +13,12 @@ public class GenderComboBox extends ThinletFormField<Gender> implements Personal
 	public static final String NAME = "genderComboBox";
 	
 	public GenderComboBox(ExtendedThinlet thinlet, Gender gender) {
-		super(thinlet, "Gender:",NAME);
+		super(thinlet, InternationalisationUtils.getI18NString("medic.common.labels.gender")+":", NAME);
 		hasChanged = false;
 		comboBox = thinlet.create("combobox");
-		thinlet.add(comboBox,thinlet.createComboboxChoice("Male", Gender.MALE));
-		thinlet.add(comboBox,thinlet.createComboboxChoice("Female", Gender.FEMALE));
-		thinlet.add(comboBox,thinlet.createComboboxChoice("Trans-gender", Gender.TRANSGENDER));
+		for(Gender g: Gender.values()){
+			thinlet.add(comboBox,thinlet.createComboboxChoice(g.toString(), g));
+		}
 		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null, this);
 		thinlet.add(mainPanel,comboBox);
 		thinlet.setInteger(comboBox, "weightx", 5);
@@ -51,7 +52,11 @@ public class GenderComboBox extends ThinletFormField<Gender> implements Personal
 	@Override
 	public void setRawResponse(Gender s) {
 		thinlet.setText(comboBox, s.toString());
-		thinlet.setSelectedIndex(comboBox, s == Gender.MALE? 0: s == Gender.FEMALE? 1:2);
+		for(int i =0; i < Gender.values().length;i++){
+			if(Gender.values()[i] == s){
+				thinlet.setSelectedIndex(comboBox,i);
+			}
+		}
 	}
 	
 	@Override

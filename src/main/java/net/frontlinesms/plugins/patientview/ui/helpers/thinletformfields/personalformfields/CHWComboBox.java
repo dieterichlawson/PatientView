@@ -8,6 +8,7 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateCommunityHealthWorkerDao;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -20,7 +21,7 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 	public static final String NAME = "chwComboBox";
 	
 	public CHWComboBox(ExtendedThinlet thinlet, ApplicationContext appCon, CommunityHealthWorker chw) {
-		super(thinlet, "CHW:", NAME);
+		super(thinlet, InternationalisationUtils.getI18NString("medic.common.chws")+":", NAME);
 		comboBox =thinlet.create("combobox");
 		hasChanged=false;
 		thinlet.setInsert(comboBox,"textChanged(this.text)", null, this);
@@ -39,7 +40,7 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 	}
 	
 	protected CHWComboBox(ExtendedThinlet thinlet, ApplicationContext appCon, CommunityHealthWorker chw, String name) {
-		super(thinlet, "CHW:", name);
+		super(thinlet, InternationalisationUtils.getI18NString("medic.common.chws")+":", name);
 		comboBox =thinlet.create("combobox");
 		hasChanged=false;
 		thinlet.setInsert(comboBox,"textChanged(this.text)", null, this);

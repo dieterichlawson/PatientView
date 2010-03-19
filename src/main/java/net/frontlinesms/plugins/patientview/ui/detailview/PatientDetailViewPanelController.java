@@ -22,6 +22,7 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	private static final String SAVE_PATIENT_ATTRIBUTES = "detailview.buttons.save";
 	private static final String CANCEL = "detailview.buttons.cancel";
 	private static final String SEE_MORE = "detailview.buttons.see.more";
+	private static final String SUBMIT_FORM_FOR_PATIENT = "detailview.buttons.submit.form.patient";
 	private Object mainPanel;
 	private Patient currentPatient;
 	private UiGeneratorController uiController;
@@ -43,7 +44,7 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 
 	public HashMap<String, String> getFurtherOptions() {
 		HashMap<String,String> furtherOptions = new HashMap<String,String>();
-		furtherOptions.put("Submit a Form for this Patient", "submitForm()");
+		furtherOptions.put(getI18NString(SUBMIT_FORM_FOR_PATIENT), "submitForm()");
 		return furtherOptions;
 	}
 

@@ -18,7 +18,7 @@ public class PhoneNumberField extends TextBox implements PersonalFormField{
 	private boolean hasChanged;
 	
 	public PhoneNumberField(ExtendedThinlet thinlet, String phoneNumber){
-		super(thinlet, InternationalisationUtils.getI18NString(PHONE_NUMBER_FIELD), NAME);
+		super(thinlet, InternationalisationUtils.getI18NString(PHONE_NUMBER_FIELD)+":", NAME);
 		thinlet.setText(textBox, phoneNumber);
 		thinlet.setAction(textBox, "textChanged(this.text)", null, this);
 		thinlet.setAttachedObject(mainPanel, this);

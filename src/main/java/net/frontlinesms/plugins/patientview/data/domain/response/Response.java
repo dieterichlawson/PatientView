@@ -35,11 +35,11 @@ public abstract class Response {
 	@Column(unique=true,nullable=false,updatable=false)
 	protected long responseId;
 	
-	@OneToOne(fetch=FetchType.LAZY,cascade={})
+	@OneToOne(fetch=FetchType.EAGER,cascade={})
 	@JoinColumn(name="submitter",nullable=true )
 	protected Person submitter;
 	
-	@OneToOne(fetch=FetchType.LAZY,optional=true, cascade={})
+	@OneToOne(fetch=FetchType.EAGER,optional=true, cascade={})
 	@JoinColumn(name="subject",nullable=true )
 	protected Person subject;
 	

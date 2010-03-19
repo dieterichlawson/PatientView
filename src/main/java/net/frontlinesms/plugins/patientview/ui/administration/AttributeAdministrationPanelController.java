@@ -19,13 +19,14 @@ import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorker
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
 public class AttributeAdministrationPanelController implements AdministrationTabPanel, ThinletUiEventHandler, AdvancedTableActionDelegate {
 
 	
-	private static final String PANEL_TITLE = "admin.tabs.attribute.panel.title";
+	private static final String PANEL_TITLE = "admin.attributes.panel.title";
 	
 	public String getListItemTitle() {
 		return getI18NString(PANEL_TITLE);
@@ -67,6 +68,10 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 	private static final String LABEL_COLUMN = "medic.common.labels.label";
 	private static final String PARENT_FORM_COLUMN = "medic.common.labels.parent.form";
 	private static final String DATA_TYPE_COLUMN = "datatype.datatype";
+
+	private static final String ALREADY_RESPONDED_TO_DIALOG = "admin.attributes.responses.already.present.dialog";
+
+	private static final String ATTRIBUTE_INFO_MISSING_DIALOG = "admin.attributes.fields.not.filled.out.dialog";
 	
 	public AttributeAdministrationPanelController(UiGeneratorController uiController, ApplicationContext appContext){
 		this.uiController = uiController;
@@ -89,6 +94,7 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 		
 		currentItemTableController.putHeader(Field.class, new String[]{getI18NString(LABEL_COLUMN), getI18NString(DATA_TYPE_COLUMN)},
 				   										  new String[]{"getLabel","getDataTypeName"});
+		currentItemTableController.setNoResultsMessage(getI18NString("admin.attributes.advancedtable.no.results.message"));
 		//initialize the combo box choices
 		uiController.removeAll(dataTypeComboBox);
 		for(DataType d: DataType.values()){
@@ -167,7 +173,7 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 			field.setIsAttributePanelField(true);
 			formFieldDao.updateField(field);
 		}else{
-			uiController.createDialog("You haven't entered all the data required yet: Please either enter a data type and a title for a new attribute or select a field.");
+			uiController.createDialog(getI18NString(ATTRIBUTE_INFO_MISSING_DIALOG));
 		}
 		updateCurrentItemTable();
 		updatePreview();
@@ -191,7 +197,7 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 			if(attributeResponseDao.getResponsesForAttribute((PersonAttribute) field).size() == 0){
 				attributeDao.deleteAttribute((PersonAttribute) field);
 			}else{
-				uiController.alert("You cannot delete attributes that have been responded to");
+				uiController.alert(getI18NString(ALREADY_RESPONDED_TO_DIALOG));
 			}
 		}
 		updateCurrentItemTable();

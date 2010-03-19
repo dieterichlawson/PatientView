@@ -5,6 +5,7 @@ import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 public class RoleComboBox extends ThinletFormField<Role> implements PersonalFormField{
 
@@ -12,7 +13,7 @@ public class RoleComboBox extends ThinletFormField<Role> implements PersonalForm
 	protected boolean hasChanged;
 	public static final String NAME = "roleComboBox";
 	public RoleComboBox(ExtendedThinlet thinlet, Role role) {
-		super(thinlet, "Role:",NAME);
+		super(thinlet, InternationalisationUtils.getI18NString("medic.common.labels.role")+":", NAME);
 		hasChanged = false;
 		comboBox = thinlet.create("combobox");
 		for(Role r:Role.values()){

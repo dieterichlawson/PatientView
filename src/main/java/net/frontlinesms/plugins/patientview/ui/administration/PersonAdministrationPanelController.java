@@ -9,7 +9,7 @@ import net.frontlinesms.plugins.patientview.ui.AdvancedTableDataSource;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
-
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 import org.springframework.context.ApplicationContext;
 
 public abstract class PersonAdministrationPanelController<E extends Person> implements AdministrationTabPanel, ThinletUiEventHandler, 
@@ -32,7 +32,10 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	private static final String FIELDS_PANEL = "fieldspanel";
 	private static final String SEARCH_FIELD = "searchbox";
 	
-	
+	private static final String MANAGE= "medic.common.labels.manage";
+	private static final String ADD = "medic.common.labels.add";
+	private static final String REMOVE = "medic.common.labels.remove";
+	private static final String EDIT = "medic.common.labels.edit";
 	private String UI_FILE_MANAGE_PERSON_PANEL = "/ui/plugins/patientview/admintab/search_action_panel.xml";
 	
 	
@@ -47,10 +50,10 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 		advancedTable = uiController.find(mainPanel,RESULTS_TABLE);
 		advancedTableController = new AdvancedTableController(this,uiController,true,appCon,this);
 		putHeader();
-		uiController.setText(uiController.find(mainPanel,"titleLabel"), "Manage "+ getPersonType() + "s");
-		uiController.setText(uiController.find(mainPanel,ADD_BUTTON), "Add " + getPersonType());
-		uiController.setText(uiController.find(mainPanel,REMOVE_BUTTON), "Remove " + getPersonType());
-		uiController.setText(uiController.find(mainPanel,EDIT_BUTTON), "Edit " + getPersonType());
+		uiController.setText(uiController.find(mainPanel,"titleLabel"), getI18NString(MANAGE)+ " "+ getPersonType() + "s");
+		uiController.setText(uiController.find(mainPanel,ADD_BUTTON), getI18NString(ADD)+ " " + getPersonType());
+		uiController.setText(uiController.find(mainPanel,REMOVE_BUTTON), getI18NString(REMOVE)+ " " + getPersonType());
+		uiController.setText(uiController.find(mainPanel,EDIT_BUTTON), getI18NString(EDIT)+ " " + getPersonType());
 		uiController.setAction(uiController.find(mainPanel,EDIT_BUTTON), "editButtonClicked()", null, this);
 		uiController.setAction(uiController.find(mainPanel,ADD_BUTTON), "addButtonClicked()", null, this);
 		search("");

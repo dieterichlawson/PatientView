@@ -11,8 +11,8 @@ import net.frontlinesms.plugins.patientview.ui.personpanel.UserPanel;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
-
-public class UserAdministrationPanelController extends PersonAdministrationPanelController<User>{
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.*
+;public class UserAdministrationPanelController extends PersonAdministrationPanelController<User>{
 
 	private UserDao userDao;
 	public UserAdministrationPanelController(
@@ -35,7 +35,7 @@ public class UserAdministrationPanelController extends PersonAdministrationPanel
 
 	@Override
 	protected void putHeader() {
-		advancedTableController.putHeader(User.class, new String[]{"Name","Age","Role"}, new String[]{"getName", "getStringAge","getRoleName"});
+		advancedTableController.putHeader(User.class, new String[]{getI18NString("medic.common.labels.name"),getI18NString("medic.common.labels.age"),getI18NString("medic.common.labels.role")}, new String[]{"getName", "getStringAge","getRoleName"});
 	}
 
 	public String getListItemTitle() {

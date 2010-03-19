@@ -48,6 +48,8 @@ public class DetailViewController {
 	 * @param entity The entity that was selected in the table
 	 */
 	public void selectionChanged(Object entity){
+		if(entity == null)
+			return;
 		if(currentViewController !=null)
 			currentViewController.viewWillDisappear();
 		if(controllers.get(entity.getClass()) !=null){
