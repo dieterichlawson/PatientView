@@ -45,7 +45,7 @@ public class UserSessionManager {
 		//User user = userDao.getUserByUsername(username);
 		//User user = new User("Josh Nesbit",'m', new Date(),"jnesbit","medic",Role.ADMIN);
 		for(User user: userDao.getUsersByUsername(username)){
-			if(user.getPassword().equals(password)){
+			if(user.verifyPassword(password)){
 				currentUser = user;
 				isLoggedIn = true;
 				currentSessionStartTime = new Date().getTime();

@@ -3,7 +3,6 @@ package net.frontlinesms.plugins.patientview.ui.personpanel;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PasswordTextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.RoleComboBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.UsernameField;
 import net.frontlinesms.ui.UiGeneratorController;
@@ -46,8 +45,6 @@ public class UserPanel extends PersonPanel<User> {
 	protected void addAdditionalEditableFields() {
 		UsernameField usernameField = new UsernameField(uiController,appCon,true,isNewPersonPanel?"":person.getUsername());
 		uiController.add(getLabelPanel(),usernameField.getThinletPanel());
-		PasswordTextField passwordField = new PasswordTextField(uiController,isNewPersonPanel?"":person.getPassword());
-		uiController.add(getLabelPanel(),passwordField.getThinletPanel());
 		RoleComboBox roleCombo = new RoleComboBox(uiController,isNewPersonPanel?null:person.getRole());
 		uiController.add(getLabelPanel(),roleCombo.getThinletPanel());
 	}

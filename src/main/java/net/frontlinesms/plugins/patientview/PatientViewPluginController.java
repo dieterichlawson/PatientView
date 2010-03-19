@@ -1,6 +1,7 @@
 package net.frontlinesms.plugins.patientview;
 
 import java.awt.event.WindowEvent;
+import java.security.GeneralSecurityException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -24,8 +25,6 @@ import net.frontlinesms.plugins.BasePluginController;
 import net.frontlinesms.plugins.PluginControllerProperties;
 import net.frontlinesms.plugins.PluginInitialisationException;
 import net.frontlinesms.plugins.forms.data.domain.Form;
-import net.frontlinesms.plugins.forms.data.domain.FormField;
-import net.frontlinesms.plugins.forms.data.domain.FormFieldType;
 import net.frontlinesms.plugins.forms.data.domain.FormResponse;
 import net.frontlinesms.plugins.forms.data.domain.ResponseValue;
 import net.frontlinesms.plugins.forms.data.repository.FormDao;
@@ -495,7 +494,7 @@ public class PatientViewPluginController extends BasePluginController implements
 				log(count +" form responses saved");
 			}
 		}
-		System.out.println("Form Responses saved, saving messages...");
+		log("Form Responses saved, saving messages...");
 		count = 0;
 		
 		for(Message m: messages){
@@ -524,19 +523,27 @@ public class PatientViewPluginController extends BasePluginController implements
 		}
 		log("Everything saved, creating user credentials");
 		
-		User user0 = new User("Tester Admin",Gender.FEMALE, new Date(),"admin","medic",Role.ADMIN);
-		User user9 = new User("Tester Read/Write",Gender.MALE, new Date(),"readwrite","medic",Role.READWRITE);
-		User user8 = new User("Tester Read Only",Gender.FEMALE, new Date(),"readonly","medic",Role.READ);
-		User user = new User("Alex Harsha",Gender.FEMALE, new Date(),"aHarsha","medic",Role.ADMIN);
-		User user2 = new User("Aisha Moniba ",Gender.FEMALE, new Date(),"aMoniba","medic",Role.READWRITE);
-		User user3 = new User("Daniel Kayiwa ",Gender.MALE, new Date(),"dKayiwa","medic",Role.READ);
-		UserDao userDao = (UserDao) applicationContext.getBean("UserDao");
-		userDao.saveUser(user);
-		userDao.saveUser(user2);
-		userDao.saveUser(user3);
-		userDao.saveUser(user0);
-		userDao.saveUser(user8);
-		userDao.saveUser(user9);
+		User user0;
+		try {
+			user0 = new User("Tester Admin",Gender.FEMALE, new Date(),"admin","medic",Role.ADMIN);
+			User user9 = new User("Tester Read/Write",Gender.MALE, new Date(),"readwrite","medic",Role.READWRITE);
+			User user8 = new User("Tester Read Only",Gender.FEMALE, new Date(),"readonly","medic",Role.READ);
+			User user = new User("Alex Harsha",Gender.FEMALE, new Date(),"aHarsha","medic",Role.ADMIN);
+			User user2 = new User("Aisha Moniba ",Gender.FEMALE, new Date(),"aMoniba","medic",Role.READWRITE);
+			User user3 = new User("Daniel Kayiwa ",Gender.MALE, new Date(),"dKayiwa","medic",Role.READ);
+			UserDao userDao = (UserDao) applicationContext.getBean("UserDao");
+			userDao.saveUser(user);
+			userDao.saveUser(user2);
+			userDao.saveUser(user3);
+			userDao.saveUser(user0);
+			userDao.saveUser(user8);
+			userDao.saveUser(user9);
+		} catch (GeneralSecurityException e1) {
+			log("Error creating users!");
+			log(e1.getStackTrace().toString());
+		}
+
+
 
 	}
 	
