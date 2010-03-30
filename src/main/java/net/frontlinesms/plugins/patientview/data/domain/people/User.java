@@ -3,6 +3,8 @@ package net.frontlinesms.plugins.patientview.data.domain.people;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.util.Date;
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,9 +19,24 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 @DiscriminatorValue(value = "user")
 public class User extends Person {
 
-	/** Possible user roles. They're pretty self explanatory. */
-	public enum Role { // TODO: i18n for these values
-		READ(), READWRITE(), ADMIN(), REGISTRAR();
+	/**
+	 * Possible user roles. They're pretty self explanatory. To add a new role,
+	 * just add a new declaration in the form: <br>
+	 * <pre>NEWROLE ("i18n.string.location")</pre>
+	 */
+	public static enum Role {
+		READ      ("roles.readonly"), 
+		READWRITE ("roles.readwrite"), 
+		ADMIN     ("roles.admin"), 
+		REGISTRAR ("roles.registrar");
+
+		/** The i18n reference for this role. */
+		private String name;
+
+		private Role(String name) {
+			this.name = name;
+		}
+
 		/**
 		 * Returns the role object representing the string passed in. Returns
 		 * null if a role could not be found for the name.
@@ -29,29 +46,21 @@ public class User extends Person {
 		 * @return the role corrosponding to the name
 		 */
 		public static Role getRoleForName(String name) {
-			if (name == Role.getRoleName(Role.ADMIN)) {
-				return Role.ADMIN;
-			} else if (name == Role.getRoleName(Role.READWRITE)) {
-				return Role.READWRITE;
-			} else if (name == Role.getRoleName(Role.READ)) {
-				return Role.READ;
-			} else if (name == Role.getRoleName(Role.REGISTRAR)) {
-				return Role.REGISTRAR;
+			for (Role r : Role.values()) {
+				if (name == r.toString()) {
+					return r;
+				}
 			}
 			return null;
 		}
 
-		public static String getRoleName(Role r) {
-			if (r == READ) {
-				return getI18NString("roles.readonly");
-			} else if (r == READWRITE) {
-				return getI18NString("roles.readwrite");
-			} else if (r == ADMIN) {
-				return getI18NString("roles.admin");
-			} else if (r == REGISTRAR) {
-				return getI18NString("roles.registrar");
-			}
-			return null;
+		/**
+		 * Returns the internationalized string representing this role.
+		 * 
+		 * @return the role name
+		 */
+		public String toString() {
+			return getI18NString(name);
 		}
 	}
 
@@ -69,10 +78,12 @@ public class User extends Person {
 	/** The role of this user. */
 	@Enumerated(EnumType.STRING)
 	private Role role;
+	
+//	/** A list of security questions for password retrieval. */
+//	private Map<String, byte[]> securityQuestions;
 
 	/** Default constructor for Hibernate. */
-	public User() {
-	}
+	public User() {}
 
 	/**
 	 * 
@@ -104,8 +115,6 @@ public class User extends Person {
 
 	/** @return the hashed version of this user's password */
 	public String getPassword() {
-		// String saltstr = new String(salt);
-		// String hashstr = new String(hash);
 		String saltstr = String.format("%0" + (salt.length << 1) + "x",
 				new BigInteger(1, salt));
 		String hashstr = String.format("%0" + (hash.length << 1) + "x",
@@ -125,7 +134,7 @@ public class User extends Person {
 
 	/** @return the string corrosponding to the role of this user */
 	public String getRoleName() {
-		return Role.getRoleName(role);
+		return role.toString();
 	}
 
 	/**
@@ -206,8 +215,9 @@ public class User extends Person {
 	 * the the hashed version of the guess is equal to the stored password hash
 	 * for this user.
 	 * 
-	 * @param guess the guess to verify
-	 * @return 
+	 * @param guess
+	 *            the guess to verify
+	 * @return
 	 */
 	public boolean verifyPassword(String guess) {
 		return verify(guess, hash, salt);

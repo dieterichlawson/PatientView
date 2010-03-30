@@ -17,7 +17,7 @@ public class RoleComboBox extends ThinletFormField<Role> implements PersonalForm
 		hasChanged = false;
 		comboBox = thinlet.create("combobox");
 		for(Role r:Role.values()){
-			thinlet.add(comboBox,thinlet.createComboboxChoice(Role.getRoleName(r), r));
+			thinlet.add(comboBox,thinlet.createComboboxChoice(r.toString(), r));
 		}
 		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null, this);
 		thinlet.add(mainPanel,comboBox);
@@ -48,7 +48,7 @@ public class RoleComboBox extends ThinletFormField<Role> implements PersonalForm
 	
 	@Override
 	public void setRawResponse(Role s) {
-		thinlet.setText(comboBox, Role.getRoleName(s));
+		thinlet.setText(comboBox, s.toString());
 		for(int i =0; i < Role.values().length;i++){
 			if(Role.values()[i] == s){
 				thinlet.setSelectedIndex(comboBox,i);
@@ -58,7 +58,7 @@ public class RoleComboBox extends ThinletFormField<Role> implements PersonalForm
 
 	@Override
 	public String getResponse() {
-		return Role.getRoleName(getRawResponse());
+		return getRawResponse().toString();
 	}
 
 	@Override
