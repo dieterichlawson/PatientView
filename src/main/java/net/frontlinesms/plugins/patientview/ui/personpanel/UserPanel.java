@@ -18,23 +18,27 @@ public class UserPanel extends PersonPanel<User> {
 	private static final String USERNAME_LABEL = "medic.common.labels.username";
 	private static final String DEMO_USERNAME = "editdetailview.demo.username";
 	private static final String DEMO_ROLE = "roles.readwrite";
-	
+
 	private UserDao userDao;
-	
-	public UserPanel(UiGeneratorController uiController, ApplicationContext appCon, User p) {
-		super(uiController, appCon,p);
+
+	public UserPanel(UiGeneratorController uiController,
+			ApplicationContext appCon, User p) {
+		super(uiController, appCon, p);
 		userDao = (UserDao) appCon.getBean("UserDao");
 	}
-	
-	public UserPanel(UiGeneratorController uiController, ApplicationContext appCon) {
-		super(uiController,appCon);
+
+	public UserPanel(UiGeneratorController uiController,
+			ApplicationContext appCon) {
+		super(uiController, appCon);
 		userDao = (UserDao) appCon.getBean("UserDao");
 	}
+
 	/**
-	 * Used to create  a demo panel
+	 * Used to create a demo panel
+	 * 
 	 * @param uiController
 	 */
-	public UserPanel(UiGeneratorController uiController){
+	public UserPanel(UiGeneratorController uiController) {
 		super(uiController);
 	}
 
@@ -43,10 +47,17 @@ public class UserPanel extends PersonPanel<User> {
 	 */
 	@Override
 	protected void addAdditionalEditableFields() {
-		UsernameField usernameField = new UsernameField(uiController,appCon,true,isNewPersonPanel?"":person.getUsername());
-		uiController.add(getLabelPanel(),usernameField.getThinletPanel());
-		RoleComboBox roleCombo = new RoleComboBox(uiController,isNewPersonPanel?null:person.getRole());
-		uiController.add(getLabelPanel(),roleCombo.getThinletPanel());
+		if (isNewPersonPanel) {
+			UsernameField usernameField = new UsernameField(uiController,
+					appCon, true, isNewPersonPanel ? "" : person.getUsername());
+			uiController.add(getLabelPanel(), usernameField.getThinletPanel());
+		} else {
+			addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": "
+					+ person.getUsername());
+		}
+		RoleComboBox roleCombo = new RoleComboBox(uiController,
+				isNewPersonPanel ? null : person.getRole());
+		uiController.add(getLabelPanel(), roleCombo.getThinletPanel());
 	}
 
 	/**
@@ -54,16 +65,18 @@ public class UserPanel extends PersonPanel<User> {
 	 */
 	@Override
 	protected void addAdditionalFields() {
-		addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": "+ person.getUsername());
-		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": " + person.getRoleName());
+		addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": "
+				+ person.getUsername());
+		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": "
+				+ person.getRoleName());
 	}
 
 	/**
 	 * @see net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel#createPerson()
 	 */
 	@Override
-	protected void createPerson() {
-		person = new User();
+	protected User createPerson() {
+		return new User();
 	}
 
 	@Override
@@ -93,8 +106,10 @@ public class UserPanel extends PersonPanel<User> {
 
 	@Override
 	protected void addAdditionalDemoFields() {
-		addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": "+ getI18NString(DEMO_USERNAME));
-		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": " + getI18NString(DEMO_ROLE));
+		addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": "
+				+ getI18NString(DEMO_USERNAME));
+		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": "
+				+ getI18NString(DEMO_ROLE));
 
 	}
 

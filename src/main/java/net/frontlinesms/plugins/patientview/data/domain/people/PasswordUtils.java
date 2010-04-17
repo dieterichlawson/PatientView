@@ -1,20 +1,26 @@
 package net.frontlinesms.plugins.patientview.data.domain.people;
 
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Date;
 
 /**
- * A securely stored password. To check against a password use equals(String) or
- * equals(Password).
+ * A suite of utilities for secure encryption and checking against encrypted
+ * values.
  */
 public class PasswordUtils {
 
 	/** A secure source of random data. */
 	private static final SecureRandom rand = new SecureRandom();
+
+	/** Generates a random 7 digit alphanumeric passowrd. */
+	public static String generatePassword() {
+		String result = new BigInteger(36, rand).toString(36).toUpperCase();
+		return result;
+	}
 
 	/**
 	 * The number of iterations the cryptographic function will be run through.
@@ -59,6 +65,9 @@ public class PasswordUtils {
 	 */
 	public static byte[] cryptoHash(String message, byte[] salt)
 			throws NoSuchAlgorithmException {
+		if (message == null) {
+			message = "";
+		}
 		return cryptoHash(message.getBytes(), salt);
 	}
 
@@ -66,12 +75,12 @@ public class PasswordUtils {
 	 * Fills the input array with securely generated random bytes. Useful for
 	 * salt creation.
 	 * 
-	 * @param array the array to be filled with random bytes
+	 * @param array
+	 *            the array to be filled with random bytes
 	 */
 	public static void fillRandomBytes(byte[] array) {
 		rand.nextBytes(array);
 	}
-
 
 	/**
 	 * Check if a the hash of a string matches the stored password hash.
@@ -94,17 +103,21 @@ public class PasswordUtils {
 
 	public static void main(String[] args) throws java.io.IOException,
 			GeneralSecurityException {
-		User u = new User("Hank", Person.Gender.FEMALE, new Date(), "hank", "", User.Role.ADMIN);
-		System.out.println("Enter a test password:");
-		java.io.BufferedReader in = new java.io.BufferedReader(
-				new java.io.InputStreamReader(System.in));
-		String pass = in.readLine();
-		u.setPassword(pass);
-		String guess = "";
-		while (!u.verifyPassword(guess)) {
-			System.out.println("\nEnter guess for verification:");
-			guess = in.readLine();
-			System.out.println(u.verifyPassword(guess));
+//		User u = new User("Hank", Person.Gender.FEMALE, new Date(), "hank",
+//				User.Role.READ, "");
+//		System.out.println("Enter a test password:");
+//		java.io.BufferedReader in = new java.io.BufferedReader(
+//				new java.io.InputStreamReader(System.in));
+//		String pass = in.readLine();
+//		u.setPassword(pass);
+//		String guess = "";
+//		while (!u.verifyPassword(guess)) {
+//			System.out.println("\nEnter guess for verification:");
+//			guess = in.readLine();
+//			System.out.println(u.verifyPassword(guess));
+//		}
+		for (int i = 0; i < 10; i++) {
+			System.out.println(generatePassword());
 		}
 	}
 }

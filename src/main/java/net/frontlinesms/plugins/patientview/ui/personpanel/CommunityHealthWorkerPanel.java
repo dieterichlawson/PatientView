@@ -53,8 +53,8 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	 * @see net.frontlinesms.plugins.patientview.ui.PersonPanel#createPerson()
 	 */
 	@Override
-	protected void createPerson() {
-		person = new CommunityHealthWorker();
+	protected CommunityHealthWorker createPerson() {
+		return new CommunityHealthWorker();
 	}
 
 	/* (non-Javadoc)
