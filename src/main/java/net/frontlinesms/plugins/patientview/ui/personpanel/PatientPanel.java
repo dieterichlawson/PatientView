@@ -80,8 +80,8 @@ public class PatientPanel extends PersonPanel<Patient> {
 	 * @see net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel#createPerson()
 	 */
 	@Override
-	protected void createPerson() {
-		person = new Patient();
+	protected Patient createPerson() {
+		return new Patient();
 	}
 
 	/**

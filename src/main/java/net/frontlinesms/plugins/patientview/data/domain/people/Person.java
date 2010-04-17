@@ -3,24 +3,11 @@ package net.frontlinesms.plugins.patientview.data.domain.people;
 import java.awt.image.BufferedImage;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageUtils;
-import net.frontlinesms.ui.i18n.InternationalisationUtils;
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
 import org.hibernate.annotations.IndexColumn;
 
@@ -41,8 +28,9 @@ public abstract class Person{
 	
 		private String name;
 	
+		@Override
 		public String toString(){
-			return InternationalisationUtils.getI18NString(name);
+			return getI18NString(name);
 		}
 
 		public static Gender getGenderForName(String name){

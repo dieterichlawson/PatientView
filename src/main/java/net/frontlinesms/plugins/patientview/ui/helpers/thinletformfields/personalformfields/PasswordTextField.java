@@ -1,24 +1,14 @@
 package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
-import java.security.GeneralSecurityException;
-
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
-import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
 import net.frontlinesms.ui.ExtendedThinlet;
-import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
-/**  */
+/** A masked password box. */
 public class PasswordTextField extends TextBox implements PersonalFormField {
 
 	public static final String NAME = "passwordField";
 	private String response;
-	
-	public PasswordTextField(ExtendedThinlet thinlet, String password){
-		super(thinlet, InternationalisationUtils.getI18NString("login.password")+":", NAME);
-		response = "";
-		thinlet.setInteger(mainPanel, "colspan", 1);
-		thinlet.setAttachedObject(mainPanel, this);
 
 	public PasswordTextField(ExtendedThinlet thinlet, String label) {
 		this(thinlet, label, NAME);
@@ -62,13 +52,7 @@ public class PasswordTextField extends TextBox implements PersonalFormField {
 	}
 
 	public void setFieldForPerson(Person p) {
-		if (p instanceof User) {
-			try {
-				((User) p).setPassword(getResponse());
-			} catch (GeneralSecurityException e) {
-
-			}
-		}
+		// do nothing, password fields should never start filled
 	}
 
 }

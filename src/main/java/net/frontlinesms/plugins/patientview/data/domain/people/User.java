@@ -3,13 +3,10 @@ package net.frontlinesms.plugins.patientview.data.domain.people;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Lob;
+import javax.persistence.*;
 
 import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.*;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
@@ -22,20 +19,16 @@ public class User extends Person {
 	/**
 	 * Possible user roles. They're pretty self explanatory. To add a new role,
 	 * just add a new declaration in the form: <br>
-	 * <pre>NEWROLE ("i18n.string.location")</pre>
+	 * 
+	 * <pre>
+	 * NEWROLE(&quot;i18n.string.location&quot;)
+	 * </pre>
 	 */
 	public static enum Role {
-		READ      ("roles.readonly"), 
-		READWRITE ("roles.readwrite"), 
-		ADMIN     ("roles.admin"), 
-		REGISTRAR ("roles.registrar");
-
-		/** The i18n reference for this role. */
-		private String name;
-
-		private Role(String name) {
-			this.name = name;
-		}
+		READ("roles.readonly"), // can only look up information
+		READWRITE("roles.readwrite"), // can edit patient and chw data
+		ADMIN("roles.admin"), // administration official, can add new users
+		REGISTRAR("roles.registrar"); // patient registrar
 
 		/**
 		 * Returns the role object representing the string passed in. Returns
@@ -52,6 +45,13 @@ public class User extends Person {
 				}
 			}
 			return null;
+		}
+
+		/** The i18n reference for this role. */
+		private String name;
+
+		private Role(String name) {
+			this.name = name;
 		}
 
 		/**
@@ -78,12 +78,17 @@ public class User extends Person {
 	/** The role of this user. */
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	
-//	/** A list of security questions for password retrieval. */
-//	private Map<String, byte[]> securityQuestions;
+
+	/** True if this user needs a new password. */
+	private boolean passwordCurrent;
+
+	/** A list of security questions for password retrieval. */
+	// private List<SecurityQuestion> questions;
+	private HashMap<String, byte[]> securityQuestions;
 
 	/** Default constructor for Hibernate. */
-	public User() {}
+	public User() {
+	}
 
 	/**
 	 * 
@@ -96,18 +101,65 @@ public class User extends Person {
 	 * @throws GeneralSecurityException
 	 */
 	public User(String name, Gender gender, Date birthdate, String username,
-			String password, Role role) throws GeneralSecurityException {
+			Role role, String password) throws GeneralSecurityException {
 		super(name, gender, birthdate);
 		// TODO: Make sure no two users have the same login name
+		assert username != null;
 		this.username = username;
+		assert role != null;
 		this.role = role;
-		setPassword(password);
+		if (password != null) {
+			setPassword(password);
+		} else {
+			assignTempPassword();
+		}
+		// questions = new ArrayList<SecurityQuestion>();
+		securityQuestions = new HashMap<String, byte[]>();
+	}
+
+	public User(String username, Role role) throws GeneralSecurityException {
+		this(null, null, null, username, role, null);
+	}
+
+	/**
+	 * Adds a secutity question to this user.
+	 * 
+	 * @param question
+	 *            the question to be added
+	 * @param answer
+	 *            the answer to be encrypted
+	 * @throws GeneralSecurityException
+	 *             if the crypto library cannot be found
+	 */
+	public void addSecurityQuestion(String question, String answer)
+			throws GeneralSecurityException {
+		byte[] ans = cryptoHash(answer, salt);
+		securityQuestions.put(question, ans);
+	}
+
+	/**
+	 * Creates and assigns a temporary password to this user. Their old password
+	 * will be overwritten when this method is called. This method flags the
+	 * user as needing to create a new password.
+	 * 
+	 * @return the new temporary password
+	 * @throws GeneralSecurityException
+	 *             when a securely random password cannot be generated
+	 * @see {@link 
+	 *      net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils
+	 *      .generatePassword()}
+	 */
+	public String assignTempPassword() throws GeneralSecurityException {
+		String newPass = generatePassword();
+		setPassword(newPass);
+		passwordCurrent = false;
+		return newPass;
 	}
 
 	/**
 	 * This is not meant for use other than Hibernate.
 	 * 
-	 * @return the hash stored in this password
+	 * @return the hashed password stored in this user
 	 */
 	byte[] getHash() {
 		return hash;
@@ -134,21 +186,55 @@ public class User extends Person {
 
 	/** @return the string corrosponding to the role of this user */
 	public String getRoleName() {
-		return role.toString();
+		if (role != null) {
+			return role.toString();
+		}
+		return "";
 	}
 
 	/**
-	 * This is not meant for use other than Hibernate.
+	 * Returns the salt used to store this user's password.
 	 * 
-	 * @return the salt stored in this password
+	 * @return this user's salt
 	 */
-	byte[] getSalt() {
-		return salt;
+	public byte[] getSalt() {
+		return salt.clone();
+	}
+
+	/**
+	 * Returns the security questions of this user. The questions can be
+	 * accessed by calling the keySet() method, and guesses should be hashed and
+	 * compared to the value associated with the key.
+	 * 
+	 * @return the security questions of this user
+	 */
+	public Map<String, byte[]> getSecurityQuestions() {
+		return securityQuestions;
 	}
 
 	/** @return the login name of this user */
 	public String getUsername() {
 		return username;
+	}
+
+	/**
+	 * This is not meant for use other than Hibernate.
+	 * 
+	 * @return true if the user's password is current
+	 */
+	boolean isPasswordCurrent() {
+		return passwordCurrent;
+	}
+
+	/**
+	 * Under certain circumstances (e.g. new user creation, password expiration)
+	 * users have their old password, but need to generate a new one. This
+	 * utility returns true if so.
+	 * 
+	 * @return true if the user needs a new password
+	 */
+	public boolean needsNewPassword() {
+		return !passwordCurrent;
 	}
 
 	/**
@@ -169,12 +255,24 @@ public class User extends Person {
 	 * @param newPass
 	 *            the new password
 	 * @throws GeneralSecurityException
-	 *             passwords
+	 *             when a valid crypto algorithm cannot be found
 	 */
 	public void setPassword(String newPass) throws GeneralSecurityException {
-		salt = new byte[4];
-		PasswordUtils.fillRandomBytes(salt);
+		if (salt == null) {
+			salt = new byte[4];
+			fillRandomBytes(salt);
+		}
 		hash = cryptoHash(newPass, salt);
+		passwordCurrent = true;
+	}
+
+	/**
+	 * This is not meant for use other than Hibernate.
+	 * 
+	 * @param if the users password is current
+	 */
+	void setPasswordCurrent(boolean passwordCurrent) {
+		this.passwordCurrent = passwordCurrent;
 	}
 
 	/**
@@ -200,6 +298,16 @@ public class User extends Person {
 	}
 
 	/**
+	 * For Hibernate only. Do not use.
+	 * 
+	 * @param questions
+	 *            the questions to set for this user
+	 */
+	void setSecurityQuestions(HashMap<String, byte[]> questions) {
+		securityQuestions = new HashMap<String, byte[]>(questions);
+	}
+
+	/**
 	 * Sets the login name of this user.
 	 * 
 	 * @param username
@@ -217,7 +325,8 @@ public class User extends Person {
 	 * 
 	 * @param guess
 	 *            the guess to verify
-	 * @return
+	 * @return true if the hash of the guess is equal to the stored password
+	 *         hash
 	 */
 	public boolean verifyPassword(String guess) {
 		return verify(guess, hash, salt);

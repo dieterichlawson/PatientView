@@ -29,7 +29,7 @@ public abstract class ThinletFormField<E>{
 		controller.setInteger(mainPanel, "columns", 2);
 		controller.setInteger(mainPanel, "weightx", 1);
 		thinlet.setInteger(mainPanel, "gap", 6);
-		if(label != null && label != ""){
+		if(label != null && !label.equals("")){
 			controller.add(mainPanel,controller.createLabel(label));
 		}
 	}

@@ -525,12 +525,12 @@ public class PatientViewPluginController extends BasePluginController implements
 		
 		User user0;
 		try {
-			user0 = new User("Tester Admin",Gender.FEMALE, new Date(),"admin","medic",Role.ADMIN);
-			User user9 = new User("Tester Read/Write",Gender.MALE, new Date(),"readwrite","medic",Role.READWRITE);
-			User user8 = new User("Tester Read Only",Gender.FEMALE, new Date(),"readonly","medic",Role.READ);
-			User user = new User("Alex Harsha",Gender.FEMALE, new Date(),"aHarsha","medic",Role.ADMIN);
-			User user2 = new User("Aisha Moniba ",Gender.FEMALE, new Date(),"aMoniba","medic",Role.READWRITE);
-			User user3 = new User("Daniel Kayiwa ",Gender.MALE, new Date(),"dKayiwa","medic",Role.READ);
+			user0 = new User("Tester Admin",Gender.FEMALE, new Date(),"admin",Role.ADMIN, "medic");
+			User user9 = new User("Tester Read/Write",Gender.MALE, new Date(),"readwrite",Role.READWRITE,"medic");
+			User user8 = new User("Tester Read Only",Gender.FEMALE, new Date(),"readonly",Role.READ,"medic");
+			User user = new User("Alex Harsha",Gender.FEMALE, new Date(),"aHarsha",Role.ADMIN,"medic");
+			User user2 = new User("Aisha Moniba ",Gender.FEMALE, new Date(),"aMoniba",Role.READWRITE,"medic");
+			User user3 = new User("Daniel Kayiwa ",Gender.MALE, new Date(),"dKayiwa",Role.READ,"medic");
 			UserDao userDao = (UserDao) applicationContext.getBean("UserDao");
 			userDao.saveUser(user);
 			userDao.saveUser(user2);
