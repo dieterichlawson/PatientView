@@ -3,7 +3,9 @@ package net.frontlinesms.plugins.patientview.analysis;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.forms.data.domain.FormResponse;
@@ -12,9 +14,13 @@ import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField.PatientFieldMapping;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
+import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
+import net.frontlinesms.plugins.patientview.utils.DateUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -117,7 +123,7 @@ public class FormMatcher {
 	 */
 	public float[] getCombinedBirthdateDistances(ArrayList<Patient> patients, String stringDate){
 		
-		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+		DateFormat df = DateUtils.getDateFormatter();
 		Date responseDate;
 		try {
 			responseDate = df.parse(stringDate);
@@ -183,4 +189,60 @@ public class FormMatcher {
 		return levenshtein.getSimilarity(stringOne, stringTwo);
 	}
 	
+	public List<Candidate> getCandidatesForResponse(MedicFormResponse response){
+		MedicForm mForm = response.getForm();
+		//get the CHW that submitted the form
+		CommunityHealthWorker chw = (CommunityHealthWorker) response.getSubmitter();
+		//get the list of patients that the CHW cares for
+		ArrayList<Patient> patients = (ArrayList<Patient>) ((PatientDao) applicationContext.getBean("PatientDao")).getPatientsForCHW(chw);
+		ArrayList<Candidate> candidates = new ArrayList<Candidate>();
+		//iterate through all fields on the form, seeing if they are mapped to patient identifying fields
+		//e.g. Birthdate, Name, and Patient ID
+		for(Patient patient: patients){
+			candidates.add(new Candidate(patient));
+		}
+		List<MedicFormFieldResponse> responses = ((MedicFormFieldResponseDao) applicationContext.getBean("MedicFormFieldResponseDao")).getResponsesForForm(response);
+		for(MedicFormFieldResponse fieldResponse : responses){
+			//if it is mapped to a namefield, score it as a name
+			if(fieldResponse.getField().getMapping() == PatientFieldMapping.NAMEFIELD){
+				for(Candidate c: candidates){
+					c.setNameScore(getNameDistance(c.getName(),fieldResponse.getValue()));
+				}
+			//if it is mapped to an id field, score it as an ID
+			}else if(fieldResponse.getField().getMapping() == PatientFieldMapping.IDFIELD){
+				for(Candidate c: candidates){
+					c.setIdScore(getEditDistance(c.getStringID(),fieldResponse.getValue()));
+				}
+			//if it is mapped as a bday field, score it as a bday
+			}else if(fieldResponse.getField().getMapping() == PatientFieldMapping.BIRTHDATEFIELD){
+				for(Candidate c: candidates){
+					c.setBirthdateScore(getEditDistance(c.getStringBirthdate(),fieldResponse.getValue()));
+				}
+			}
+		}
+		Collections.sort(candidates);
+		return candidates.subList(0, 10);
+	}
+	
+	public float getConfidence(Patient subject, MedicFormResponse mfr){
+		List<MedicFormFieldResponse> responses = ((MedicFormFieldResponseDao) applicationContext.getBean("MedicFormFieldResponseDao")).getResponsesForForm(mfr);
+		float result = 0.0F;
+		float total = 0.0F;
+		for(MedicFormFieldResponse fieldResponse : responses){
+			//if it is mapped to a namefield, score it as a name
+			if(fieldResponse.getField().getMapping() == PatientFieldMapping.NAMEFIELD){
+					result += getNameDistance(subject.getName(),fieldResponse.getValue());
+					total += 1.0F;
+			//if it is mapped to an id field, score it as an ID
+			}else if(fieldResponse.getField().getMapping() == PatientFieldMapping.IDFIELD){			
+					result += getEditDistance(subject.getStringID(),fieldResponse.getValue());
+					total += 1.0F;
+			//if it is mapped as a bday field, score it as a bday
+			}else if(fieldResponse.getField().getMapping() == PatientFieldMapping.BIRTHDATEFIELD){
+					result += getEditDistance(subject.getStringBirthdate(),fieldResponse.getValue());
+					total += 1.0F;
+			}
+		}
+		return (result/total)*100 ;
+	}
 }

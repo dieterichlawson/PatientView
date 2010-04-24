@@ -66,4 +66,16 @@ public class HibernateMedicFormResponseDao extends BaseHibernateDao<MedicFormRes
 		super.getSession().update(mf);
 		return mf;
 	}
+
+	public List<MedicFormResponse> getMappedResponses() {
+		DetachedCriteria c = super.getCriterion();
+		c.add(Restrictions.isNotNull("subject"));
+		return super.getList(c);
+	}
+
+	public List<MedicFormResponse> getUnmappedResponses() {
+		DetachedCriteria c = super.getCriterion();
+		c.add(Restrictions.isNull("subject"));
+		return super.getList(c);
+	}
 }

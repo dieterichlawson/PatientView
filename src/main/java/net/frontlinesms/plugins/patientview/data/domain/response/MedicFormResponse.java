@@ -93,4 +93,12 @@ public class MedicFormResponse extends Response{
 		}
 	}
 	
+	public boolean isMapped(){
+		return subject !=null;
+	}
+	
+	public String isMappedString(){
+		return InternationalisationUtils.getI18NString(isMapped()?"datatype.true":"datatype.false");
+	}
+	
 }
