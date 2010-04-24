@@ -18,6 +18,7 @@ public class PatientPanel extends PersonPanel<Patient> {
 	private static final String DEMO_CHW = "editdetailview.demo.chw";
 	private PatientDao patientDao;
 	
+	private String defaultTitle;
 	/**
 	 * Creates a PatientPanel used for creating new Patients.
 	 * Uses a delegate
@@ -89,7 +90,7 @@ public class PatientPanel extends PersonPanel<Patient> {
 	 */
 	@Override
 	protected String getDefaultTitle() {
-		return InternationalisationUtils.getI18NString(PATIENT_AAG);
+		return defaultTitle==null?InternationalisationUtils.getI18NString(PATIENT_AAG):defaultTitle;
 	}
 
 	/**
@@ -126,4 +127,7 @@ public class PatientPanel extends PersonPanel<Patient> {
 		addLabelToLabelPanel(getI18NString(CHW_FIELD) + ": " + getI18NString(DEMO_CHW));
 	}
 
+	public void setTitle(String title){
+		defaultTitle=title;
+	}
 }
