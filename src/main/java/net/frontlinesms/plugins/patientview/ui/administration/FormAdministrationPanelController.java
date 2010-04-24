@@ -23,10 +23,11 @@ import net.frontlinesms.ui.i18n.InternationalisationUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.context.ApplicationContext;
+
+import thinlet.Thinlet;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
-public class FormAdministrationPanelController implements
-		AdministrationTabPanel, ThinletUiEventHandler, EventObserver{
+public class FormAdministrationPanelController implements AdministrationTabPanel, ThinletUiEventHandler, EventObserver{
 
 	private EventBus eventNotifier;
 	
@@ -253,7 +254,7 @@ public class FormAdministrationPanelController implements
 				populatePatientViewFormList();
 			}
 		}
-
+		
 	}
 
 }

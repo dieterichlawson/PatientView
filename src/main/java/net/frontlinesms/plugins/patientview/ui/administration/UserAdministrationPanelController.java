@@ -25,7 +25,7 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.*
 		if(userDao == null){
 			userDao = (UserDao) appCon.getBean("UserDao");
 		}
-		return new ArrayList<User>(userDao.getUsersByName(s,30));
+		return new ArrayList<User>(userDao.getUsersByName(s,-1));
 	}
 
 	@Override

@@ -1,19 +1,22 @@
 package net.frontlinesms.plugins.patientview.ui.administration;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.util.List;
 
+import net.frontlinesms.events.EventBus;
+import net.frontlinesms.events.EventObserver;
+import net.frontlinesms.events.FrontlineEvent;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableDataSource;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
+
 import org.springframework.context.ApplicationContext;
 
-public abstract class PersonAdministrationPanelController<E extends Person> implements AdministrationTabPanel, ThinletUiEventHandler, 
-														AdvancedTableActionDelegate,AdvancedTableDataSource{
+public abstract class PersonAdministrationPanelController<E extends Person> implements AdministrationTabPanel, ThinletUiEventHandler, AdvancedTableActionDelegate, EventObserver{
 
 	/**
 	 * The main panel of the person administration screen
@@ -48,7 +51,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	private void init(){
 		mainPanel = uiController.loadComponentFromFile(UI_FILE_MANAGE_PERSON_PANEL,this);
 		advancedTable = uiController.find(mainPanel,RESULTS_TABLE);
-		advancedTableController = new AdvancedTableController(this,uiController,true,appCon,this);
+		advancedTableController = new AdvancedTableController(this,uiController,advancedTable);
 		putHeader();
 		uiController.setText(uiController.find(mainPanel,"titleLabel"), getI18NString(MANAGE)+ " "+ getPersonType() + "s");
 		uiController.setText(uiController.find(mainPanel,ADD_BUTTON), getI18NString(ADD)+ " " + getPersonType());
@@ -56,6 +59,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 		uiController.setText(uiController.find(mainPanel,EDIT_BUTTON), getI18NString(EDIT)+ " " + getPersonType());
 		uiController.setAction(uiController.find(mainPanel,EDIT_BUTTON), "editButtonClicked()", null, this);
 		uiController.setAction(uiController.find(mainPanel,ADD_BUTTON), "addButtonClicked()", null, this);
+		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
 		search("");
 	}
 	
@@ -99,14 +103,6 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 		return mainPanel;
 	}
 
-	/**
-	 * Used by the advanced table controller to get a reference to the table it should be controlling
-	 * @see net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate#getTable()
-	 */
-	public Object getTable() {
-		return advancedTable;
-	}
-
 	/** 
 	 * Called when the selection of the results table is changed
 	 * @see net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate#selectionChanged(java.lang.Object)
@@ -137,7 +133,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	/**
 	 * @see net.frontlinesms.plugins.patientview.ui.AdvancedTableDataSource#refreshResults()
 	 */
-	public void refreshResults(){
+	public void notify(FrontlineEvent event){
 		advancedTableController.setResults(getPeopleForString(uiController.getText(uiController.find(mainPanel, SEARCH_FIELD))));
 	}
 }

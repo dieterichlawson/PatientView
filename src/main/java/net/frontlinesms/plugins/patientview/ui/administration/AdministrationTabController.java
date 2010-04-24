@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.administration;
 
+import java.util.ArrayList;
+
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
@@ -24,6 +26,7 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 	UiGeneratorController uiController;
 	ApplicationContext appCon;
 	
+	private ArrayList<AdministrationTabPanel> panels;
 	
 	public AdministrationTabController(UiGeneratorController uiController, ApplicationContext appCon){
 		this.uiController = uiController;
@@ -38,22 +41,18 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 		actionList = uiController.find(adminTab, TASK_LIST);
 		splitPanel = uiController.find(adminTab, SPLIT_PANEL);
 		//init the different choices for the action list
-		PatientAdministrationPanelController patientAdmin = new PatientAdministrationPanelController(uiController,appCon);
-		CommunityHealthWorkerAdministrationPanelController chwAdmin = new CommunityHealthWorkerAdministrationPanelController(uiController,appCon);
-		UserAdministrationPanelController userAdmin = new UserAdministrationPanelController(uiController,appCon);
-		FormAdministrationPanelController formAdmin = new FormAdministrationPanelController(uiController,appCon);
-		AttributeAdministrationPanelController attributeAdmin = new AttributeAdministrationPanelController(uiController,appCon);
-		Object managePatientsChoice = uiController.createListItem(patientAdmin.getListItemTitle(), patientAdmin.getPanel());
-		Object manageCHWsChoice = uiController.createListItem(chwAdmin.getListItemTitle(), chwAdmin.getPanel());
-		Object manageUsersChoice = uiController.createListItem(userAdmin.getListItemTitle(), userAdmin.getPanel());
-		Object manageFormChoice = uiController.createListItem(formAdmin.getListItemTitle(),formAdmin.getPanel());
-		Object manageAttributeChoice = uiController.createListItem(attributeAdmin.getListItemTitle(), attributeAdmin.getPanel());
-		//add the choices to the list
-		uiController.add(actionList, managePatientsChoice);
-		uiController.add(actionList, manageCHWsChoice);
-		uiController.add(actionList, manageUsersChoice);	
-		uiController.add(actionList, manageAttributeChoice);
-		uiController.add(actionList,manageFormChoice);
+		panels = new ArrayList<AdministrationTabPanel>();
+		panels.add(new PatientAdministrationPanelController(uiController,appCon));
+		panels.add(new CommunityHealthWorkerAdministrationPanelController(uiController,appCon));
+		panels.add(new UserAdministrationPanelController(uiController,appCon));
+		panels.add(new FormAdministrationPanelController(uiController,appCon));
+		panels.add(new AttributeAdministrationPanelController(uiController,appCon));
+		panels.add(new FormResponseMappingPanelController(uiController,appCon));
+		//create all the list items
+		for(AdministrationTabPanel panel: panels){
+			Object listItem = uiController.createListItem(panel.getListItemTitle(), panel.getPanel());
+			uiController.add(actionList,listItem);
+		}
 		setSelection(0);
 	}
 
