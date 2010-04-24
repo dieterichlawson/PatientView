@@ -62,11 +62,6 @@ public class RegistrationScreenController implements ThinletUiEventHandler, Adva
 		
 	}
 
-	public Object getTable() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public void resultsChanged() {
 		// TODO Auto-generated method stub
 		

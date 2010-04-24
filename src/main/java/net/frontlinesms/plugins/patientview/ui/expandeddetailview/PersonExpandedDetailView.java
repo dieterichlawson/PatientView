@@ -60,7 +60,7 @@ public class PersonExpandedDetailView extends ExpandedDetailView implements Adva
 		formResponsePanel = new FormResponseDetailViewPanelController(uiController,appCon);
 		uiController.add(rightPanel,formResponsePanel.getPanel());
 		//add the form response table
-		formResponses = new AdvancedTableController(this,uiController,false);
+		formResponses = new AdvancedTableController(this,uiController);
 		formResponses.putHeader(MedicFormResponse.class, new String[]{InternationalisationUtils.getI18NString(FORM_NAME_COLUMN), 
 			InternationalisationUtils.getI18NString(FORM_SENDER_COLUMN), InternationalisationUtils.getI18NString(FORM_SUBJECT_COLUMN),
 			InternationalisationUtils.getI18NString(DATE_SUBMITTED_COLUMN)}, new String[]{"getFormName","getSubmitterName","getSubjectName","getStringDateSubmitted"});
@@ -79,10 +79,6 @@ public class PersonExpandedDetailView extends ExpandedDetailView implements Adva
 
 	public void resultsChanged() {
 		// TODO Auto-generated method stub
-	}
-	
-	public Object getTable() {
-		return null;
 	}
 
 	public void selectionChanged(Object selectedObject) {

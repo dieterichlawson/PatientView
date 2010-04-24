@@ -188,7 +188,7 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 				uiController.add(mainPanel,rsc.getMainPanel());
 			}else{
 			//initialize the results table
-			tableController = new AdvancedTableController(this, uiController,true);
+			tableController = new AdvancedTableController(this, uiController, uiController.find(mainTab, "resultTable"));
 			String nameLabel= getI18NString(NAME_COLUMN);
 			String ageLabel=getI18NString(AGE_COLUMN);
 			String genderLabel=getI18NString(GENDER_COLUMN);
@@ -238,10 +238,6 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	
 	public void selectionChanged(Object selectedObject) {
 		detailViewController.selectionChanged(selectedObject);
-	}
-
-	public Object getTable() {
-		return uiController.find(mainTab, "resultTable");
 	}
 
 	public QueryGenerator getQueryGenerator() {
