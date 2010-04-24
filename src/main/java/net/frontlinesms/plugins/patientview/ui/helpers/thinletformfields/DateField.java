@@ -2,16 +2,16 @@ package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.frontlinesms.plugins.patientview.ui.dialogs.DateSelectorDialog;
+import net.frontlinesms.plugins.patientview.utils.DateUtils;
 import net.frontlinesms.ui.ExtendedThinlet;
 
 public class DateField extends TextBox {
 
 	protected DateSelectorDialog ds;
-	protected DateFormat df;
+	protected DateFormat df = DateUtils.getDateFormatter();
 	Object btn;
 	public static final String NAME = "dateField";
 
@@ -23,7 +23,6 @@ public class DateField extends TextBox {
 		thinlet.add(mainPanel, btn);
 		thinlet.setInteger(mainPanel, "columns", 3);
 		ds = new DateSelectorDialog(thinlet, textBox);
-		df =  DateFormat.getDateInstance(DateFormat.SHORT);
 		thinlet.setAttachedObject(mainPanel, this);
 	}
 
@@ -34,7 +33,6 @@ public class DateField extends TextBox {
 		thinlet.setAction(btn, "showDateSelector()", null, this);
 		thinlet.add(mainPanel, btn);
 		thinlet.setInteger(mainPanel, "columns", 3);
-		df =  DateFormat.getDateInstance(DateFormat.SHORT);
 		ds = new DateSelectorDialog(thinlet, textBox);
 	}
 

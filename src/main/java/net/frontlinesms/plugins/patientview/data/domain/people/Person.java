@@ -20,6 +20,7 @@ import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageUtils;
+import net.frontlinesms.plugins.patientview.utils.DateUtils;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.hibernate.annotations.IndexColumn;
@@ -130,6 +131,10 @@ public abstract class Person{
 			HistoryManager.logBirthdateChange(this,birthdate.toLocaleString());
 		}catch(Exception e){}
 		this.birthdate = birthdate.getTime();
+	}
+	
+	public String getStringBirthdate(){
+		return DateUtils.getDateFormatter().format(birthdate);
 	}
 
 	public Gender getGender() {

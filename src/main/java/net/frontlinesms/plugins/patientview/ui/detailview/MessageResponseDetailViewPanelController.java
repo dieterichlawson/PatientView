@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.util.HashMap;
 
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
+import net.frontlinesms.plugins.patientview.utils.DateUtils;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
@@ -38,7 +39,7 @@ public class MessageResponseDetailViewPanelController implements
 
 	public void viewWillAppear(MedicMessageResponse message) {
 		uiController.removeAll(mainPanel);
-		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+		DateFormat df = DateUtils.getDateFormatter();
 		Object submitterLabel = uiController.createLabel(InternationalisationUtils.getI18NString(SUBMITTED_BY)+" "+ message.getSubmitter().getName());
 		Object dateLabel = uiController.createLabel(InternationalisationUtils.getI18NString(ON)+" " +  df.format(message.getDateSubmitted()));
 		Object textarea = uiController.create("textarea");

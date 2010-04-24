@@ -21,6 +21,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.utils.DateUtils;
 
 
 @Entity
@@ -84,7 +85,7 @@ public abstract class Response {
 	}
 	
 	public String getStringDateSubmitted(){
-		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+		DateFormat df = DateUtils.getDateFormatter();
 		return df.format(getDateSubmitted());
 	}
 

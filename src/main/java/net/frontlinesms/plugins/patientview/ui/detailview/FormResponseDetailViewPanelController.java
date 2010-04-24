@@ -15,6 +15,7 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormRespon
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao;
+import net.frontlinesms.plugins.patientview.utils.DateUtils;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
@@ -65,7 +66,7 @@ public class FormResponseDetailViewPanelController implements
 		String form = getI18NString(FORM) + ": " + response.getForm().getName();
 		String submitter = getI18NString(SUBMITTER) + ": " + response.getSubmitter().getName();
 		String subject = getI18NString(SUBJECT) + ": " + response.getSubject().getName();
-		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+		DateFormat df = DateUtils.getDateFormatter();
 		String date = getI18NString(DATE_SUBMITTED) + " " + df.format(response.getDateSubmitted());
 		uiController.setText(uiController.find(mainPanel,"nameLabel"),  form);
 		uiController.setText(uiController.find(mainPanel,"submitterLabel"),  submitter);
