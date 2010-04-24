@@ -19,8 +19,7 @@ public class SimpleSearchQueryGenerator extends QueryGenerator{
 	public void startSearch() {
 		SimpleSearchEntity sEntity = searchController.getCurrentEntity();
 		FieldDescriptor field = searchController.getCurrentField();
-		String query = "select " + sEntity.getTableAlias() + " from " 
-				+ sEntity.getDatabaseName() + " "  + sEntity.getTableAlias() + " where ";
+		String query = "select " + sEntity.getTableAlias() + " from "  + sEntity.getDatabaseName() + " "  + sEntity.getTableAlias() + " where ";
 		if(field.getDataType() == SimpleSearchDataType.STRING){
 			query +=  sEntity.getTableAlias() + "." + field.getDatabaseName();
 			query += " like '%" + searchController.getTextInput() + "%'";
@@ -51,5 +50,15 @@ public class SimpleSearchQueryGenerator extends QueryGenerator{
 	@Override
 	public void setSort(int column, boolean ascending) {
 		// TODO Make this work
+	}
+
+	@Override
+	public boolean evictAfterFetch() {
+		return false;
+	}
+
+	@Override
+	public boolean inflateAfterFetch() {
+		return false;
 	}
 }
