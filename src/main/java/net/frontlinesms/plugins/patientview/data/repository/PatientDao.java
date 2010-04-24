@@ -1,6 +1,7 @@
 package net.frontlinesms.plugins.patientview.data.repository;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
@@ -38,13 +39,13 @@ public interface PatientDao {
 	public void deletePatient(Patient p);
 
 	/** @return all CHWs saved in the data source */
-	public Collection<Patient> getAllPatients();
+	public List<Patient> getAllPatients();
 	
 	/** get all patients with string s in their name**/
-	public Collection<Patient> getPatientsByName(String s);
+	public List<Patient> getPatientsByName(String s);
 	
 	/**get limit # of patients with string s in their name**/
-	public Collection<Patient> getPatientsByNameWithLimit(String s, int limit);
+	public List<Patient> getPatientsByNameWithLimit(String s, int limit);
 	
 	public Patient getPatientById(Long id);
 

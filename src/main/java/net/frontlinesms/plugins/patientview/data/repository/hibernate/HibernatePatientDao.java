@@ -1,6 +1,7 @@
 package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
@@ -43,11 +44,11 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 	}
 
 	/** @see PatientDao#getAllPatients() */
-	public Collection<Patient> getAllPatients() {
+	public List<Patient> getAllPatients() {
 		return super.getAll();
 	}
 
-	public Collection<Patient> getPatientsByNameWithLimit(String s, int limit) {
+	public List<Patient> getPatientsByNameWithLimit(String s, int limit) {
 		Query q= super.getSession().createQuery(getPatientsByNameQuery);
 		q.setParameter("name", "%" + s+"%");
 		if(limit != -1){
@@ -57,14 +58,14 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 		return q.list();
 	}
 	
-	public Collection<Patient> getPatientsByCHWAndName(String name, CommunityHealthWorker chw){
+	public List<Patient> getPatientsByCHWAndName(String name, CommunityHealthWorker chw){
 		Query q= super.getSession().createQuery(getPatientsByCHWAndNameQuery);
 		q.setParameter("name", "%" + name+"%");
 		q.setParameter("chw", chw);
 		return q.list();
 	}
 	
-	public Collection<Patient> getPatientsByName(String s){
+	public List<Patient> getPatientsByName(String s){
 		return getPatientsByNameWithLimit(s,-1);
 	}
 	
