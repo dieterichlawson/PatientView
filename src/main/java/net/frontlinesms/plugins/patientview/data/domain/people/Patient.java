@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 
@@ -18,7 +17,7 @@ public class Patient extends Person {
 	/**
 	 * The Community Health Worker of the Patient
 	 */
-	@ManyToOne(fetch=FetchType.LAZY, cascade={})
+	@ManyToOne(fetch=FetchType.EAGER, cascade={})
 	@JoinColumn(name="chw_id", nullable=true)
 	private CommunityHealthWorker chw;
 
