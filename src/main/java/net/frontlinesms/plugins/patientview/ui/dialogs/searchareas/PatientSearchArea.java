@@ -5,20 +5,17 @@ import java.util.Collection;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
-import net.frontlinesms.plugins.patientview.ui.dialogs.SubmitFormDialog;
 import net.frontlinesms.ui.ExtendedThinlet;
 
 import org.springframework.context.ApplicationContext;
 
 public class PatientSearchArea extends EntitySearchArea<Patient>{
 
-	private SubmitFormDialog fofDialog;
 	private PatientDao patientDao;
 	private CommunityHealthWorker chw;
 
-	public PatientSearchArea(Patient entity, ExtendedThinlet uiController,SubmitFormDialog fofDialog,ApplicationContext appCon) {
-		super(entity, uiController);
-		this.fofDialog= fofDialog;
+	public PatientSearchArea(Patient entity, ExtendedThinlet uiController,SearchAreaDelegate<Patient> delegate,ApplicationContext appCon) {
+		super(entity, uiController,delegate);
 		patientDao = (PatientDao) appCon.getBean("PatientDao");
 	}
 
@@ -39,12 +36,6 @@ public class PatientSearchArea extends EntitySearchArea<Patient>{
 	@Override
 	protected String getEntityTypeName() {
 		return "Patient";
-	}
-
-	@Override
-	public void selectionChanged() {
-		Patient patient = (Patient) uiController.getAttachedObject(uiController.getSelectedItem(table));
-		fofDialog.setPatient(patient);
 	}
 	
 	@Override

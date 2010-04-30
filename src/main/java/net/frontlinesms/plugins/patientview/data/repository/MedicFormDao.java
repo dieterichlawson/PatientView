@@ -1,6 +1,6 @@
 package net.frontlinesms.plugins.patientview.data.repository;
 
-import java.util.Collection;
+import java.util.List;
 
 import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
@@ -13,7 +13,7 @@ public interface MedicFormDao {
 	
 	public void updateMedicForm(MedicForm s);
 	
-	public Collection<MedicForm> getAllMedicForms();
+	public List<MedicForm> getAllMedicForms();
 	
 	/**
 	 * Performs a like query with %'s around the s's
@@ -21,7 +21,7 @@ public interface MedicFormDao {
 	 * @param s
 	 * @return All Medic Forms with a name like s
 	 */
-	public Collection<MedicForm> getMedicFormsByName(String s);
+	public List<MedicForm> getMedicFormsByName(String s);
 	
 	/**
 	 * Returns the MedicForm that corresponds to the supplied FrontlineSMS form

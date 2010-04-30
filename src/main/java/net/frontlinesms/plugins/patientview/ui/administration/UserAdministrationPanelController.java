@@ -11,10 +11,12 @@ import net.frontlinesms.plugins.patientview.ui.personpanel.UserPanel;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.*
-;public class UserAdministrationPanelController extends PersonAdministrationPanelController<User>{
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
+
+public class UserAdministrationPanelController extends PersonAdministrationPanelController<User>{
 
 	private UserDao userDao;
+	
 	public UserAdministrationPanelController(
 			UiGeneratorController uiController, ApplicationContext appCon) {
 		super(uiController, appCon);

@@ -26,6 +26,8 @@ public abstract class EntitySearchArea<E> {
 	/** the main panel**/
 	private Object mainPanel;
 	
+	protected SearchAreaDelegate<E> delegate;
+	
 	//i18n strings
 	private static final String COLLAPSE_BUTTON ="searchareas.buttons.collapse";
 	private static final String EXPAND_BUTTON ="searchareas.buttons.expand";
@@ -33,9 +35,11 @@ public abstract class EntitySearchArea<E> {
 	private static final String NO_RESULTS ="searchareas.no.result.mathing";
 	private static final String INITIAL_SELECT ="searchareas.initial.select";
 	private static final String NOT_SELECTED ="searchareas.initial.not.selected";
-	public EntitySearchArea(E entity, ExtendedThinlet uiController){
+	
+	public EntitySearchArea(E entity, ExtendedThinlet uiController, SearchAreaDelegate<E> delegate){
 		this.uiController = uiController;
 		currentEntity = entity;
+		this.delegate = delegate;
 		init();
 	}
 	private void init(){
@@ -119,7 +123,10 @@ public abstract class EntitySearchArea<E> {
 		collapse();
 	}
 	
-	public abstract void selectionChanged();
+	public void selectionChanged(){
+		E object = (E) uiController.getAttachedObject(uiController.getSelectedItem(table));
+		delegate.selectionChanged(object);
+	}
 	
 	public void searchBarKeyPressed(String text){
 		uiController.removeAll(table);

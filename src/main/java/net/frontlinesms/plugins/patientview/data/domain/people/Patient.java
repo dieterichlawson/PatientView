@@ -11,9 +11,9 @@ import javax.persistence.ManyToOne;
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 
 @Entity
-@DiscriminatorValue(value="patient")
+@DiscriminatorValue(value = "patient")
 public class Patient extends Person {
-	
+
 	/**
 	 * The Community Health Worker of the Patient
 	 */
@@ -21,41 +21,48 @@ public class Patient extends Person {
 	@JoinColumn(name="chw_id", nullable=true)
 	private CommunityHealthWorker chw;
 
-	
-	/**
-	 * Empty constructor for Hibernate
-	 */
-	public Patient(){}
-	
-	//FIXME:make all the columns in Person.java match up to this comment with how I'm describing the nullable and stuff
+	/** Default constructor for Hibernate. */
+	public Patient() {}
+
+	// FIXME:make all the columns in Person.java match up to this comment with
+	// how I'm describing the nullable and stuff
 	/**
 	 * Constructor for Patient
-	 * @param chw the CHW of the patient, is nullable
-	 * @param name the name of the Patient, non-nullable
-	 * @param gender the gender of the Patient. Options are M,F,T
-	 * @param birthdate the birthdate of the Patient, is nullable
-	 * @param affiliation affiliation, like tribe, family, etc..., is nullable
+	 * 
+	 * @param chw
+	 *            the CHW of the patient, is nullable
+	 * @param name
+	 *            the name of the Patient, non-nullable
+	 * @param gender
+	 *            the gender of the Patient. Options are M,F,T
+	 * @param birthdate
+	 *            the birthdate of the Patient, is nullable
+	 * @param affiliation
+	 *            affiliation, like tribe, family, etc..., is nullable
 	 */
-	public Patient(CommunityHealthWorker chw, String name, Gender gender, Date birthdate){
+	public Patient(CommunityHealthWorker chw, String name, Gender gender,
+			Date birthdate) {
 		super(name, gender, birthdate);
 		this.chw = chw;
 	}
-	
+
 	public CommunityHealthWorker getChw() {
 		return chw;
 	}
-	
-	public String getCHWName(){
+
+	public String getCHWName() {
 		return chw.getName();
 	}
+
 	public void setChw(CommunityHealthWorker chw) {
 		try {
 			HistoryManager.logCHWChange(this, chw);
-		} catch (Exception e) {}
-		
+		} catch (Exception e) {
+		}
+
 		this.chw = chw;
 	}
-	
+
 	@Override
 	public String getPersonType() {
 		return "Patient";

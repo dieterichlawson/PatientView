@@ -5,8 +5,9 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import java.util.HashMap;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.ui.dashboard.PatientDashboard;
+import net.frontlinesms.plugins.patientview.ui.dashboard.PersonDashboard;
 import net.frontlinesms.plugins.patientview.ui.dialogs.SubmitFormDialog;
-import net.frontlinesms.plugins.patientview.ui.expandeddetailview.PersonExpandedDetailView;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonAttributePanel;
@@ -120,7 +121,8 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	}
 	
 	public void showPatientDashboard(){
-		PersonExpandedDetailView pedv = new PersonExpandedDetailView(uiController,appCon,currentPatient);
+		PatientDashboard patientDashboard = new PatientDashboard(uiController,appCon,currentPatient);
+		patientDashboard.expandDashboard();
 	}
 	public void viewWillDisappear() {/* do nothing */}
 

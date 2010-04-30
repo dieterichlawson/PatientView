@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.administration;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.util.Collection;
 
 import net.frontlinesms.events.EventBus;
@@ -23,9 +25,6 @@ import net.frontlinesms.ui.i18n.InternationalisationUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.context.ApplicationContext;
-
-import thinlet.Thinlet;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
 public class FormAdministrationPanelController implements AdministrationTabPanel, ThinletUiEventHandler, EventObserver{
 

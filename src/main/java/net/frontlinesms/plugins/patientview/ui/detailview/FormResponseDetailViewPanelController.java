@@ -21,8 +21,7 @@ import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
 
-public class FormResponseDetailViewPanelController implements
-		DetailViewPanelController<MedicFormResponse>, ThinletUiEventHandler {
+public class FormResponseDetailViewPanelController implements DetailViewPanelController<MedicFormResponse>, ThinletUiEventHandler {
 
 	private UiGeneratorController uiController;
 	private ApplicationContext appCon;
