@@ -31,11 +31,9 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler,
 
 	/** Logging object */
 	private final Logger LOG = Utils.getLogger(this.getClass());
-	/** The {@link PluginController} that owns this class. */
-	private final PatientViewPluginController pluginController; // potentially
 
-	// don't need
-	// this
+	/** The {@link PluginController} that owns this class. */
+	private final PatientViewPluginController pluginController;
 
 	public PatientViewPluginController getPluginController() {
 		return pluginController;
@@ -118,9 +116,8 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler,
 	 */
 	public void initialInit() {
 		mainTab = uiController.loadComponentFromFile(XML_MEDIC_TAB, this);
-		uiController.removeAll(uiController.find(mainTab, "medicTabMainPanel"));
-		uiController.add(uiController.find(mainTab, "medicTabMainPanel"),
-				loginScreen.getMainPanel());
+		uiController.removeAll(mainTab);
+		uiController.add(mainTab, loginScreen.getMainPanel());
 	}
 
 	/**
@@ -128,10 +125,9 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler,
 	 */
 	public void logout() {
 		UserSessionManager.getUserSessionManager().logout();
-		uiController.removeAll(uiController.find(mainTab, "medicTabMainPanel"));
+		uiController.removeAll(mainTab);
 		loginScreen.reset();
-		uiController.add(uiController.find(mainTab, "medicTabMainPanel"),
-				loginScreen.getMainPanel());
+		uiController.add(mainTab, loginScreen.getMainPanel());
 		if (adminTab != null) {
 			uiController.remove(adminTab.getMainPanel());
 		}

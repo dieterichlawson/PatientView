@@ -6,8 +6,8 @@ import java.security.GeneralSecurityException;
 
 import javax.persistence.*;
 
-//@Entity
-//@Table(name="medic_securityQs")
+@Entity
+@Table(name="medic_securityQuestions")
 public class SecurityQuestion {
 
 	/** Unique id for this entity. This is for hibernate usage. */
@@ -16,17 +16,26 @@ public class SecurityQuestion {
 	@Column(unique = true, nullable = false, updatable = false)
 	protected long pid;
 
+	@ManyToOne(cascade={},fetch=FetchType.EAGER,optional=false,targetEntity=User.class)
+	private User user;
+	
 	/** The question. */
 	private String question;
 
 	/** A hashed version of the answer. */
+	@Lob
 	private byte[] hash;
 
 	/** The salt used to hash the answer. */
+	@Lob
 	private byte[] salt;
 
-	public SecurityQuestion(String question, String answer) throws GeneralSecurityException {
+	/** For Hibernate */
+	SecurityQuestion() {}
+	
+	public SecurityQuestion(String question, String answer, User user) throws GeneralSecurityException {
 		this.question = question;
+		this.user = user;
 		salt = new byte[4];
 		fillRandomBytes(salt);
 		hash = cryptoHash(answer, salt);
@@ -37,12 +46,12 @@ public class SecurityQuestion {
 	}
 
 	/**
-	 * For Hibernate only. Do not use.
+	 * Returns the question.
 	 * 
 	 * @param questions
 	 *            the questions to set for this user
 	 */
-	String getQuestion() {
+	public String getQuestion() {
 		return question;
 	}
 
@@ -94,6 +103,14 @@ public class SecurityQuestion {
 	 */
 	void setSalt(byte[] salt) {
 		this.salt = salt;
+	}
+
+	void setUser(User user) {
+		this.user = user;
+	}
+
+	Person getPerson() {
+		return user;
 	}
 	
 

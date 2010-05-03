@@ -1,15 +1,28 @@
 package net.frontlinesms.plugins.patientview.data.domain.people;
 
+import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.cryptoHash;
+import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.fillRandomBytes;
+import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.generatePassword;
+import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.verify;
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-import javax.persistence.*;
-
-import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.*;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 
 /** A login identity for medic users. */
 @Entity
@@ -63,6 +76,9 @@ public class User extends Person {
 			return getI18NString(name);
 		}
 	}
+	
+	@OneToMany(cascade=CascadeType.REMOVE,fetch=FetchType.LAZY,mappedBy="user",targetEntity=SecurityQuestion.class)
+	protected Set<SecurityQuestion> questions;
 
 	/** The login name of this user. */
 	private String username;
@@ -82,9 +98,8 @@ public class User extends Person {
 	/** True if this user needs a new password. */
 	private boolean passwordCurrent;
 
-	/** A list of security questions for password retrieval. */
-	// private List<SecurityQuestion> questions;
-	private HashMap<String, byte[]> securityQuestions;
+//	/** A list of security questions for password retrieval. */
+////	private HashMap<String, byte[]> securityQuestions;
 
 	/** Default constructor for Hibernate. */
 	public User() {
@@ -114,7 +129,7 @@ public class User extends Person {
 			assignTempPassword();
 		}
 		// questions = new ArrayList<SecurityQuestion>();
-		securityQuestions = new HashMap<String, byte[]>();
+		questions = new TreeSet<SecurityQuestion>();
 	}
 
 	public User(String username, Role role) throws GeneralSecurityException {
@@ -133,8 +148,8 @@ public class User extends Person {
 	 */
 	public void addSecurityQuestion(String question, String answer)
 			throws GeneralSecurityException {
-		byte[] ans = cryptoHash(answer, salt);
-		securityQuestions.put(question, ans);
+		SecurityQuestion q = new SecurityQuestion(question, answer, this);
+		questions.add(q);
 	}
 
 	/**
@@ -208,8 +223,8 @@ public class User extends Person {
 	 * 
 	 * @return the security questions of this user
 	 */
-	public Map<String, byte[]> getSecurityQuestions() {
-		return securityQuestions;
+	public Set<SecurityQuestion> getSecurityQuestions() {
+		return questions;
 	}
 
 	/** @return the login name of this user */
@@ -297,15 +312,15 @@ public class User extends Person {
 		this.salt = salt;
 	}
 
-	/**
-	 * For Hibernate only. Do not use.
-	 * 
-	 * @param questions
-	 *            the questions to set for this user
-	 */
-	void setSecurityQuestions(HashMap<String, byte[]> questions) {
-		securityQuestions = new HashMap<String, byte[]>(questions);
-	}
+//	/**
+//	 * For Hibernate only. Do not use.
+//	 * 
+//	 * @param questions
+//	 *            the questions to set for this user
+//	 */
+//	void setSecurityQuestions(HashMap<String, byte[]> questions) {
+//		questions = new HashMap<String, byte[]>(questions);
+//	}
 
 	/**
 	 * Sets the login name of this user.
