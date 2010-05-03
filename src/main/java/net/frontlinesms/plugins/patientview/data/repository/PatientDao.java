@@ -48,5 +48,7 @@ public interface PatientDao {
 	public List<Patient> getPatientsByNameWithLimit(String s, int limit);
 	
 	public Patient getPatientById(Long id);
+	
+	public Patient getPatient(String name, String birthdate, String id);
 
 }

@@ -8,6 +8,7 @@ import javax.persistence.*;
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageUtils;
 import net.frontlinesms.plugins.patientview.utils.DateUtils;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
 import org.hibernate.annotations.IndexColumn;
@@ -122,7 +123,7 @@ public abstract class Person{
 	}
 	
 	public String getStringBirthdate(){
-		return DateUtils.getDateFormatter().format(birthdate);
+		return InternationalisationUtils.getDateFormat().format(birthdate);
 	}
 
 	public Gender getGender() {

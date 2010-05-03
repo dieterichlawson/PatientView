@@ -40,8 +40,7 @@ public class Patient extends Person {
 	 * @param affiliation
 	 *            affiliation, like tribe, family, etc..., is nullable
 	 */
-	public Patient(CommunityHealthWorker chw, String name, Gender gender,
-			Date birthdate) {
+	public Patient(CommunityHealthWorker chw, String name, Gender gender, Date birthdate) {
 		super(name, gender, birthdate);
 		this.chw = chw;
 	}

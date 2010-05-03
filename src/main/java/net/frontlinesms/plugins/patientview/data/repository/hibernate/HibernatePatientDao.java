@@ -1,22 +1,22 @@
 package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 
+
+import java.text.ParseException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
-import org.hibernate.Query;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
 public class HibernatePatientDao extends BaseHibernateDao<Patient> implements PatientDao {
-	
-	private static final String getPatientsByNameQuery = "select p from Patient p where p.name like :name";
-	private static final String getPatientsByCHWAndNameQuery = "select p from Patient p where p.chw = :chw and p.name like :name";
-	
+
 	protected HibernatePatientDao() {
 		super(Patient.class);
 	}
@@ -49,20 +49,20 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 	}
 
 	public List<Patient> getPatientsByNameWithLimit(String s, int limit) {
-		Query q= super.getSession().createQuery(getPatientsByNameQuery);
-		q.setParameter("name", "%" + s+"%");
-		if(limit != -1){
-			q.setFetchSize(limit);
-			q.setMaxResults(limit);
+		DetachedCriteria c= super.getCriterion();
+		c.add(Restrictions.like("name", "%"+s+"%"));
+		if(limit > 0)
+			return super.getList(c, 0, limit);
+		else{
+			return super.getList(c);
 		}
-		return q.list();
 	}
 	
 	public List<Patient> getPatientsByCHWAndName(String name, CommunityHealthWorker chw){
-		Query q= super.getSession().createQuery(getPatientsByCHWAndNameQuery);
-		q.setParameter("name", "%" + name+"%");
-		q.setParameter("chw", chw);
-		return q.list();
+		DetachedCriteria c= super.getCriterion();
+		c.add(Restrictions.like("name", "%"+name+"%"));
+		c.add(Restrictions.eq("chw", chw));
+		return super.getList(c);
 	}
 	
 	public List<Patient> getPatientsByName(String s){
@@ -77,6 +77,33 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 		}catch(Throwable t){
 			return null;
 		}
+	}
+	
+	public Patient getPatient(String name, String birthdate, String id){
+		DetachedCriteria c = super.getCriterion();
+		//add the name restriction
+		if(name !=null && !name.equals("")){
+			c.add(Restrictions.eq("name", name));
+		}
+		//add the birthdate restriction
+		if(birthdate !=null && !birthdate.equals("")){
+			Date bday = null;
+			try {
+				bday = InternationalisationUtils.getDateFormat().parse(birthdate);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			long lower = bday.getTime() - 86400000;
+			long upper = bday.getTime() + 86400000;
+			c.add(Restrictions.and(Restrictions.gt("birthdate", lower), Restrictions.lt("birthdate", upper)));
+		}
+		//add the id restriction
+		if(id != null && !id.equals("")){
+			long longId = Long.parseLong(id);
+			c.add(Restrictions.eq("id", longId));
+		}
+		Patient p = super.getUnique(c);
+		return p;
 	}
 
 }

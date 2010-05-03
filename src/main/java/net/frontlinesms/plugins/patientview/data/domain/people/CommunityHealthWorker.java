@@ -1,14 +1,15 @@
 package net.frontlinesms.plugins.patientview.data.domain.people;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 import net.frontlinesms.data.DuplicateKeyException;
 import net.frontlinesms.data.domain.Contact;
@@ -17,9 +18,12 @@ import net.frontlinesms.data.domain.Contact;
 @DiscriminatorValue(value="chw")
 public class CommunityHealthWorker extends Person {
 
-	@OneToOne(targetEntity = Contact.class, fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+	@OneToOne(targetEntity = Contact.class, fetch = FetchType.EAGER,cascade=CascadeType.ALL)
 	@JoinColumn(name = "contact_id")
 	private Contact contactInfo;
+	
+	@OneToMany(cascade=CascadeType.PERSIST,mappedBy="chw",fetch=FetchType.LAZY)
+	private List<Patient> patients;
 	
 	public CommunityHealthWorker() {}
 
@@ -53,6 +57,14 @@ public class CommunityHealthWorker extends Person {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void setPatients(List<Patient> patients) {
+		this.patients = patients;
+	}
+
+	public List<Patient> getPatients() {
+		return patients;
 	}
 
 }

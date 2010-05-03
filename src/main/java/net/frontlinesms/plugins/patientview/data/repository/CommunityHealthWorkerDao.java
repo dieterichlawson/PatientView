@@ -1,6 +1,7 @@
 package net.frontlinesms.plugins.patientview.data.repository;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
@@ -29,13 +30,6 @@ public interface CommunityHealthWorkerDao {
 	public Collection<CommunityHealthWorker> getAllCommunityHealthWorkers();
 	
 	/**
-	 * Returns the community health worker that cares for patient p
-	 * @param p The patient
-	 * @return the Community Health Worker
-	 */
-	public CommunityHealthWorker getCommunityHealthWorkerForPatient(Patient p);
-	
-	/**
 	 * Returns the community health worker that has the phone number supplied
 	 * @param phoneNumber The phone number
 	 * @return the Community Health Worker
@@ -49,7 +43,7 @@ public interface CommunityHealthWorkerDao {
 	 * @param limit number of results returned if -1, all are returned
 	 * @return 
 	 */
-	public Collection<CommunityHealthWorker> getCommunityHealthWorkerByName(String s, int limit);
+	public List<CommunityHealthWorker> getCommunityHealthWorkerByName(String s, int limit);
 	
 	/**
 	 * Returns the community health worker with the id specified

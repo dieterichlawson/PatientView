@@ -10,7 +10,6 @@ import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -18,6 +17,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
@@ -93,12 +93,11 @@ public class User extends Person {
 	private boolean passwordCurrent;
 
 	/** A list of security questions for password retrieval. */
-	@OneToMany(cascade=CascadeType.ALL,mappedBy="user")
+	@OneToMany(cascade=CascadeType.REMOVE,mappedBy="user",fetch=FetchType.LAZY)
 	private List<SecurityQuestion> securityQuestions;
 
 	/** Default constructor for Hibernate. */
-	public User() {
-	}
+	public User() {}
 
 	/**
 	 * 
@@ -122,7 +121,7 @@ public class User extends Person {
 		} else {
 			assignTempPassword();
 		}
-		// questions = new ArrayList<SecurityQuestion>();
+		//securityQuestions = new HashSet<SecurityQuestion>();
 		securityQuestions = new ArrayList<SecurityQuestion>();
 	}
 

@@ -1,6 +1,7 @@
 package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
@@ -14,10 +15,7 @@ import org.hibernate.criterion.Restrictions;
 public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<CommunityHealthWorker>
 		implements CommunityHealthWorkerDao {
 	
-	
-	private static String chwByNameQuery = "select chw from CommunityHealthWorker chw where chw.name like :name";
 	private static String chwByPatientQuery = "select p.chw from Patient p where p = :patient";
-	private static String chwByPhoneNumberQuery = "select chw from CommunityHealthWorker chw where chw.contactInfo.phoneNumber = ";
 	
 	protected HibernateCommunityHealthWorkerDao() {
 		super(CommunityHealthWorker.class);
@@ -54,35 +52,23 @@ public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<Communit
 	/* (non-Javadoc)
 	 * @see net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao#getCommunityHealthWorkerByName(java.lang.String, int)
 	 */
-	public Collection<CommunityHealthWorker> getCommunityHealthWorkerByName(String s, int limit){
-		Query q = super.getSession().createQuery(chwByNameQuery);
-		q.setParameter("name","%" + s + "%");
-		if(limit != -1){
-			q.setFetchSize(limit);
-			q.setMaxResults(limit);
+	public List<CommunityHealthWorker> getCommunityHealthWorkerByName(String s, int limit){
+		DetachedCriteria c= super.getCriterion();
+		c.add(Restrictions.like("name", "%"+s+"%"));
+		if(limit > 0)
+			return super.getList(c, 0, limit);
+		else{
+			return super.getList(c);
 		}
-		return q.list();
-	}
-
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao#getCommunityHealthWorkerForPatient(net.frontlinesms.plugins.patientview.data.domain.people.Patient)
-	 */
-	public CommunityHealthWorker getCommunityHealthWorkerForPatient(Patient p) {
-		Query q = super.getSession().createQuery(chwByPatientQuery);
-		q.setParameter("patient", p);
-		q.setFetchSize(1);
-		q.setMaxResults(1);
-		return (CommunityHealthWorker) q.list().get(0);
 	}
 	
 	/* (non-Javadoc)
 	 * @see net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao#getCommunityHealthWorkerByPhoneNumber(java.lang.String)
 	 */
 	public CommunityHealthWorker getCommunityHealthWorkerByPhoneNumber(String phoneNumber){
-		Query q = super.getSession().createQuery(chwByPhoneNumberQuery + phoneNumber);
-		q.setFetchSize(1);
-		q.setMaxResults(1);
-		return (CommunityHealthWorker) q.list().get(0);
+		DetachedCriteria c= super.getCriterion();
+		c.createCriteria("contactInfo").add(Restrictions.eq("phoneNumber",phoneNumber));
+		return super.getUnique(c);
 	}
 
 	public CommunityHealthWorker getCommunityHealthWorkerById(long id) {
