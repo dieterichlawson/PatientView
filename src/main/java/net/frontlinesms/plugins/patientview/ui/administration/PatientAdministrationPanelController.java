@@ -12,6 +12,7 @@ import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
+
 public class PatientAdministrationPanelController extends PersonAdministrationPanelController<Patient> {
 
 	private PatientDao patientDao;
