@@ -34,7 +34,7 @@ public class HibernateUserDao extends BaseHibernateDao<User> implements UserDao{
 	
 	public List<User> getUsersByUsername(String s) {
 		DetachedCriteria c= super.getCriterion();
-		c.add(Restrictions.like("name", "%"+s+"%"));
+		c.add(Restrictions.like("username", "%"+s+"%"));
 		return super.getList(c);
 	}
 	
