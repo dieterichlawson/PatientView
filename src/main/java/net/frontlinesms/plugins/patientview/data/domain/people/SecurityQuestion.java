@@ -31,9 +31,6 @@ public class SecurityQuestion {
 	
 	/** The question. */
 	private String question;
-	
-	@ManyToOne(cascade={},fetch=FetchType.EAGER,targetEntity=User.class)
-	private User user;
 
 	/** A hashed version of the answer. */
 	@Lob
@@ -42,6 +39,9 @@ public class SecurityQuestion {
 	/** The salt used to hash the answer. */
 	@Lob
 	private byte[] salt;
+	
+	/** For hibernate. */
+	SecurityQuestion() {}
 
 	public SecurityQuestion(String question, String answer, User user) throws GeneralSecurityException {
 		this.question = question;

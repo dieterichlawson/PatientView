@@ -2,10 +2,13 @@ package net.frontlinesms.plugins.patientview.ui;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
+import java.awt.Color;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
-import net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils;
+import org.springframework.context.ApplicationContext;
+
+import thinlet.Thinlet;
 import net.frontlinesms.plugins.patientview.data.domain.people.SecurityQuestion;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.repository.SecurityQuestionDao;
@@ -14,8 +17,6 @@ import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager.AuthenticationResult;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
-
-import org.springframework.context.ApplicationContext;
 
 /**
  * The login screen. This screen has several modes for verifying and collecting
@@ -79,7 +80,9 @@ public class LoginScreen implements ThinletUiEventHandler {
 
 	private final PatientViewThinletTabController tabController;
 
-	public LoginScreen(UiGeneratorController uiController, PatientViewThinletTabController tabController, ApplicationContext appCon) {
+	public LoginScreen(UiGeneratorController uiController,
+			PatientViewThinletTabController tabController,
+			ApplicationContext appCon) {
 		this.tabController = tabController;
 		this.ui = uiController;
 		userDao = (UserDao) appCon.getBean("UserDao");
@@ -96,8 +99,10 @@ public class LoginScreen implements ThinletUiEventHandler {
 	public void attemptForgotPassword() {
 		Object usernameField = ui.find(mainPanel, "usernameField");
 		String username = ui.getText(usernameField);
+		
 		if (username != null) {
 			List<User> userList = userDao.getUsersByUsername(username);
+			System.out.println(userList.size());
 			if (!userList.isEmpty()) {
 				user = userDao.getUsersByUsername(username).get(0);
 				changeModeRecoverPassword();
@@ -109,55 +114,35 @@ public class LoginScreen implements ThinletUiEventHandler {
 		}
 	}
 
-	/** Transforms the login screen into a dialog for inputting a new password. */
-	protected void newPasswordMode() {
-		ui.removeAll(mainPanel);
-		// create message instructing the user to choose a new password
-		Object noticeLabel = ui.createLabel(getI18NString("login.new.password.notice"));
-		ui.setColspan(noticeLabel, 2);
-		ui.add(mainPanel, noticeLabel);
-		// creat new password box and duplicate password box
-		passwordBox = new PasswordTextField(ui, getI18NString("login.new.password"));
-		ui.add(mainPanel, ui.createLabel(passwordBox.getLabel()));
-		ui.add(mainPanel, passwordBox.getTextField());
-		passwordBox2 = new PasswordTextField(ui, getI18NString("login.new.password.repeat"));
-		ui.setPerform(passwordBox2.getTextField(), "saveNewPassword", null, this);
-		ui.add(mainPanel, ui.createLabel(passwordBox2.getLabel()));
-		ui.add(mainPanel, passwordBox2.getTextField());
-		Object button = ui.createButton("Create");
-		ui.setAction(button, "saveNewPassword", null, this);
-		ui.add(mainPanel, button);
-		ui.setFocus(passwordBox.getTextField());
-	}
-
 	/**
 	 * The callback method for when a user preses a login button in this screen.
 	 */
-	protected void newQuestionsMode() {
-		ui.removeAll(mainPanel);
-		// TODO: Make this mode a constant width (ask Dieterich)
-		// ui.setInteger(mainPanel, "width", 450);
-		// create message instructing the user to choose a new password
-		infoLabel = ui.createLabel(getI18NString("login.new.questions.notice"));
-		ui.setColspan(infoLabel, 2);
-		ui.add(mainPanel, infoLabel);
-		questions = new TextBox[REQUIRED_QUESTIONS];
-		answers = new TextBox[REQUIRED_QUESTIONS];
-		for (int i = 0; i < REQUIRED_QUESTIONS; i++) {
-			questions[i] = new TextBox(ui, getI18NString("login.new.question") + " " + i);
-			ui.add(mainPanel, ui.createLabel(questions[i].getLabel()));
-			ui.add(mainPanel, questions[i].getTextField());
-			answers[i] = new TextBox(ui, getI18NString("login.new.question.answer") + " " + i);
-			ui.add(mainPanel, ui.createLabel(answers[i].getLabel()));
-			ui.add(mainPanel, answers[i].getTextField());
+	public void attemptLogin() {
+		Object usernameField = ui.find(mainPanel, "usernameField");
+		Object passwordField = ui.find(mainPanel, "passwordField");
+		String username = ui.getText(usernameField);
+		String password = ui.getText(passwordField);
+		// if (username == null || password == null) {
+		// displayIncorrectLoginMessage();
+		// return;
+		// }
+		UserSessionManager manager = UserSessionManager.getUserSessionManager();
+		AuthenticationResult result = manager.login(username, password);
+		if (result == AuthenticationResult.NOSUCHUSER
+				|| result == AuthenticationResult.WRONGPASSWORD) {
+			displayIncorrectLoginMessage();
+			return;
 		}
-		Object skipButton = ui.createButton(getI18NString("login.login"));
-		ui.setAction(skipButton, "init", null, tabController);
-		ui.add(mainPanel, skipButton);
-		Object saveButton = ui.createButton(getI18NString("login.new.question.save"));
-		ui.setAction(saveButton, "saveNewSecurityQuestions", null, this);
-		ui.add(mainPanel, saveButton);
-		ui.setFocus(questions[0].getTextField());
+		if (result == AuthenticationResult.SUCCESS) {
+			user = manager.getCurrentUser();
+			if (user.needsNewPassword()) {
+				changeModeNewPassword();
+			} else if (numberOfSecurityQuestions(user) < REQUIRED_QUESTIONS) {
+				changeModeNewQuestions();
+			} else {
+				changeModePatientView();
+			}
+		}
 	}
 
 	/**
@@ -195,34 +180,22 @@ public class LoginScreen implements ThinletUiEventHandler {
 	 * @throws GeneralSecurityException
 	 *             if the crypto libray cannot be loaded
 	 */
-	protected void recoverPasswordMode(User user) {
-		ui.removeAll(mainPanel);
-		Object backButton = ui.createButton(getI18NString("login.reset.back"));
-		ui.setAction(backButton, "reset", null, this);
-		if (user == null || user.getSecurityQuestions().size() < REQUIRED_QUESTIONS) {
-			Object noticeLabel = ui.createLabel(getI18NString("login.reset.warning"));
-			ui.add(mainPanel, noticeLabel);
-			ui.add(mainPanel, backButton);
+	public void attemptSavePassword() throws GeneralSecurityException {
+		// TODO: error handling
+		Object passwordBox = ui.find(mainPanel, "password1");
+		String pass1 = ui.getText(passwordBox);
+		passwordBox = ui.find(mainPanel, "password2");
+		String pass2 = ui.getText(passwordBox);
+		if (pass1.equals(pass2)) {
+			user.setPassword(pass1);
+			userDao.updateUser(user);
+			resetSoft();
+			Object label = ui.find(mainPanel, "multiLabel");
+			ui.setText(label, getI18NString("password.new.use"));
 		} else {
-			infoLabel = ui.createLabel(getI18NString("login.reset.notice"));
-			ui.add(mainPanel, infoLabel);
-			String[] questions = new String[user.getSecurityQuestions().size()];
-			for(int i = 0; i < questions.length; i++){
-				questions[i] = user.getSecurityQuestions().get(i).getQuestion();
-			}
-			answers = new TextBox[REQUIRED_QUESTIONS];
-			for (int i = 0; i < REQUIRED_QUESTIONS; i++) {
-				answers[i] = new TextBox(ui, questions[i]);
-				Object label = ui.createLabel(answers[i].getLabel());
-				ui.setColspan(label, 2);
-				ui.add(mainPanel, label);
-				ui.setColspan(answers[i].getTextField(), 2);
-				ui.add(mainPanel, answers[i].getTextField());
-			}
-			ui.add(mainPanel, backButton);
-			Object resetButton = ui.createButton(getI18NString("login.reset"));
-			ui.setAction(resetButton, "attemptRecoverPassword", null, this);
-			ui.add(mainPanel, resetButton);
+			Object label = ui.find(mainPanel, MULTI_LABEL);
+			ui.setText(label, getI18NString("password.new.warning"));
+			ui.setColor(label, Thinlet.FOREGROUND, Color.RED);
 		}
 	}
 
@@ -234,33 +207,31 @@ public class LoginScreen implements ThinletUiEventHandler {
 	 */
 	public void attemptSaveQuestions() throws GeneralSecurityException {
 		// TODO: error handling
-		String username = ui.getText(usernameBox.getTextField());
-		//TODO: What if username is entered incorrectly?
-		//TODO: if the resultant array is of a size > 1 output a message
-		//saying 'there is no user by that username in the system
-		User user = userDao.getUsersByUsername(username).get(0);
-		List<SecurityQuestion> securityQuestions = user.getSecurityQuestions();
-		boolean valid = true;
-		for (TextBox answerBox : answers) {
-			String quest = answerBox.getLabel();
-			String ans = answerBox.getResponse();
-			for(SecurityQuestion sq: securityQuestions){
-				if(sq.getQuestion().equalsIgnoreCase(quest)){
-					valid = sq.verifyAnswer(ans);
-				}
+		if (questions == null || answers == null) {
+			ui.createDialog(getI18NString("password.new.warning"));
+			return;
+		}
+		for (int i = 0; i < questions.length; i++) {
+			String q = ui.getText(questions[i]);
+			String a = ui.getText(answers[i]);
+			if (q != null && !q.equals("") && a != null && !a.equals("")) {
+				// delete the question if it is alreay there
+				saveQuestion(q, a, user);
 			}
 		}
-		if (valid) {
-			String tempPassword = user.assignTempPassword();
-			ui.removeAll(mainPanel);
-			Object backButton = ui.createButton(getI18NString("login.reset.back"));
-			ui.setAction(backButton, "reset", null, this);
-			infoLabel = ui.createLabel(getI18NString("login.reset.temp.password"));
-			ui.setColspan(infoLabel, 2);
-			ui.add(mainPanel, infoLabel);
-			ui.add(mainPanel, ui.createLabel(tempPassword));
-			ui.add(mainPanel, backButton);
-			userDao.updateUser(user);
+		int count = numberOfSecurityQuestions(user);
+		if (count < REQUIRED_QUESTIONS) {
+			Object label = ui.find(mainPanel, MULTI_LABEL);
+			String text;
+			if (count == 1) {
+				text = getI18NString(QUESTION_ON_FILE);
+			} else {
+				text = getI18NString(QUESTIONS_ON_FILE);
+				text = text.replaceAll("<X>", "" + count);
+			}
+			int req = REQUIRED_QUESTIONS - count;
+			text = text.replaceFirst("<Y>", "" + req);
+			ui.setText(label, text);
 		} else {
 			answers = null;
 			questions = null;
@@ -286,18 +257,35 @@ public class LoginScreen implements ThinletUiEventHandler {
 	 * Transforms the login screen into a dialog for inputing security
 	 * questions.
 	 */
-	public void attemptLogin() {
-		String username = usernameBox.getResponse();
-		String password = passwordBox.getResponse();
-		if (username == null || username.equals("") || password == null || password.equals("")) {
-			ui.setText(infoLabel, getI18NString(INCORRECT_LOGIN_MESSAGE));
-			return;
+	protected void changeModeNewQuestions() {
+		// components that are worked with
+		Object questionScreen = ui.loadComponentFromFile(XML_QUESTIONS, this);
+		Object questionPanel = ui.find(questionScreen, "questionCreationPanel");
+		Object multiLabel = ui.find(questionPanel, MULTI_LABEL);
+		// set the text describing how many questions are needed
+		String text;
+		int num = numberOfSecurityQuestions(user);
+		if (num == 1) {
+			text = getI18NString(QUESTION_ON_FILE);
+		} else {
+			text = getI18NString(QUESTIONS_ON_FILE);
+			text = text.replaceFirst("<X>", "" + num);
 		}
-		UserSessionManager manager = UserSessionManager.getUserSessionManager();
-		AuthenticationResult result = manager.login(username, password);
-		if (result == AuthenticationResult.NOSUCHUSER || result == AuthenticationResult.WRONGPASSWORD) {
-			ui.setText(infoLabel, getI18NString(INCORRECT_LOGIN_MESSAGE));
-			return;
+		int required = REQUIRED_QUESTIONS - num;
+		text = text.replaceFirst("<Y>", "" + required);
+		ui.setText(multiLabel, text);
+
+		// create the panel
+		ui.removeAll(questionPanel);
+		ui.add(questionPanel, multiLabel);
+		questions = new Object[required];
+		answers = new Object[required];
+		for (int i = 0; i < required; i++) {
+			questions[i] = createQuestionComboBox();
+			ui.add(questionPanel, questions[i]);
+			answers[i] = ui.createTextfield("", "");
+			ui.setColspan(answers[i], 2);
+			ui.add(questionPanel, answers[i]);
 		}
 
 		ui.removeAll(mainPanel);
@@ -412,28 +400,21 @@ public class LoginScreen implements ThinletUiEventHandler {
 	 * @throws GeneralSecurityException
 	 *             if the crypto library cannot be found
 	 */
-	public void saveNewSecurityQuestions() throws GeneralSecurityException {
-		// TODO: error handling
-		User user = UserSessionManager.getUserSessionManager().getCurrentUser();
-		if (questions == null || answers == null) {
-			ui.createDialog(getI18NString("login.new.password.warning"));
-			return;
-		}
-		// add questions to user
-		int count = 0;
-		for (int i = 0; i < questions.length; i++) {
-			String q = questions[i].getResponse();
-			String a = answers[i].getResponse();
-			if (q != null && !q.equals("") && a != null && !a.equals("")) {
-				user.addSecurityQuestion(q, a);
+	private boolean saveQuestion(String question, String answer, User user)
+			throws GeneralSecurityException {
+		List<SecurityQuestion> userQuestions = questionDao
+				.getSecurityQuestionsForUser(user);
+		boolean found = false;
+		for (SecurityQuestion sec : userQuestions) {
+			if (sec.getQuestion().equals(question)) {
+				questionDao.deleteSecurityQuestion(sec);
+				found = true;
+				break;
 			}
 		}
-		// save user
-		if (count > 0) {
-			userDao.updateUser(user);
-			ui.setText(infoLabel, count + " " + getI18NString("login.new.question.saved"));
-			System.out.println(user.getSecurityQuestions().size());
-		}
+		SecurityQuestion sec = new SecurityQuestion(question, answer, user);
+		questionDao.saveOrUpdateSecurityQuestion(sec);
+		return found;
 	}
 
 }
