@@ -7,12 +7,11 @@ import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
 
-import org.hibernate.Query;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 
 public class HibernateUserDao extends BaseHibernateDao<User> implements UserDao{
 
-	private static final String getUsersbyUsernameQuery = "select u from User u where u.username =";
-	private static final String getUsersByNameQuery = "select u from User u where u.name like :name";
 	protected HibernateUserDao() {
 		super(User.class);
 	}
@@ -34,17 +33,24 @@ public class HibernateUserDao extends BaseHibernateDao<User> implements UserDao{
 	}
 	
 	public List<User> getUsersByUsername(String s) {
-		Query q= super.getSession().createQuery(getUsersbyUsernameQuery + " '" +s +"'");		
-		return q.list();
+		DetachedCriteria c= super.getCriterion();
+		c.add(Restrictions.like("name", "%"+s+"%"));
+		return super.getList(c);
 	}
 	
-	public Collection<User> getUsersByName(String s, int limit) {
-		Query q= super.getSession().createQuery(getUsersByNameQuery);
-		q.setParameter("name", "%" + s+"%");
-		if(limit != -1){
-			q.setFetchSize(limit);
-			q.setMaxResults(limit);
+	public List<User> getUsersByName(String s, int limit) {
+		DetachedCriteria c= super.getCriterion();
+		c.add(Restrictions.like("name", "%"+s+"%"));
+		if(limit > 0)
+			return super.getList(c, 0, limit);
+		else{
+			return super.getList(c);
 		}
-		return q.list();
+	}
+
+	public User getUsersById(long id) {
+		DetachedCriteria c = super.getCriterion();
+		c.add(Restrictions.eq("pid",id));
+		return super.getUnique(c);
 	}
 }

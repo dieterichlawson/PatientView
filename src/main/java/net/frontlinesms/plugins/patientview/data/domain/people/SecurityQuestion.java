@@ -1,26 +1,39 @@
 package net.frontlinesms.plugins.patientview.data.domain.people;
 
-import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.*;
+import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.cryptoHash;
+import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.fillRandomBytes;
+import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.verify;
 
 import java.security.GeneralSecurityException;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
-@Table(name="medic_securityQuestions")
+@Table(name="medic_security_questions")
 public class SecurityQuestion {
 
 	/** Unique id for this entity. This is for hibernate usage. */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false, updatable = false)
-	protected long pid;
+	protected long qid;
 
 	@ManyToOne(cascade={},fetch=FetchType.EAGER,optional=false,targetEntity=User.class)
 	private User user;
 	
 	/** The question. */
 	private String question;
+	
+	@ManyToOne(cascade={},fetch=FetchType.EAGER,targetEntity=User.class)
+	private User user;
 
 	/** A hashed version of the answer. */
 	@Lob
@@ -30,9 +43,6 @@ public class SecurityQuestion {
 	@Lob
 	private byte[] salt;
 
-	/** For Hibernate */
-	SecurityQuestion() {}
-	
 	public SecurityQuestion(String question, String answer, User user) throws GeneralSecurityException {
 		this.question = question;
 		this.user = user;
@@ -46,7 +56,6 @@ public class SecurityQuestion {
 	}
 
 	/**
-	 * Returns the question.
 	 * 
 	 * @param questions
 	 *            the questions to set for this user
@@ -105,11 +114,11 @@ public class SecurityQuestion {
 		this.salt = salt;
 	}
 
-	void setUser(User user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 
-	Person getPerson() {
+	public User getUser() {
 		return user;
 	}
 	

@@ -7,7 +7,9 @@ import javax.persistence.*;
 
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageUtils;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+import net.frontlinesms.plugins.patientview.utils.DateUtils;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
 import org.hibernate.annotations.IndexColumn;
 
@@ -118,6 +120,10 @@ public abstract class Person{
 			HistoryManager.logBirthdateChange(this,birthdate.toLocaleString());
 		}catch(Exception e){}
 		this.birthdate = birthdate.getTime();
+	}
+	
+	public String getStringBirthdate(){
+		return InternationalisationUtils.getDateFormat().format(birthdate);
 	}
 
 	public Gender getGender() {

@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 
@@ -18,8 +17,8 @@ public class Patient extends Person {
 	/**
 	 * The Community Health Worker of the Patient
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, cascade = {})
-	@JoinColumn(name = "chw_id", nullable = true)
+	@ManyToOne(fetch=FetchType.EAGER, cascade={})
+	@JoinColumn(name="chw_id", nullable=true)
 	private CommunityHealthWorker chw;
 
 	/** Default constructor for Hibernate. */
@@ -41,8 +40,7 @@ public class Patient extends Person {
 	 * @param affiliation
 	 *            affiliation, like tribe, family, etc..., is nullable
 	 */
-	public Patient(CommunityHealthWorker chw, String name, Gender gender,
-			Date birthdate) {
+	public Patient(CommunityHealthWorker chw, String name, Gender gender, Date birthdate) {
 		super(name, gender, birthdate);
 		this.chw = chw;
 	}

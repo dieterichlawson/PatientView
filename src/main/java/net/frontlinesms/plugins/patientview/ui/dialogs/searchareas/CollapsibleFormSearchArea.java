@@ -4,24 +4,19 @@ import java.util.Collection;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
-import net.frontlinesms.plugins.patientview.ui.dialogs.SubmitFormDialog;
 import net.frontlinesms.ui.ExtendedThinlet;
 
 import org.springframework.context.ApplicationContext;
 
-public class FormSearchArea extends EntitySearchArea<MedicForm>{
+public class CollapsibleFormSearchArea extends EntitySearchArea<MedicForm>{
 	
-	private MedicFormDao formDao;
-
-	private SubmitFormDialog fofDialog;
-	
-	public FormSearchArea(MedicForm entity, ExtendedThinlet uiController, SubmitFormDialog fofDialog, ApplicationContext appCon) {
-		super(entity, uiController);
-		this.fofDialog = fofDialog;
+	public CollapsibleFormSearchArea(MedicForm entity, ExtendedThinlet uiController, SearchAreaDelegate<MedicForm> delegate,ApplicationContext appCon) {
+		super(entity, uiController, delegate);
 		formDao = (MedicFormDao) appCon.getBean("MedicFormDao");
 		searchBarKeyPressed("");
 	}
 
+	private MedicFormDao formDao;
 	
 	@Override
 	protected Collection<MedicForm> getEntitiesForString(String s) {
@@ -37,13 +32,5 @@ public class FormSearchArea extends EntitySearchArea<MedicForm>{
 	protected String getEntityTypeName() {
 		return "Form";
 	}
-
-	@Override
-	public void selectionChanged() {
-		MedicForm form = (MedicForm) uiController.getAttachedObject(uiController.getSelectedItem(table));
-		fofDialog.setForm(form);
-	}
 	
-	
-
 }

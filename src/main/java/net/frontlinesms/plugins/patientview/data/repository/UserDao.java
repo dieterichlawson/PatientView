@@ -17,5 +17,7 @@ public interface UserDao {
 	
 	public List<User> getUsersByUsername(String username);
 	
-	public Collection<User> getUsersByName(String s, int limit);
+	public User getUsersById(long id);
+	
+	public List<User> getUsersByName(String s, int limit);
 }

@@ -10,10 +10,7 @@ import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -98,12 +95,12 @@ public class User extends Person {
 	/** True if this user needs a new password. */
 	private boolean passwordCurrent;
 
-//	/** A list of security questions for password retrieval. */
-////	private HashMap<String, byte[]> securityQuestions;
+	/** A list of security questions for password retrieval. */
+	@OneToMany(cascade=CascadeType.REMOVE,mappedBy="user",fetch=FetchType.LAZY)
+	private List<SecurityQuestion> securityQuestions;
 
 	/** Default constructor for Hibernate. */
-	public User() {
-	}
+	public User() {}
 
 	/**
 	 * 
@@ -115,8 +112,7 @@ public class User extends Person {
 	 * @param role
 	 * @throws GeneralSecurityException
 	 */
-	public User(String name, Gender gender, Date birthdate, String username,
-			Role role, String password) throws GeneralSecurityException {
+	public User(String name, Gender gender, Date birthdate, String username, Role role, String password) throws GeneralSecurityException {
 		super(name, gender, birthdate);
 		// TODO: Make sure no two users have the same login name
 		assert username != null;
@@ -128,8 +124,8 @@ public class User extends Person {
 		} else {
 			assignTempPassword();
 		}
-		// questions = new ArrayList<SecurityQuestion>();
-		questions = new TreeSet<SecurityQuestion>();
+		//securityQuestions = new HashSet<SecurityQuestion>();
+		securityQuestions = new ArrayList<SecurityQuestion>();
 	}
 
 	public User(String username, Role role) throws GeneralSecurityException {
@@ -146,10 +142,17 @@ public class User extends Person {
 	 * @throws GeneralSecurityException
 	 *             if the crypto library cannot be found
 	 */
-	public void addSecurityQuestion(String question, String answer)
-			throws GeneralSecurityException {
-		SecurityQuestion q = new SecurityQuestion(question, answer, this);
-		questions.add(q);
+	public void addSecurityQuestion(String question, String answer) throws GeneralSecurityException {
+		SecurityQuestion priorQuestion = null;
+		for(SecurityQuestion q: securityQuestions){
+			if(q.getQuestion().equalsIgnoreCase(question)){
+				priorQuestion = q;
+			}
+		}
+		if(priorQuestion != null){
+			securityQuestions.remove(priorQuestion);
+		}
+		securityQuestions.add(new SecurityQuestion(question,answer, this));
 	}
 
 	/**
@@ -223,8 +226,8 @@ public class User extends Person {
 	 * 
 	 * @return the security questions of this user
 	 */
-	public Set<SecurityQuestion> getSecurityQuestions() {
-		return questions;
+	public List<SecurityQuestion> getSecurityQuestions() {
+		return securityQuestions;
 	}
 
 	/** @return the login name of this user */
@@ -312,15 +315,15 @@ public class User extends Person {
 		this.salt = salt;
 	}
 
-//	/**
-//	 * For Hibernate only. Do not use.
-//	 * 
-//	 * @param questions
-//	 *            the questions to set for this user
-//	 */
-//	void setSecurityQuestions(HashMap<String, byte[]> questions) {
-//		questions = new HashMap<String, byte[]>(questions);
-//	}
+	/**
+	 * For Hibernate only. Do not use.
+	 * 
+	 * @param questions
+	 *            the questions to set for this user
+	 */
+	void setSecurityQuestions(List<SecurityQuestion> questions) {
+		securityQuestions = questions;
+	}
 
 	/**
 	 * Sets the login name of this user.

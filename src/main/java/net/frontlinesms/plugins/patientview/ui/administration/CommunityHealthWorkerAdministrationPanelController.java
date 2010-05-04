@@ -25,7 +25,7 @@ public class CommunityHealthWorkerAdministrationPanelController extends PersonAd
 		if(chwDao == null){
 			chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
 		}
-		return new ArrayList<CommunityHealthWorker>(chwDao.getCommunityHealthWorkerByName(s, 30));
+		return new ArrayList<CommunityHealthWorker>(chwDao.getCommunityHealthWorkerByName(s, -1));
 	}
 
 	@Override

@@ -1,0 +1,6 @@
+<panel colspan="1" border="true" name="bottomButtonPanel" weightx="1" gap="10" left="5" right="5" top="5" bottom="5">
+	<label weightx="1" />
+	<label name="resultsLabel" text="Results 1-30 of 3000" />
+	<button name="leftPageButton" icon="/icons/left.png" action="pageLeft()" />
+	<button name="rightPageButton" icon="/icons/right.png" action="pageRight()" />
+</panel> 

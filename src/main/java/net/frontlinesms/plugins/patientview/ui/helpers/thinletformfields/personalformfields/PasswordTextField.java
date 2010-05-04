@@ -3,6 +3,7 @@ package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.person
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 /** A masked password box. */
 public class PasswordTextField extends TextBox implements PersonalFormField {
@@ -10,8 +11,9 @@ public class PasswordTextField extends TextBox implements PersonalFormField {
 	public static final String NAME = "passwordField";
 	private String response;
 
+	
 	public PasswordTextField(ExtendedThinlet thinlet, String label) {
-		this(thinlet, label, NAME);
+		this(thinlet, InternationalisationUtils.getI18NString("login.password")+":", NAME);
 	}
 
 	protected PasswordTextField(ExtendedThinlet thinlet, String label,
@@ -19,6 +21,7 @@ public class PasswordTextField extends TextBox implements PersonalFormField {
 		super(thinlet, label, name);
 		response = "";
 		thinlet.setInteger(mainPanel, "colspan", 1);
+		thinlet.setAttachedObject(mainPanel, this);
 	}
 
 	public void textBoxKeyPressed(String typed) {

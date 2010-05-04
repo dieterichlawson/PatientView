@@ -1,7 +1,6 @@
 package net.frontlinesms.plugins.patientview.ui;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
-
 import net.frontlinesms.Utils;
 import net.frontlinesms.plugins.PluginController;
 import net.frontlinesms.plugins.patientview.PatientViewPluginController;
@@ -26,8 +25,7 @@ import net.frontlinesms.ui.UiGeneratorController;
 
 import org.apache.log4j.Logger;
 
-public class PatientViewThinletTabController implements ThinletUiEventHandler,
-		AdvancedTableActionDelegate {
+public class PatientViewThinletTabController implements ThinletUiEventHandler, AdvancedTableActionDelegate {
 
 	/** Logging object */
 	private final Logger LOG = Utils.getLogger(this.getClass());
@@ -137,86 +135,48 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler,
 	 * performs the initialization required for the main patient view screen
 	 */
 	public void init() {
-		uiController.removeAll(uiController.find(mainTab, "medic"));
-		uiController.add(uiController.find(mainTab, "medic"), uiController
-				.find(uiController.loadComponentFromFile(XML_MEDIC_TAB, this),
-						"medicTabMainPanel"));
-		detailViewController = new DetailViewController(uiController.find(
-				mainTab, "detailViewPanel"), uiController, pluginController
-				.getApplicationContext());
-		uiController.setInteger(uiController.find(mainTab, "splitPanel"),
-				"divider", (int) (uiController.getWidth() * 0.56));
-		mainPanel = uiController.find(mainTab, "medicTabMainPanel");
-		// if user is an admin, add the admin tab
-		if (UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.ADMIN) {
-			adminTab = new AdministrationTabController(uiController,
-					pluginController.getApplicationContext());
-			uiController.add(uiController.getParent(getTab()), adminTab
-					.getMainPanel());
-		}
-		if (UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.REGISTRAR) {
-			uiController.removeAll(mainPanel);
-			RegistrationScreenController rsc = new RegistrationScreenController(
-					uiController, pluginController.getApplicationContext(),
-					this);
-			uiController.add(mainPanel, rsc.getMainPanel());
-		} else {
-			// initialize the results table
-			tableController = new AdvancedTableController(this, uiController,
-					true);
-			String nameLabel = getI18NString(NAME_COLUMN);
-			String ageLabel = getI18NString(AGE_COLUMN);
-			String genderLabel = getI18NString(GENDER_COLUMN);
-			String phoneNumberLabel = getI18NString(PHONE_NUMBER_COLUMN);
-			String chwLabel = getI18NString(CHW_COLUMN);
+			uiController.removeAll(uiController.find(mainTab,"medic"));
+			uiController.add(uiController.find(mainTab,"medic"),uiController.find(uiController.loadComponentFromFile(XML_MEDIC_TAB, this),"medicTabMainPanel"));
+			detailViewController = new DetailViewController(uiController.find(mainTab,"detailViewPanel"),uiController,pluginController.getApplicationContext());
+			uiController.setInteger(uiController.find(mainTab,"splitPanel"), "divider", (int) (uiController.getWidth() * 0.56));
+			mainPanel =  uiController.find(mainTab,"medicTabMainPanel");
+			//if user is an admin, add the admin tab
+			if(UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.ADMIN){
+				adminTab = new AdministrationTabController(uiController,pluginController.getApplicationContext());
+				uiController.add(uiController.getParent(getTab()),adminTab.getMainPanel());
+			}
+			if(UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.REGISTRAR){
+				uiController.removeAll(mainPanel);
+				RegistrationScreenController rsc = new RegistrationScreenController(uiController,pluginController.getApplicationContext(),this);
+				uiController.add(mainPanel,rsc.getMainPanel());
+			}else{
+			//initialize the results table
+			tableController = new AdvancedTableController(this, uiController, uiController.find(mainTab, "resultTable"));
+			String nameLabel= getI18NString(NAME_COLUMN);
+			String ageLabel=getI18NString(AGE_COLUMN);
+			String genderLabel=getI18NString(GENDER_COLUMN);
+			String phoneNumberLabel=getI18NString(PHONE_NUMBER_COLUMN);
+			String chwLabel=getI18NString(CHW_COLUMN);
 			String senderLabel = getI18NString(SENDER_COLUMN);
 			String subjectLabel = getI18NString(SUBJECT_COLUMN);
-			String dateSentLabel = getI18NString(DATE_SENT_COLUMN);
-			String dateSubmittedLabel = getI18NString(DATE_SUBMITTED_COLUMN);
-			String messageContentLabel = getI18NString(MESSAGE_CONTENT_COLUMN);
-			String labelLabel = getI18NString(LABEL_COLUMN);
-			String parentFormLabel = getI18NString(PARENT_FORM_COLUMN);
+			String dateSentLabel =getI18NString(DATE_SENT_COLUMN);
+			String dateSubmittedLabel =getI18NString(DATE_SUBMITTED_COLUMN);
+			String messageContentLabel=getI18NString(MESSAGE_CONTENT_COLUMN);
+			String labelLabel =getI18NString(LABEL_COLUMN);
+			String parentFormLabel =getI18NString(PARENT_FORM_COLUMN);
 			String formNameLabel = getI18NString(FORM_NAME_COLUMN);
-			String fieldLabelLabel = getI18NString(FIELD_LABEL_COLUMN);
-			String responseLabel = getI18NString(RESPONSE_COLUMN);
-			tableController.putHeader(CommunityHealthWorker.class,
-					new String[] { nameLabel, ageLabel, genderLabel,
-							phoneNumberLabel },
-					new String[] { "getName", "getStringAge",
-							"getStringGender", "getPhoneNumber" });
-			tableController.putHeader(Patient.class, new String[] { nameLabel,
-					ageLabel, genderLabel, chwLabel },
-					new String[] { "getName", "getStringAge",
-							"getStringGender", "getCHWName" });
-			tableController.putHeader(MedicForm.class,
-					new String[] { nameLabel }, new String[] { "getName" });
-			tableController.putHeader(PersonAttribute.class,
-					new String[] { labelLabel }, new String[] { "getLabel" });
-			tableController.putHeader(PersonAttributeResponse.class,
-					new String[] { labelLabel, senderLabel, subjectLabel,
-							dateSubmittedLabel, responseLabel }, new String[] {
-							"getAttributeLabel", "getSubmitterName",
-							"getSubjectName", "getStringDateSubmitted",
-							"getValue" });
-			tableController.putHeader(MedicFormField.class, new String[] {
-					labelLabel, parentFormLabel }, new String[] { "getLabel",
-					"getParentFormName" });
-			tableController.putHeader(MedicMessageResponse.class, new String[] {
-					senderLabel, dateSentLabel, messageContentLabel },
-					new String[] { "getSubmitterName",
-							"getStringDateSubmitted", "getMessageContent" });
-			tableController.putHeader(MedicFormResponse.class, new String[] {
-					formNameLabel, senderLabel, subjectLabel,
-					dateSubmittedLabel }, new String[] { "getFormName",
-					"getSubmitterName", "getSubjectName",
-					"getStringDateSubmitted" });
-			tableController.putHeader(MedicFormFieldResponse.class,
-					new String[] { fieldLabelLabel, senderLabel, subjectLabel,
-							dateSubmittedLabel, responseLabel }, new String[] {
-							"getFieldLabel", "getSubmitterName",
-							"getSubjectName", "getStringDateSubmitted",
-							"getValue" });
-
+			String fieldLabelLabel =getI18NString(FIELD_LABEL_COLUMN);
+			String responseLabel =getI18NString(RESPONSE_COLUMN);
+			tableController.putHeader(CommunityHealthWorker.class, new String[]{nameLabel,ageLabel,genderLabel, phoneNumberLabel}, new String[]{"getName", "getStringAge","getStringGender","getPhoneNumber"});
+			tableController.putHeader(Patient.class, new String[]{nameLabel,ageLabel,genderLabel, chwLabel}, new String[]{"getName", "getStringAge","getStringGender","getCHWName"});
+			tableController.putHeader(MedicForm.class, new String[]{nameLabel}, new String[]{"getName"});
+			tableController.putHeader(PersonAttribute.class, new String[]{labelLabel}, new String[]{"getLabel"});
+			tableController.putHeader(PersonAttributeResponse.class, new String[]{labelLabel, senderLabel,subjectLabel, dateSubmittedLabel,responseLabel}, new String[]{"getAttributeLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"});
+			tableController.putHeader(MedicFormField.class, new String[]{labelLabel, parentFormLabel}, new String[]{"getLabel","getParentFormName"});
+			tableController.putHeader(MedicMessageResponse.class, new String[]{senderLabel,dateSentLabel, messageContentLabel}, new String[]{"getSubmitterName","getStringDateSubmitted","getMessageContent"});
+			tableController.putHeader(MedicFormResponse.class, new String[]{formNameLabel, senderLabel,subjectLabel, dateSubmittedLabel}, new String[]{"getFormName","getSubmitterName","getSubjectName","getStringDateSubmitted"});
+			tableController.putHeader(MedicFormFieldResponse.class, new String[]{fieldLabelLabel, senderLabel,subjectLabel, dateSubmittedLabel,responseLabel}, new String[]{"getFieldLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"});
+			
 			currentSearchState = SearchState.SIMPLESEARCH;
 			// intialize the search controllers
 			simpleSearch = new SimpleSearchController(uiController,
@@ -247,10 +207,6 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler,
 
 	public void selectionChanged(Object selectedObject) {
 		detailViewController.selectionChanged(selectedObject);
-	}
-
-	public Object getTable() {
-		return uiController.find(mainTab, "resultTable");
 	}
 
 	public QueryGenerator getQueryGenerator() {

@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;

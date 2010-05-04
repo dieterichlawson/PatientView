@@ -1,6 +1,6 @@
 package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 
-import java.util.Collection;
+import java.util.List;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.forms.data.domain.Form;
@@ -27,7 +27,7 @@ public class HibernateMedicFormDao extends BaseHibernateDao<MedicForm> implement
 	/*
 	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormDao#getAllMedicForms()
 	 */
-	public Collection<MedicForm> getAllMedicForms() {
+	public List<MedicForm> getAllMedicForms() {
 		return super.getAll();
 	}
 
@@ -48,7 +48,7 @@ public class HibernateMedicFormDao extends BaseHibernateDao<MedicForm> implement
 	/*
 	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormDao#getMedicFormsByName(java.lang.String)
 	 */
-	public Collection<MedicForm> getMedicFormsByName(String s){
+	public List<MedicForm> getMedicFormsByName(String s){
 		DetachedCriteria c = DetachedCriteria.forClass(MedicForm.class);
 		c.add(Restrictions.like("name", "%"+s+"%"))
 		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

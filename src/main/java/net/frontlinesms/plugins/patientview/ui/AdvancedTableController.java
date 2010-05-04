@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -13,84 +15,71 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
-import net.frontlinesms.events.EventBus;
-import net.frontlinesms.events.EventObserver;
-import net.frontlinesms.events.FrontlineEvent;
-import net.frontlinesms.events.impl.DidSaveNotification;
-import net.frontlinesms.events.impl.DidUpdateNotification;
 import net.frontlinesms.ui.UiGeneratorController;
-
-import org.springframework.context.ApplicationContext;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 /**
  * This class provides a controller for a thinlet table that can handle creating
  * headers, doing all the thinlet grunt-work, and autofitting columns.
  * @author Dieterich
  *
  */
-public class AdvancedTableController implements EventObserver{
+public class AdvancedTableController{
 	
 	/** the thinlet table**/
-	private Object table;
-	
-	private boolean useTableMethod;
+	protected Object table;
 	
 	/** the headers for the table **/
-	private Map<Class,Object> headers;
+	protected Map<Class,Object> headers;
 		
-	private AdvancedTableActionDelegate delegate;
-	private AdvancedTableDataSource dataSource;
+	protected AdvancedTableActionDelegate delegate;
 	
 	/** the message displayed when there are no results**/
-	private String noResultsMessage;
-	
-	public AdvancedTableDataSource getDataSource() {
-		return dataSource;
-	}
+	protected String noResultsMessage;
 
-	public void setDataSource(AdvancedTableDataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-
-	private UiGeneratorController uiController;
+	protected UiGeneratorController uiController;
 	
-	private Class currentClass;
+	protected Class currentClass;
 	
 	/** The size of the results array */
-	private int resultsSize;
+	protected int resultsSize;
 	
 	/** Objects for determining text width**/
-	private ImageIcon icon;
-	private Graphics graphics;
-	private Font font;
-	private FontMetrics metrics;
+	protected static FontMetrics metrics;
+	
+	protected Object[][] methods;
+	
+	protected static final int SELECTION_CHANGED_INDEX = 0;
+	protected static final int DOUBLE_CLICK_ACTION_INDEX = 1;
+	protected static final int RESULTS_CHANGED_INDEX = 2;
+	protected static final int METHOD_INDEX = 0;
+	protected static final int HANDLER_INDEX = 1;
+	
+	static{
+		//initialize stuff for determining font width
+		ImageIcon icon = new ImageIcon();
+		icon.setImage(new BufferedImage(10,10,BufferedImage.OPAQUE));
+		Graphics graphics = icon.getImage().getGraphics();
+		Font font= new Font("Sans Serif",Font.PLAIN,14);
+		metrics = graphics.getFontMetrics(font);
+	}
 	
 	/**
-	 * Standard constructor for the Advanced table
+	 * Standard constructor for the Advanced table. Creates a thinlet 
+	 * table that is accessible with the getTable() method
 	 * @param delegate
 	 * @param uiController
 	 * @param useTableMethod
 	 */
-	public AdvancedTableController(AdvancedTableActionDelegate delegate, UiGeneratorController uiController, boolean useTableMethod){
+	public AdvancedTableController(AdvancedTableActionDelegate delegate, UiGeneratorController uiController){
 		this.uiController = uiController;
-		this.useTableMethod = useTableMethod;
 		this.delegate = delegate;
-		if(!useTableMethod){
-			table = uiController.create("table");
-			uiController.setInteger(table, "weightx", 1);
-			uiController.setInteger(table, "weighty", 1);
-		}
-		uiController.setAction(getTable(), "tableSelectionChange()", null, this);
-		uiController.setPerform(getTable(), "doubleClick()",null,this);
-		uiController.setChoice(getTable(), "selection", "single");
+		table = uiController.create("table");
+		uiController.setInteger(table, "weightx", 1);
+		uiController.setInteger(table, "weighty", 1);
+		uiController.setAction(table, "tableSelectionChange()", null, this);
+		uiController.setPerform(table, "doubleClick()",null,this);
+		uiController.setChoice(table, "selection", "single");
 		headers = new HashMap<Class, Object>();
-		
-		//initialize stuff for determining font width
-		icon = new ImageIcon();
-		icon.setImage(new BufferedImage(10,10,BufferedImage.OPAQUE));
-		graphics = icon.getImage().getGraphics();
-		font= new Font("Sans Serif",Font.PLAIN,14);
-		metrics = graphics.getFontMetrics(font);
+		methods = new Object[3][2];
 	}
 	
 	
@@ -102,51 +91,13 @@ public class AdvancedTableController implements EventObserver{
 	 */
 	public AdvancedTableController(AdvancedTableActionDelegate delegate, UiGeneratorController uiController, Object table){
 		this.uiController = uiController;
-		this.useTableMethod = false;
 		this.delegate = delegate;
 		this.table = table;
-		uiController.setAction(getTable(), "tableSelectionChange()", null, this);
-		uiController.setPerform(getTable(), "doubleClick()",null,this);
-		uiController.setChoice(getTable(), "selection", "single");
+		uiController.setAction(table, "tableSelectionChange()", null, this);
+		uiController.setPerform(table, "doubleClick()",null,this);
+		uiController.setChoice(table, "selection", "single");
 		headers = new HashMap<Class, Object>();
-		//initialize stuff for determining font width
-		icon = new ImageIcon();
-		icon.setImage(new BufferedImage(10,10,BufferedImage.OPAQUE));
-		graphics = icon.getImage().getGraphics();
-		font= new Font("Sans Serif",Font.PLAIN,14);
-		metrics = graphics.getFontMetrics(font);
-	}
-	
-	/**
-	 * Constructor used when you want the table controller to call a refresh whenever the database changes
-	 * @param delegate The delegate for this table
-	 * @param uiController 
-	 * @param useTableMethod
-	 * @param appcon an ApplicationContext
-	 * @param dataSource The data source for this table - will be notified to refresh
-	 */
-	public AdvancedTableController(AdvancedTableActionDelegate delegate, UiGeneratorController uiController, boolean useTableMethod, ApplicationContext appcon, AdvancedTableDataSource dataSource){
-		this.uiController = uiController;
-		this.useTableMethod = useTableMethod;
-		((EventBus) appcon.getBean("eventBus")).registerObserver(this);
-		this.dataSource = dataSource;
-		this.delegate = delegate;
-		if(!useTableMethod){
-			table = uiController.create("table");
-			uiController.setInteger(table, "weightx", 1);
-			uiController.setInteger(table, "weighty", 1);
-		}
-		uiController.setAction(getTable(), "tableSelectionChange()", null, this);
-		uiController.setPerform(getTable(), "doubleClick()",null,this);
-		uiController.setChoice(getTable(), "selection", "single");
-		headers = new HashMap<Class, Object>();
-		
-		//initialize stuff for determining font width
-		icon = new ImageIcon();
-		icon.setImage(new BufferedImage(10,10,BufferedImage.OPAQUE));
-		graphics = icon.getImage().getGraphics();
-		font= new Font("Sans Serif",Font.PLAIN,14);
-		metrics = graphics.getFontMetrics(font);
+		methods = new Object[3][2];
 	}
 	
 	/** creates a new header option for the specified class
@@ -174,43 +125,35 @@ public class AdvancedTableController implements EventObserver{
 	public void setResults(List results){
 		resultsSize = results.size();
 		if(results.size() == 0){
-			uiController.removeAll(getTable());
+			uiController.removeAll(table);
 			Object header = uiController.create("header");
 			uiController.add(header,uiController.createColumn(getI18NString("advancedtable.no.results.to.display"), null));
-			uiController.add(getTable(),header);
+			uiController.add(table,header);
 			Object row = uiController.createTableRow(null);
 			uiController.add(row, uiController.createTableCell(noResultsMessage==null?getI18NString("advancedtable.no.search.results"):noResultsMessage));
-			uiController.add(getTable(),row);
-			delegate.resultsChanged();
+			uiController.add(table,row);
+			resultsChanged();
 			return;
 		}
-		if(useTableMethod){
-			uiController.setAction(getTable(), "tableSelectionChange()", null, this);
-			uiController.setPerform(getTable(), "doubleClick()",null,this);
-		}
-		uiController.removeAll(getTable());
+		uiController.removeAll(table);
 		currentClass = getRealClass(results.get(0).getClass());
 		if(findSuperClass(currentClass)!=null && findSuperClass(currentClass)!= currentClass){
 			currentClass = findSuperClass(currentClass);
 		}
-		uiController.add(getTable(),getAutoFitHeader(results));
+		uiController.add(table,getAutoFitHeader(results));
 		List<Method> methods = getMethodsForClass(currentClass);
 		for(Object result: results){
 			Object row = uiController.createTableRow(result);
 			for(Method m:methods){
 				try {
 					uiController.add(row,uiController.createTableCell((String) m.invoke(result,null)));
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			uiController.add(getTable(),row);
+			uiController.add(table,row);
 		}
-		delegate.resultsChanged();
+		resultsChanged();
 	}
 	
 	/**
@@ -310,7 +253,6 @@ public class AdvancedTableController implements EventObserver{
 	}
 	
 	public void setTable(Object table){
-		useTableMethod = false;
 		uiController.removeAll(table);
 		this.table = table;
 		uiController.setAction(table, "tableSelectionChange()", null, this);
@@ -321,24 +263,49 @@ public class AdvancedTableController implements EventObserver{
 	 * Called by thinlet when the table selection changes
 	 */
 	public void tableSelectionChange(){
-		Object entity = uiController.getAttachedObject(uiController.getSelectedItem(getTable()));
-		delegate.selectionChanged(entity);
+		Object entity = uiController.getAttachedObject(uiController.getSelectedItem(table));
+		if(methods[SELECTION_CHANGED_INDEX][METHOD_INDEX] == null){
+			delegate.selectionChanged(entity);
+		}else{
+			try {
+				((Method) methods[SELECTION_CHANGED_INDEX][METHOD_INDEX]).invoke(methods[SELECTION_CHANGED_INDEX][HANDLER_INDEX], new Object[]{entity});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	/**
 	 * Called by thinlet when a row on the table is double clicked
 	 */
 	public void doubleClick(){		
-		Object entity = uiController.getAttachedObject(uiController.getSelectedItem(getTable()));
-		delegate.doubleClickAction(entity);
+		Object entity = uiController.getAttachedObject(uiController.getSelectedItem(table));
+		if(methods[DOUBLE_CLICK_ACTION_INDEX][METHOD_INDEX] == null){
+			delegate.doubleClickAction(entity);
+		}else{
+			try {
+				((Method) methods[DOUBLE_CLICK_ACTION_INDEX][METHOD_INDEX]).invoke(methods[DOUBLE_CLICK_ACTION_INDEX][HANDLER_INDEX], new Object[]{entity});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void resultsChanged(){
+		if(methods[RESULTS_CHANGED_INDEX][METHOD_INDEX] == null){
+			delegate.resultsChanged();
+		}else{
+			try {
+				((Method) methods[RESULTS_CHANGED_INDEX][METHOD_INDEX]).invoke(methods[RESULTS_CHANGED_INDEX][HANDLER_INDEX], (Object[]) null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public Object getTable(){
-		if(useTableMethod){
-			return delegate.getTable();
-		}else{
-			return table;
-		}
+		return table;
 	}
 	
 	/**
@@ -347,7 +314,7 @@ public class AdvancedTableController implements EventObserver{
 	 */
 	public void setSelected(int index){
 		if(index < resultsSize){
-			uiController.setSelectedIndex(getTable(),index);
+			uiController.setSelectedIndex(table,index);
 			tableSelectionChange();
 		}
 	}
@@ -356,7 +323,7 @@ public class AdvancedTableController implements EventObserver{
 	 * @return The object attached to the currently selected row
 	 */
 	public Object getCurrentlySelectedObject(){
-		return uiController.getAttachedObject(uiController.getSelectedItem(getTable()));
+		return uiController.getAttachedObject(uiController.getSelectedItem(table));
 	}
 	
 	/**
@@ -374,26 +341,43 @@ public class AdvancedTableController implements EventObserver{
 	}
 	
 	public void clearResults(){
-		uiController.removeAll(getTable());
-	}
-
-	/**
-	 * This method is called when a FrontlineEvent is generated
-	 * It sees if more data has been written to the database, and asks the datasource to refresh
-	 * the table
-	 * @see net.frontlinesms.events.EventObserver#notify(net.frontlinesms.events.FrontlineEvent)
-	 */
-	public void notify(FrontlineEvent event) {
-		if(event instanceof DidUpdateNotification || event instanceof DidSaveNotification){
-			if(dataSource !=null){
-				int selectedIndex = uiController.getSelectedIndex(getTable());
-				dataSource.refreshResults();
-				uiController.setSelectedIndex(getTable(), selectedIndex);
-			}
-		}
+		uiController.removeAll(table);
 	}
 	
 	public void setNoResultsMessage(String message){
 		this.noResultsMessage = message;
+	}
+	
+	public void setSelectionChangedMethod(String method, Object handler){
+		Method m = null;
+		try {
+			m = handler.getClass().getMethod(method, new Class[]{Object.class});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		methods[SELECTION_CHANGED_INDEX][METHOD_INDEX] = m;
+		methods[SELECTION_CHANGED_INDEX][HANDLER_INDEX] = handler;
+	}
+	
+	public void setDoubleClickActionMethod(String method, Object handler){
+		Method m = null;
+		try {
+			m = handler.getClass().getMethod(method, new Class[]{Object.class});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		methods[DOUBLE_CLICK_ACTION_INDEX][METHOD_INDEX] = m;
+		methods[DOUBLE_CLICK_ACTION_INDEX][HANDLER_INDEX] = handler;
+	}
+	
+	public void setResultsChangedMethod(String method, Object handler){
+		Method m = null;
+		try {
+			m = handler.getClass().getMethod(method, (Class[]) null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		methods[RESULTS_CHANGED_INDEX][METHOD_INDEX] = m;
+		methods[RESULTS_CHANGED_INDEX][HANDLER_INDEX] = handler;
 	}
 }

@@ -4,9 +4,11 @@ import java.util.List;
 
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /**
  * A base class for generating HQL search queries
@@ -14,7 +16,7 @@ import org.springframework.context.ApplicationContext;
  * @author Dieterich Lawson
  *
  */
-public abstract class QueryGenerator {
+public abstract class QueryGenerator extends HibernateDaoSupport{
 
 	protected String previousQuery;
 	
@@ -39,11 +41,7 @@ public abstract class QueryGenerator {
 	 * the size of the pages
 	 */
 	protected int pageSize;
-	
-	//Hibernate session objects
-	protected SessionFactory sessionFactory;
-	protected Session session;
-	
+
 	/**
 	 * the table for results
 	 */
@@ -53,7 +51,7 @@ public abstract class QueryGenerator {
 	public abstract void setSort(int column, boolean ascending);
 	
 	public QueryGenerator(ApplicationContext appCon, AdvancedTableController resultsTable){
-		sessionFactory = (SessionFactory) appCon.getBean("sessionFactory");
+		super.setSessionFactory((SessionFactory) appCon.getBean("sessionFactory"));
 		this.resultsTable = resultsTable;
 		pageSize=30;
 		totalPages=0;
@@ -130,6 +128,9 @@ public abstract class QueryGenerator {
 		currentPage=0;
 	}
 	
+	public abstract boolean evictAfterFetch();
+	public abstract boolean inflateAfterFetch();
+	
 	/**
 	 * Takes an already-constructed HQL query and runs it, handling the pagination
 	 * and the performance measurement
@@ -138,10 +139,7 @@ public abstract class QueryGenerator {
 	protected void runQuery(String query){
 		System.out.println(query);
 		//check if session is active
-		if(session == null){
-			session = sessionFactory.openSession();
-			session.beginTransaction();
-		}
+		Session session = super.getSession();
 		//construct the count query
 		String querySuffix = query.substring(query.indexOf("from"));
 		String countQuery = "select count(*) " + querySuffix;
@@ -164,6 +162,14 @@ public abstract class QueryGenerator {
 		long elapsedTime = System.nanoTime() - prevTime;
 		System.out.println("Query Time: " + elapsedTime/1000000.0);
 		previousQuery = query;
+		for(Object r: results){
+			if(inflateAfterFetch()){
+				Hibernate.initialize(r);
+			}
+			if(evictAfterFetch()){
+				session.evict(r);
+			}
+		}
 		resultsTable.setResults(results);
 	}
 	

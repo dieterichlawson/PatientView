@@ -10,11 +10,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 @Entity
 @DiscriminatorValue(value="formresponse")
@@ -54,7 +54,6 @@ public class MedicFormResponse extends Response{
 		super(submitter, subject);
 		this.form = form;
 		responses = new ArrayList<MedicFormFieldResponse>();
-		HistoryManager.logFormSubmssion(subject, form);
 	}
 
 	public MedicForm getForm(){
@@ -92,6 +91,14 @@ public class MedicFormResponse extends Response{
 		for(MedicFormFieldResponse mfr: responses){
 			mfr.setSubmitter(p);
 		}
+	}
+	
+	public boolean isMapped(){
+		return subject !=null;
+	}
+	
+	public String isMappedString(){
+		return InternationalisationUtils.getI18NString(isMapped()?"datatype.true":"datatype.false");
 	}
 	
 }

@@ -1,7 +1,6 @@
 package net.frontlinesms.plugins.patientview.ui.dialogs;
 
 import java.awt.event.WindowEvent;
-import java.text.DateFormat;
 import java.util.ArrayList;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
@@ -12,8 +11,9 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormResponseDao;
-import net.frontlinesms.plugins.patientview.ui.dialogs.searchareas.FormSearchArea;
+import net.frontlinesms.plugins.patientview.ui.dialogs.searchareas.CollapsibleFormSearchArea;
 import net.frontlinesms.plugins.patientview.ui.dialogs.searchareas.PatientSearchArea;
+import net.frontlinesms.plugins.patientview.ui.dialogs.searchareas.SearchAreaDelegate;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.CheckBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.NumericTextField;
@@ -34,7 +34,7 @@ import org.springframework.context.ApplicationContext;
 import thinlet.FrameLauncher;
 import thinlet.Thinlet;
 
-public class SubmitFormDialog implements ThinletUiEventHandler{
+public class SubmitFormDialog implements ThinletUiEventHandler, SearchAreaDelegate{
 	
 	private static final String UI__FILE_SUBMIT_FORM_DIALOG = "/ui/plugins/patientview/submit_form_dialog.xml";
 	
@@ -50,7 +50,7 @@ public class SubmitFormDialog implements ThinletUiEventHandler{
 	 * the search areas where the user selects the form to submit, the patient
 	 * to submit about and the chw to submit for
 	 */
-	private FormSearchArea formSearch;
+	private CollapsibleFormSearchArea formSearch;
 	private PatientSearchArea patientSearch;
 	
 	/**The currently selected entities**/
@@ -89,7 +89,7 @@ public class SubmitFormDialog implements ThinletUiEventHandler{
 		currentForm = form;
 		currentPatient = patient;
 		//create the search areas
-		formSearch = new FormSearchArea(form,thinlet,this,appContext);
+		formSearch = new CollapsibleFormSearchArea(form,thinlet,this,appContext);
 		patientSearch = new PatientSearchArea(patient,thinlet,this,appContext);
 		//initialize the daos
 		responseDao = (HibernateMedicFormResponseDao) appContext.getBean("MedicFormResponseDao");
@@ -222,5 +222,13 @@ public class SubmitFormDialog implements ThinletUiEventHandler{
 	
 	public void clearWarningLabel(){
 		thinlet.setText(warningLabel, "");
+	}
+
+	public void selectionChanged(Object selectedObject) {
+		if(selectedObject instanceof MedicForm){
+			setForm((MedicForm) selectedObject);
+		}else if(selectedObject instanceof Patient){
+			setPatient((Patient) selectedObject);
+		}
 	}
 }
