@@ -22,8 +22,8 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	 * The main panel of the person administration screen
 	 */
 	private Object mainPanel;
-	protected UiGeneratorController uiController;
-	protected ApplicationContext appCon;
+	protected final UiGeneratorController uiController;
+	protected final ApplicationContext appCon;
 	protected AdvancedTableController advancedTableController;
 	private Object advancedTable;
 	protected PersonPanel<E> currentPersonPanel;
