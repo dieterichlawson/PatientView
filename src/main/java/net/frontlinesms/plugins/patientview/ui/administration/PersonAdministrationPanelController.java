@@ -32,7 +32,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	private static final String ADD_BUTTON = "addbutton";
 	private static final String REMOVE_BUTTON = "removebutton";
 	private static final String EDIT_BUTTON = "editbutton";
-	private static final String FIELDS_PANEL = "fieldspanel";
+	protected static final String FIELDS_PANEL = "fieldspanel";
 	private static final String SEARCH_FIELD = "searchbox";
 	
 	private static final String MANAGE= "medic.common.labels.manage";
