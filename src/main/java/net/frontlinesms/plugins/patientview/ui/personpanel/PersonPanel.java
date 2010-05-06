@@ -43,6 +43,8 @@ public abstract class PersonPanel<E extends Person> implements
 	private static final String DEMO_ID = "editdetailview.demo.id";
 	private static final String DEMO_GENDER = "medic.common.male";
 	private static final String DEMO_AGE = "editdetailview.demo.age";
+	
+	public static final String BUTTON_PANEL = "personpanelbuttons";
 
 	/**
 	 * The general constructor that creates a panel for person p. If person p is
@@ -337,12 +339,13 @@ public abstract class PersonPanel<E extends Person> implements
 	 *         cancelling
 	 */
 	private Object getSaveCancelButtons() {
-		Object saveCancelPanel = uiController.create("panel");
-		uiController.setInteger(saveCancelPanel, "columns", 2);
+		Object saveCancelPanel = Thinlet.create("panel");
+		uiController.setName(saveCancelPanel, BUTTON_PANEL);
+//		uiController.setInteger(saveCancelPanel, "columns", 2);
 		uiController.setInteger(saveCancelPanel, "gap", 10);
 		uiController.setInteger(saveCancelPanel, "right", 10);
 		uiController.setChoice(saveCancelPanel, "halign", "fill");
-		uiController.setInteger(saveCancelPanel, "weightx", 1);
+		uiController.setWeight(saveCancelPanel, 1, 1);
 		Object saveButton = uiController
 				.createButton(getI18NString("detailview.buttons.save"));
 		uiController.setAction(saveButton, "stopEditingWithSave()", null, this);
