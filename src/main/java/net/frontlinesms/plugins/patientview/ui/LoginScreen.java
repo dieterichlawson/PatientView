@@ -9,8 +9,8 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 
 import thinlet.Thinlet;
-import net.frontlinesms.plugins.patientview.data.domain.people.SecurityQuestion;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
+import net.frontlinesms.plugins.patientview.data.domain.security.SecurityQuestion;
 import net.frontlinesms.plugins.patientview.data.repository.SecurityQuestionDao;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;

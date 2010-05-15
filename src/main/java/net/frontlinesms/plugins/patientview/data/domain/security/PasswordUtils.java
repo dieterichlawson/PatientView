@@ -1,4 +1,4 @@
-package net.frontlinesms.plugins.patientview.data.domain.people;
+package net.frontlinesms.plugins.patientview.data.domain.security;
 
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;

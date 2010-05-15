@@ -1,9 +1,9 @@
 package net.frontlinesms.plugins.patientview.data.domain.people;
 
-import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.cryptoHash;
-import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.fillRandomBytes;
-import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.generatePassword;
-import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.verify;
+import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.cryptoHash;
+import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.fillRandomBytes;
+import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.generatePassword;
+import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.verify;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
 import java.math.BigInteger;
@@ -21,6 +21,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+
+import net.frontlinesms.plugins.patientview.data.domain.security.SecurityQuestion;
 
 /** A login identity for medic users. */
 @Entity

@@ -6,7 +6,7 @@
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.people.Patient" /> 
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.people.User" />
-        <mapping class="net.frontlinesms.plugins.patientview.data.domain.people.SecurityQuestion" />
+        <mapping class="net.frontlinesms.plugins.patientview.data.domain.security.SecurityQuestion" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.HistoryEntry" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.PersonAttribute" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm" />
