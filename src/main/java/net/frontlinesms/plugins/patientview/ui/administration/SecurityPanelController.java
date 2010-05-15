@@ -1,77 +1,14 @@
 package net.frontlinesms.plugins.patientview.ui.administration;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
+import net.frontlinesms.plugins.patientview.data.domain.security.Range;
+import net.frontlinesms.plugins.patientview.data.domain.security.SecurityOptions;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
-/**
- * This is the ui controller for the security panel. currently it im
- * 
- * @author javins
- * 
- */
+/** This is the ui controller for the security settings panel. */
 public class SecurityPanelController implements AdministrationTabPanel,
 		ThinletUiEventHandler {
-
-	/**
-	 * A helper object that keeps track of a specific setting, as well as it's
-	 * minimum and maximum value. The value of the setting can never be set
-	 * outside of the range.
-	 */
-	class Range {
-
-		private final int min;
-		private final int max;
-		private int value;
-
-		Range(int min, int max, int value) {
-			assert value >= min;
-			assert value <= max;
-			this.min = min;
-			this.max = max;
-			this.value = value;
-		}
-
-		/** @return the maximum value of this range */
-		public int max() {
-			return max;
-		}
-
-		/** @return the minimum value of this range */
-		public int min() {
-			return min;
-		}
-
-		/**
-		 * Sets the value of this range. If the parameter is beneath the
-		 * minimum, the value will be set to the minimum. Similarly, if the
-		 * value is above the maximum, the value will be set to the maximim.
-		 * 
-		 * @param value
-		 *            the new value
-		 * @return false if the new value is outside the range
-		 */
-		public boolean setValue(int value) {
-			if (value < min) {
-				this.value = min;
-				return false;
-			}
-			if (value > max) {
-				this.value = max;
-				return false;
-			}
-			this.value = value;
-			return true;
-		}
-
-		public String textValue() {
-			return "" + value;
-		}
-
-		public int value() {
-			return value;
-		}
-	}
 
 	// Files
 	private final String XML_FILE = "/ui/plugins/patientview/admintab/security_settings.xml";
@@ -80,6 +17,7 @@ public class SecurityPanelController implements AdministrationTabPanel,
 	private final String LOCKOUT_DURATION = "admin.security.lockout.duration";
 
 	// UI Components
+	private final UiGeneratorController ui;
 	private final Object mainPanel;
 	private final Object passwordLengthBox;
 	private final Object lowercaseCheckBox;
@@ -92,24 +30,12 @@ public class SecurityPanelController implements AdministrationTabPanel,
 	private final Object questionAttemptsBox;
 	private final Object lockoutDurationBox;
 
-	// Settings
-	private final Range passwordLength = new Range(6, 12, 7);
-	private final Range requiredQuestions = new Range(1, 4, 3);
-	// cannot be final because the max is dependant on how many questions are
-	// required
-	private Range requiredAnswers = new Range(1, 4, 2);
-	private final Range loginAttempts = new Range(1, 10, 3);
-	private final Range questionAttempts = new Range(1, 10, 3);
-	private final Range lockoutDuration = new Range(1, Integer.MAX_VALUE, 5);
-	private boolean lowercaseLettersRequired = true;
-	private boolean uppercaseLettersRequired = true;
-	private boolean numbersRequired = true;
-	private boolean symbolsRequired;
-
-	private final UiGeneratorController ui;
+	// Persistance classes
+	private final SecurityOptions securityOptions;
 
 	public SecurityPanelController(UiGeneratorController uiController) {
 		ui = uiController;
+		securityOptions = SecurityOptions.getInstance();
 		mainPanel = ui.loadComponentFromFile(XML_FILE, this);
 		passwordLengthBox = ui.find(mainPanel, "passwordlengthbox");
 		lowercaseCheckBox = ui.find(mainPanel, "lowercasecheckbox");
@@ -127,65 +53,73 @@ public class SecurityPanelController implements AdministrationTabPanel,
 		Object label2 = ui.find(mainPanel, "durationlabel2");
 		ui.setText(label1, lockoutText[0].trim());
 		ui.setText(label2, lockoutText[1].trim());
-		// TODO: load settings from file
 		setDefaultValues();
 	}
 
 	/** Callback method for the lockoutDurationBox. */
 	public void boxChangedLockoutDuration() {
-		spinboxChanged(lockoutDurationBox, lockoutDuration);
+		spinboxChanged(lockoutDurationBox, securityOptions.getLockoutDuration());
 	}
 
 	/** Callback method for the questionAttemptsBox */
 	public void boxChangedLoginAttempts() {
-		spinboxChanged(loginAttemptsBox, loginAttempts);
+		spinboxChanged(loginAttemptsBox, securityOptions.getLoginAttempts());
 	}
 
 	/** Callback method for the passwordLengthBox */
 	public void boxChangedPasswordLength() {
-		spinboxChanged(passwordLengthBox, passwordLength);
+		spinboxChanged(passwordLengthBox, securityOptions.getPasswordLength());
 	}
 
 	/** Callback method for the questionAttemptsBox */
 	public void boxChangedQuestionAttempts() {
-		spinboxChanged(questionAttemptsBox, questionAttempts);
+		spinboxChanged(questionAttemptsBox, securityOptions
+				.getQuestionAttempts());
 	}
 
 	/** Callback method for the requiredAnswersBox */
 	public void boxChangedRequiredAnswers() {
-		spinboxChanged(requiredAnswersBox, requiredAnswers);
+		spinboxChanged(requiredAnswersBox, securityOptions.getRequiredAnswers());
 	}
 
 	/** Callback method for the requiredQuestionsBox */
 	public void boxChangedRequiredQuestions() {
-		spinboxChanged(requiredQuestionsBox, requiredQuestions);
+		Range reqQ = securityOptions.getRequiredQuestions();
+		Range reqA = securityOptions.getRequiredAnswers();
+		spinboxChanged(requiredQuestionsBox, reqQ);
 		// reduce required answers to less than required questions
-		int oldValue = requiredAnswers.value();
-		if (oldValue > requiredQuestions.value()) {
-			oldValue = requiredQuestions.value();
+		int oldValue = reqA.value();
+		if (oldValue > reqQ.value()) {
+			oldValue = reqA.value();
 		}
-		requiredAnswers = new Range(1, requiredQuestions.value(), oldValue);
-		setSpinboxRange(requiredAnswersBox, requiredAnswers);
+		securityOptions
+				.setRequiredAnswers(new Range(1, reqQ.value(), oldValue));
+		setSpinboxRange(requiredAnswersBox, securityOptions
+				.getRequiredAnswers());
 
 	}
 
 	/** Callback method for the lowercaseCheckBox */
 	public void boxChangedLowercase() {
-		lowercaseLettersRequired = ui.getBoolean(lowercaseCheckBox, "selected");
+		securityOptions.setLowercaseLettersRequired(ui.getBoolean(
+				lowercaseCheckBox, "selected"));
 	}
 
 	/** Callback method for the uppercaseCheckBox */
 	public void boxChangedUppercase() {
-		uppercaseLettersRequired = ui.getBoolean(uppercaseCheckBox, "selected");
+		securityOptions.setUppercaseLettersRequired(ui.getBoolean(
+				uppercaseCheckBox, "selected"));
 	}
 
 	/** Callback method for the numbersCheckBox */
 	public void boxChangedNumbers() {
-		numbersRequired = ui.getBoolean(numbersCheckBox, "selected");
+		securityOptions.setNumbersRequired(ui.getBoolean(numbersCheckBox,
+				"selected"));
 	}
 
 	public void boxChangedSymbols() {
-		symbolsRequired = ui.getBoolean(symbolsCheckBox, "selected");
+		securityOptions.setSymbolsRequired(ui.getBoolean(symbolsCheckBox,
+				"selected"));
 	}
 
 	/* from interface */
@@ -202,16 +136,22 @@ public class SecurityPanelController implements AdministrationTabPanel,
 	 * Sets all of the components in the panel to be their default value.
 	 */
 	protected void setDefaultValues() {
-		setSpinboxRange(passwordLengthBox, passwordLength);
-		setSpinboxRange(requiredQuestionsBox, requiredQuestions);
-		setSpinboxRange(requiredAnswersBox, requiredAnswers);
-		setSpinboxRange(loginAttemptsBox, loginAttempts);
-		setSpinboxRange(questionAttemptsBox, questionAttempts);
-		setSpinboxRange(lockoutDurationBox, lockoutDuration);
-		ui.setSelected(lowercaseCheckBox, lowercaseLettersRequired);
-		ui.setSelected(uppercaseCheckBox, uppercaseLettersRequired);
-		ui.setSelected(numbersCheckBox, numbersRequired);
-		ui.setSelected(symbolsCheckBox, symbolsRequired);
+		setSpinboxRange(passwordLengthBox, securityOptions.getPasswordLength());
+		setSpinboxRange(requiredQuestionsBox, securityOptions
+				.getRequiredQuestions());
+		setSpinboxRange(requiredAnswersBox, securityOptions
+				.getRequiredAnswers());
+		setSpinboxRange(loginAttemptsBox, securityOptions.getLoginAttempts());
+		setSpinboxRange(questionAttemptsBox, securityOptions
+				.getQuestionAttempts());
+		setSpinboxRange(lockoutDurationBox, securityOptions
+				.getLockoutDuration());
+		ui.setSelected(lowercaseCheckBox, securityOptions
+				.isLowercaseLettersRequired());
+		ui.setSelected(uppercaseCheckBox, securityOptions
+				.isUppercaseLettersRequired());
+		ui.setSelected(numbersCheckBox, securityOptions.isNumbersRequired());
+		ui.setSelected(symbolsCheckBox, securityOptions.isSymbolsRequired());
 	}
 
 	/**
