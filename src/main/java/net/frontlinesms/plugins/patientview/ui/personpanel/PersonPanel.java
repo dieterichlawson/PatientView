@@ -36,7 +36,7 @@ public abstract class PersonPanel<E extends Person> implements
 
 	private static String PERSON_PANEL_XML = "/ui/plugins/patientview/AtAGlance/person_AAG.xml";
 	// i18n constants
-	private static final String AGE_LABEL = "medic.common.labels.age";
+	private static final String BDAY_LABEL = "thinletformfields.birthdate";
 	private static final String ID_LABEL = "medic.common.labels.id";
 	private static final String PICTURE_TITLE_SUFFIX = "detailview.picture.title.suffix";
 	private static final String DEMO_NAME = "editdetailview.demo.name";
@@ -127,7 +127,7 @@ public abstract class PersonPanel<E extends Person> implements
 		addLabelToLabelPanel(getI18NString(ID_LABEL) + ": "
 				+ getI18NString(DEMO_ID));
 		addLabelToLabelPanel(getI18NString(DEMO_GENDER));
-		addLabelToLabelPanel(getI18NString(AGE_LABEL) + ": "
+		addLabelToLabelPanel(getI18NString(BDAY_LABEL) + ": "
 				+ getI18NString(DEMO_AGE));
 		// let the subclasses add additional fields
 		addAdditionalDemoFields();
@@ -243,7 +243,7 @@ public abstract class PersonPanel<E extends Person> implements
 		addLabelToLabelPanel(person.getName());
 		addLabelToLabelPanel(getI18NString(ID_LABEL) + ": " + person.getPid());
 		addLabelToLabelPanel(person.getGender().toString());
-		addLabelToLabelPanel(getI18NString(AGE_LABEL) + ": " + person.getAge());
+		addLabelToLabelPanel(getI18NString(BDAY_LABEL) + ": " + person.getStringBirthdate());
 		// let the subclasses add additional fields
 		addAdditionalFields();
 		uiController.add(mainPanelContainer, mainPanel);
@@ -343,15 +343,14 @@ public abstract class PersonPanel<E extends Person> implements
 		uiController.setInteger(saveCancelPanel, "right", 10);
 		uiController.setChoice(saveCancelPanel, "halign", "fill");
 		uiController.setInteger(saveCancelPanel, "weightx", 1);
-		Object saveButton = uiController
-				.createButton(getI18NString("detailview.buttons.save"));
+		Object saveButton = uiController.createButton(getI18NString("detailview.buttons.save"));
 		uiController.setAction(saveButton, "stopEditingWithSave()", null, this);
 		uiController.setChoice(saveButton, "halign", "left");
-		Object cancelButton = uiController
-				.createButton(getI18NString("detailview.buttons.cancel"));
-		uiController.setAction(cancelButton, "stopEditingWithoutSave()", null,
-				this);
+		uiController.setIcon(saveButton, "/icons/tick.png");
+		Object cancelButton = uiController.createButton(getI18NString("detailview.buttons.cancel"));
+		uiController.setAction(cancelButton, "stopEditingWithoutSave()", null, this);
 		uiController.setChoice(cancelButton, "halign", "right");
+		uiController.setIcon(cancelButton, "/icons/cross.png");
 		uiController.add(saveCancelPanel, saveButton);
 		if (delegate == null) {
 			uiController.add(saveCancelPanel, cancelButton);

@@ -10,7 +10,6 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.PersonAttributeResponse;
-import net.frontlinesms.plugins.patientview.data.domain.response.Response;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeDao;
@@ -18,6 +17,7 @@ import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeRespo
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.UiGeneratorController;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -69,7 +69,7 @@ public class PersonAttributePanel {
 			PersonAttributeResponse response= attributeResponseDao.getMostRecentAttributeResponse(attribute, person);
 			DataType type = attribute.getDatatype();
 			if(type.isBoolean()){
-				value = (response.getValue().equals("true")) ? type.getTrueLabel() :type.getFalseLabel();
+				value = (response.getValue().equalsIgnoreCase(InternationalisationUtils.getI18NString("datatype.true"))) ? type.getTrueLabel() :type.getFalseLabel();
 			}else if(type == DataType.TEXT_AREA){
 				Object textArea = Thinlet.create("textarea");
 				uiController.setInteger(textArea, "weightx",1);
@@ -99,7 +99,7 @@ public class PersonAttributePanel {
 				MedicFormFieldResponse response= fieldResponseDao.getMostRecentFieldResponse(field, person);
 				DataType type = field.getDatatype();
 				if(type.isBoolean()){
-					value = (response.getValue().equals("true")) ? type.getTrueLabel() :type.getFalseLabel();
+					value = response.getValue().equalsIgnoreCase(InternationalisationUtils.getI18NString("datatype.true"))? type.getTrueLabel() :type.getFalseLabel();
 				}else if(type == DataType.TEXT_AREA){
 					Object textArea = Thinlet.create("textarea");
 					uiController.setInteger(textArea, "weightx",1);

@@ -3,6 +3,7 @@ package net.frontlinesms.plugins.patientview.ui.personpanel;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PasswordTextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.RoleComboBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.UsernameField;
 import net.frontlinesms.ui.UiGeneratorController;
@@ -21,14 +22,12 @@ public class UserPanel extends PersonPanel<User> {
 
 	private UserDao userDao;
 
-	public UserPanel(UiGeneratorController uiController,
-			ApplicationContext appCon, User p) {
+	public UserPanel(UiGeneratorController uiController, ApplicationContext appCon, User p) {
 		super(uiController, appCon, p);
 		userDao = (UserDao) appCon.getBean("UserDao");
 	}
 
-	public UserPanel(UiGeneratorController uiController,
-			ApplicationContext appCon) {
+	public UserPanel(UiGeneratorController uiController,ApplicationContext appCon) {
 		super(uiController, appCon);
 		userDao = (UserDao) appCon.getBean("UserDao");
 	}
@@ -48,15 +47,14 @@ public class UserPanel extends PersonPanel<User> {
 	@Override
 	protected void addAdditionalEditableFields() {
 		if (isNewPersonPanel) {
-			UsernameField usernameField = new UsernameField(uiController,
-					appCon, true, isNewPersonPanel ? "" : person.getUsername());
+			UsernameField usernameField = new UsernameField(uiController, appCon, true, isNewPersonPanel ? "" : person.getUsername());
 			uiController.add(getLabelPanel(), usernameField.getThinletPanel());
 		} else {
-			addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": "
-					+ person.getUsername());
+			addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": " + person.getUsername());
 		}
-		RoleComboBox roleCombo = new RoleComboBox(uiController,
-				isNewPersonPanel ? null : person.getRole());
+		PasswordTextField pwordField = new PasswordTextField(uiController,"Password");
+		uiController.add(getLabelPanel(),pwordField.getThinletPanel());
+		RoleComboBox roleCombo = new RoleComboBox(uiController, isNewPersonPanel ? null : person.getRole());
 		uiController.add(getLabelPanel(), roleCombo.getThinletPanel());
 	}
 
@@ -65,10 +63,8 @@ public class UserPanel extends PersonPanel<User> {
 	 */
 	@Override
 	protected void addAdditionalFields() {
-		addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": "
-				+ person.getUsername());
-		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": "
-				+ person.getRoleName());
+		addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": " + person.getUsername());
+		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": "	+ person.getRoleName());
 	}
 
 	/**
