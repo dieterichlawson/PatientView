@@ -5,7 +5,6 @@ import net.frontlinesms.plugins.BasePluginController;
 import net.frontlinesms.plugins.PluginControllerProperties;
 import net.frontlinesms.plugins.PluginInitialisationException;
 import net.frontlinesms.plugins.patientview.analysis.FormMatcher;
-import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.PatientViewThinletTabController;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.UiGeneratorController;
@@ -62,7 +61,6 @@ public class PatientViewPluginController extends BasePluginController{
 		this.frontlineController = frontlineController;
 		this.applicationContext = applicationContext;
 		UserSessionManager.getUserSessionManager().init(applicationContext);
-		HistoryManager.getHistoryManager().init(applicationContext);
 		DummyDataGenerator ddg = new DummyDataGenerator(applicationContext);
 		ddg.createDummyData();
 		

@@ -22,7 +22,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageUtils;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
@@ -122,9 +121,6 @@ public abstract class Person{
 	}
 
 	public void setName(String name) {
-		try{
-			HistoryManager.logNameChange(this, name);
-		}catch(Exception e){}
 		this.name = name;
 	}
 
@@ -133,9 +129,6 @@ public abstract class Person{
 	}
 
 	public void setBirthdate(Date birthdate) {
-		try{
-			HistoryManager.logBirthdateChange(this,birthdate.toLocaleString());
-		}catch(Exception e){}
 		this.birthdate = birthdate.getTime();
 	}
 	
@@ -148,9 +141,6 @@ public abstract class Person{
 	}
 
 	public void setGender(Gender gender) {
-		try{
-			HistoryManager.logGenderChange(this, gender);
-		}catch(Exception e){}
 		this.gender = gender;
 	}
 	
@@ -189,9 +179,6 @@ public abstract class Person{
 	 }
 
 	 public void setImage(BufferedImage image, String type) {
-		try{
-			HistoryManager.logImageChange(this);
-		}catch(Exception e){}
 	    unscaledImageContent = ImageUtils.getByteArrayForImage(ImageUtils.getLargeImage(image), type);
 	    thumbnailImageContent = ImageUtils.getByteArrayForImage(ImageUtils.getThumbnailImage(image), type);
 	 }

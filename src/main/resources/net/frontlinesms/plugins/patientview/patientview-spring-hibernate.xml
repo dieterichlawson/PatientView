@@ -26,7 +26,6 @@
 	<bean id="MedicMessageResponseDao" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicMessageResponseDao" parent="baseHibernateDao"/>
 	<bean id="ResponseDao" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateResponseDao" parent="baseHibernateDao"/>
 
-	<bean id="HistoryEntryDao" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateHistoryEntryDao" parent="baseHibernateDao"/>
 	<bean id="SecurityQuestionDao" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateSecurityQuestionDao" parent="baseHibernateDao"/>
 	<bean id="GraphSettingsDao" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateGraphSettingsDao" parent="baseHibernateDao"/>
 

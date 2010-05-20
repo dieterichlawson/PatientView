@@ -8,8 +8,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import net.frontlinesms.plugins.patientview.history.HistoryManager;
-
 @Entity
 @DiscriminatorValue(value = "pat")
 public class Patient extends Person {
@@ -54,11 +52,6 @@ public class Patient extends Person {
 	}
 
 	public void setChw(CommunityHealthWorker chw) {
-		try {
-			HistoryManager.logCHWChange(this, chw);
-		} catch (Exception e) {
-		}
-
 		this.chw = chw;
 	}
 
