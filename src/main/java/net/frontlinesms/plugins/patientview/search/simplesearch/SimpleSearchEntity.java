@@ -29,7 +29,7 @@ public enum SimpleSearchEntity {
 			 new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.name","name",SimpleSearchDataType.STRING),
 									new FieldDescriptor(null,"simplesearch.fields.chw.name","chw.name",SimpleSearchDataType.STRING),
 									new FieldDescriptor(null,"simplesearch.fields.birthdate","birthdate",SimpleSearchDataType.DATE),
-									new FieldDescriptor(null,"simplesearch.fields.gender","gender",SimpleSearchDataType.ENUM)}),
+									new FieldDescriptor(null,"simplesearch.fields.id","pid",SimpleSearchDataType.NUMBER)}),
 	
 	CHW("medic.common.chws",
 		"chw",
@@ -38,7 +38,7 @@ public enum SimpleSearchEntity {
 		 new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.name","name",SimpleSearchDataType.STRING),
 								new FieldDescriptor(null,"simplesearch.fields.phone.number","contactInfo.phoneNumber",SimpleSearchDataType.STRING),
 								new FieldDescriptor(null,"simplesearch.fields.birthdate","birthdate",SimpleSearchDataType.DATE),
-								new FieldDescriptor(null,"simplesearch.fields.gender","gender",SimpleSearchDataType.ENUM)}),
+		 						new FieldDescriptor(null,"simplesearch.fields.id","pid",SimpleSearchDataType.NUMBER)}),
 	MESSAGE("medic.common.text.messages",
 			"sms",
 			"MedicMessageResponse",
@@ -66,7 +66,7 @@ public enum SimpleSearchEntity {
 				   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.form.name","form.name",SimpleSearchDataType.STRING),
 										  new FieldDescriptor(null,"simplesearch.fields.submitter.name","submitter.name",SimpleSearchDataType.STRING),
 										  new FieldDescriptor(null,"simplesearch.fields.subject.name","subject.name",SimpleSearchDataType.STRING),
-										  new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmited",SimpleSearchDataType.DATE)}),
+										  new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmitted",SimpleSearchDataType.DATE)}),
 					   
     FIELD_RESPONSE("medic.common.field.responses",
 				   "fieldr",
@@ -75,7 +75,7 @@ public enum SimpleSearchEntity {
 				   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.field.label","field.label",SimpleSearchDataType.STRING),
     			   new FieldDescriptor(null,"simplesearch.fields.submitter.name","submitter.name",SimpleSearchDataType.STRING),
     			   new FieldDescriptor(null,"simplesearch.fields.subject.name","subject.name",SimpleSearchDataType.STRING),
-    			   new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmited",SimpleSearchDataType.DATE),
+    			   new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmitted",SimpleSearchDataType.DATE),
 				   new FieldDescriptor(null,"simplesearch.fields.response","value",SimpleSearchDataType.STRING)}),
 				   
 	ATTRIBUTE_RESPONSE("medic.common.attribute.responses",
@@ -85,7 +85,7 @@ public enum SimpleSearchEntity {
 					   new FieldDescriptor[] {new FieldDescriptor(null,"simplesearch.fields.attribute.name","attribute.label",SimpleSearchDataType.STRING),
 											  new FieldDescriptor(null,"simplesearch.fields.submitter.name","submitter.name",SimpleSearchDataType.STRING),
 											  new FieldDescriptor(null,"simplesearch.fields.subject.name","subject.name",SimpleSearchDataType.STRING),
-											  new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmited",SimpleSearchDataType.DATE),
+											  new FieldDescriptor(null,"simplesearch.fields.date.submitted","dateSubmitted",SimpleSearchDataType.DATE),
 											  new FieldDescriptor(null,"simplesearch.fields.response","value",SimpleSearchDataType.STRING)});
 	
 	private String displayName;

@@ -32,6 +32,7 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	private Object fieldComboBox;
 	private Object entityComboBox;
 	private Object descriptorPanel;
+	private AdvancedTableController tableController;
 	
 	//entry controls
 	private Object textField;
@@ -46,7 +47,8 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	
 	public SimpleSearchController(UiGeneratorController uiController, ApplicationContext appCon, AdvancedTableController resultsTable){
 		this.uiController = uiController;
-		queryGenerator = new SimpleSearchQueryGenerator(this,appCon, resultsTable);
+		this.tableController = resultsTable;
+		queryGenerator = new SimpleSearchQueryGenerator(this,appCon);
 		mainPanel = uiController.loadComponentFromFile(UI_FILE, this);
 		entityComboBox = uiController.find(mainPanel, "entityComboBox");
 		fieldComboBox = uiController.find(mainPanel, "fieldComboBox");
@@ -77,7 +79,7 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 		uiController.removeAll(descriptorPanel);
 		//this is a hack because we don't want to store class info for all the fields, and I don't
 		//want to mess with all that reflection at this point
-		if(field.getDisplayName().equalsIgnoreCase("gender")){
+		if(field.getDisplayName().equalsIgnoreCase(InternationalisationUtils.getI18NString("medic.common.labels.gender"))){
 			uiController.add(descriptorPanel, getEnumFieldEntry(Gender.class));
 		}else if(field.getDataType() == SimpleSearchDataType.STRING){
 			uiController.add(descriptorPanel, getTextFieldEntry());
@@ -191,6 +193,7 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	
 	public void searchButtonPressed(){
 		queryGenerator.startSearch();
+		tableController.setResults(queryGenerator.getResultsPage());
 	}
 	
 	public void textEntryChanged(){
@@ -209,6 +212,9 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 		return queryGenerator;
 	}
 	
+	public void refresh(){
+		tableController.setResults(queryGenerator.getResultsPage());
+	}
 	
 		
 }

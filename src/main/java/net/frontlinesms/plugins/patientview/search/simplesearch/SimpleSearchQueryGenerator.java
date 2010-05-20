@@ -2,7 +2,6 @@ package net.frontlinesms.plugins.patientview.search.simplesearch;
 
 import net.frontlinesms.plugins.patientview.search.FieldDescriptor;
 import net.frontlinesms.plugins.patientview.search.QueryGenerator;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
 
 import org.springframework.context.ApplicationContext;
 
@@ -10,8 +9,8 @@ public class SimpleSearchQueryGenerator extends QueryGenerator{
 	
 	private SimpleSearchController searchController;
 	
-	public SimpleSearchQueryGenerator(SimpleSearchController searchController, ApplicationContext appCon, AdvancedTableController resultsTable){
-		super(appCon,resultsTable);
+	public SimpleSearchQueryGenerator(SimpleSearchController searchController, ApplicationContext appCon){
+		super(appCon);
 		this.searchController = searchController;
 	}
 	
@@ -24,6 +23,14 @@ public class SimpleSearchQueryGenerator extends QueryGenerator{
 			query +=  sEntity.getTableAlias() + "." + field.getDatabaseName();
 			query += " like '%" + searchController.getTextInput() + "%'";
 		}else if(field.getDataType() == SimpleSearchDataType.NUMBER){
+			if(searchController.getNumberInput().equals("") || searchController.getNumberInput() == null){
+				return;
+			}
+			try{
+				Integer.parseInt(searchController.getNumberInput());
+			}catch(Exception e){
+				return;
+			}
 			query +=  sEntity.getTableAlias() + "." + field.getDatabaseName();
 			query += " = " + searchController.getNumberInput();
 		}else if(field.getDataType() == SimpleSearchDataType.ENUM){
@@ -52,13 +59,4 @@ public class SimpleSearchQueryGenerator extends QueryGenerator{
 		// TODO Make this work
 	}
 
-	@Override
-	public boolean evictAfterFetch() {
-		return false;
-	}
-
-	@Override
-	public boolean inflateAfterFetch() {
-		return false;
-	}
 }
