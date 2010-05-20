@@ -49,4 +49,11 @@ public interface MedicFormResponseDao {
 	public List<MedicFormResponse> getUnmappedResponses();
 	
 	public List<MedicFormResponse> getMappedResponses();
+	
+	public List<MedicFormResponse> getMappedResponses(int startIndex, int limit);
+
+	public List<MedicFormResponse> getUnmappedResponses(int startIndex, int limit);
+	
+	public List<MedicFormResponse> getAllResponses(int startIndex,int limit);
+	
 }

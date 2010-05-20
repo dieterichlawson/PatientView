@@ -61,12 +61,8 @@ public class HibernateMedicFormDao extends BaseHibernateDao<MedicForm> implement
 	 */
 	public MedicForm getMedicFormForForm(Form form) {
 		DetachedCriteria c = super.getCriterion();
-		c.add(Restrictions.eq("form", form));
-		try{
-			return super.getList(c).get(0);
-		}catch(Throwable t){
-			return null;
-		}
+		c.add(Restrictions.eq("vanillaForm", form));
+		return super.getUnique(c);
 	}
 	
 	public void reattach(MedicForm mf){

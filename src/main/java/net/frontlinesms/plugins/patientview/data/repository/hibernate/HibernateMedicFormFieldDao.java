@@ -9,6 +9,7 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.ResultTransformer;
 
@@ -59,6 +60,7 @@ public class HibernateMedicFormFieldDao extends BaseHibernateDao<MedicFormField>
 	 */
 	public List<MedicFormField> getFieldsOnForm(MedicForm f) {
 		DetachedCriteria c = super.getCriterion().add(Restrictions.eq("parentForm", f));
+		c.addOrder(Order.asc("position"));
 		return super.getList(c);
 	}
 

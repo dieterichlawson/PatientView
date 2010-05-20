@@ -63,7 +63,7 @@ public class HibernateMedicFormResponseDao extends BaseHibernateDao<MedicFormRes
 	}
 	
 	public MedicFormResponse reattach(MedicFormResponse mf){
-		super.getSession().update(mf);
+		super.getHibernateTemplate().update(mf);
 		return mf;
 	}
 
@@ -73,9 +73,28 @@ public class HibernateMedicFormResponseDao extends BaseHibernateDao<MedicFormRes
 		return super.getList(c);
 	}
 
+
 	public List<MedicFormResponse> getUnmappedResponses() {
 		DetachedCriteria c = super.getCriterion();
 		c.add(Restrictions.isNull("subject"));
 		return super.getList(c);
 	}
+
+	
+	public List<MedicFormResponse> getMappedResponses(int startIndex, int limit) {
+		DetachedCriteria c  = super.getCriterion();
+		c.add(Restrictions.isNotNull("subject"));
+		return super.getList(c, startIndex, limit);
+	}
+
+	public List<MedicFormResponse> getUnmappedResponses(int startIndex, int limit) {
+		DetachedCriteria c  = super.getCriterion();
+		c.add(Restrictions.isNull("subject"));
+		return super.getList(c, startIndex, limit);
+	}
+
+	public List<MedicFormResponse> getAllResponses(int startIndex, int limit) {
+		return super.getAll(startIndex, limit);
+	}
+	
 }
