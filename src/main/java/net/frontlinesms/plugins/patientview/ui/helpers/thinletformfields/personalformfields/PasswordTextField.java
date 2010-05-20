@@ -16,8 +16,7 @@ public class PasswordTextField extends TextBox implements PersonalFormField {
 		this(thinlet, InternationalisationUtils.getI18NString("login.password")+":", NAME);
 	}
 
-	protected PasswordTextField(ExtendedThinlet thinlet, String label,
-			String name) {
+	protected PasswordTextField(ExtendedThinlet thinlet, String label, String name) {
 		super(thinlet, label, name);
 		response = "";
 		thinlet.setInteger(mainPanel, "colspan", 1);

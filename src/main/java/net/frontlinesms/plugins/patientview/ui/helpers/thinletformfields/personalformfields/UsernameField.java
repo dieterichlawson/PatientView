@@ -59,11 +59,11 @@ public class UsernameField extends TextBox implements PersonalFormField {
 	/**
 	 * Returns true if the user name is not already associated with a user.
 	 * Returns false if a user already has this name. Usernames must also be
-	 * between three and 7 characters.
+	 * between three and 17 characters.
 	 */
 	public boolean isValid() {
 		String r = thinlet.getText(super.textBox);
-		if (r != null && r.length() >= 3 && r.length() <= 7) {
+		if (r != null && r.length() >= 5 && r.length() <= 25) {
 			// make sure no other users already have this name
 			if (userDao.getUsersByUsername(r).size() == 0) {
 				return true;

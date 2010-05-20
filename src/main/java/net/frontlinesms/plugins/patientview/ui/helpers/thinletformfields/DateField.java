@@ -1,22 +1,25 @@
 package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getDateFormat;
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
+import net.frontlinesms.FrontlineSMSConstants;
 import net.frontlinesms.plugins.patientview.ui.dialogs.DateSelectorDialog;
-import net.frontlinesms.plugins.patientview.utils.DateUtils;
 import net.frontlinesms.ui.ExtendedThinlet;
 
 public class DateField extends TextBox {
 
 	protected DateSelectorDialog ds;
-	protected DateFormat df = DateUtils.getDateFormatter();
+	protected DateFormat df = getDateFormat();
 	Object btn;
-	public static final String NAME = "dateField";
+	public static final String NAME = "dateField"; 
 
 	public DateField(ExtendedThinlet thinlet, String label) {
-		super(thinlet, label, NAME);
+		super(thinlet, label + " ("+getI18NString(FrontlineSMSConstants.DATEFORMAT_YMD)+")", NAME);
 		btn = thinlet.create("button");
 		thinlet.setIcon(btn, "/icons/date.png");
 		thinlet.setAction(btn, "showDateSelector()", null, this);
@@ -24,10 +27,11 @@ public class DateField extends TextBox {
 		thinlet.setInteger(mainPanel, "columns", 3);
 		ds = new DateSelectorDialog(thinlet, textBox);
 		thinlet.setAttachedObject(mainPanel, this);
+		
 	}
 
 	protected DateField(ExtendedThinlet thinlet, String label, String name) {
-		super(thinlet, label, name);
+		super(thinlet, label + " ("+getI18NString(FrontlineSMSConstants.DATEFORMAT_YMD)+")", name);
 		btn = thinlet.create("button");
 		thinlet.setIcon(btn, "/icons/date.png");
 		thinlet.setAction(btn, "showDateSelector()", null, this);
