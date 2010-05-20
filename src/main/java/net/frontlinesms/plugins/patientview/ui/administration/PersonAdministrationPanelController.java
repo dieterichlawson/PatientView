@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
-import net.frontlinesms.events.FrontlineEvent;
+import net.frontlinesms.events.FrontlineEventNotification;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
@@ -60,11 +60,12 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 		uiController.setAction(uiController.find(mainPanel,EDIT_BUTTON), "editButtonClicked()", null, this);
 		uiController.setAction(uiController.find(mainPanel,ADD_BUTTON), "addButtonClicked()", null, this);
 		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
-		search("");
 	}
 	
 	public void editButtonClicked(){
-		currentPersonPanel.switchToEditingPanel();
+		if(currentPersonPanel != null){
+			currentPersonPanel.switchToEditingPanel();
+		}
 	}
 	
 	public void addButtonClicked(){
@@ -133,7 +134,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	/**
 	 * @see net.frontlinesms.plugins.patientview.ui.AdvancedTableDataSource#refreshResults()
 	 */
-	public void notify(FrontlineEvent event){
+	public void notify(FrontlineEventNotification event){
 		advancedTableController.setResults(getPeopleForString(uiController.getText(uiController.find(mainPanel, SEARCH_FIELD))));
 	}
 }

@@ -2,6 +2,7 @@ package net.frontlinesms.plugins.patientview.ui.administration;
 
 import java.util.ArrayList;
 
+import net.frontlinesms.plugins.patientview.importer.CsvImporterPanelController;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
@@ -48,6 +49,7 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 		panels.add(new FormAdministrationPanelController(uiController,appCon));
 		panels.add(new AttributeAdministrationPanelController(uiController,appCon));
 		panels.add(new FormResponseMappingPanelController(uiController,appCon));
+		panels.add(new CsvImporterPanelController(uiController,appCon));
 		//create all the list items
 		for(AdministrationTabPanel panel: panels){
 			Object listItem = uiController.createListItem(panel.getListItemTitle(), panel.getPanel());

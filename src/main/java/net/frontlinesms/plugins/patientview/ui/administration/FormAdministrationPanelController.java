@@ -4,12 +4,12 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
 import java.util.Collection;
 
+import net.frontlinesms.data.events.DidDeleteNotification;
+import net.frontlinesms.data.events.DidSaveNotification;
+import net.frontlinesms.data.events.DidUpdateNotification;
 import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
-import net.frontlinesms.events.FrontlineEvent;
-import net.frontlinesms.events.impl.DidDeleteNotification;
-import net.frontlinesms.events.impl.DidSaveNotification;
-import net.frontlinesms.events.impl.DidUpdateNotification;
+import net.frontlinesms.events.FrontlineEventNotification;
 import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.forms.data.repository.FormDao;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
@@ -42,8 +42,6 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 	//Thinlet objects
 	/**The main Thinlet container for this panel */
 	private Object mainPanel;
-	/**The list farthest to the left, with all core Frontline Forms in it*/
-	private Object frontlineFormList;
 	/**The list second from the left, with all patient view forms in it */
 	private Object patientViewFormList;
 	/** The list farthest to the right, with the fields of the currently selected medic form in it*/
@@ -54,9 +52,7 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 	/** The combo box that holds the choices for the form field -> patient field mapping*/
 	private Object mappingComboBox;
 	
-	
 	//Daos
-	FormDao frontlineFormDao;
 	MedicFormDao patientViewFormDao;
 	MedicFormFieldDao patientViewFieldDao;
 	
@@ -72,45 +68,19 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 	
 	private void init(){
 		mainPanel = uiController.loadComponentFromFile(FORM_PANEL_XML, this);
-		frontlineFormList = uiController.find(mainPanel,"frontlineFormList");
 		patientViewFormList = uiController.find(mainPanel,"patientViewFormList");
 		fieldList = uiController.find(mainPanel,"fieldList");
 		fieldInfoPanel = uiController.find(mainPanel,"fieldInfoPanel");
 		mappingComboBox = uiController.find(mainPanel,"mappingComboBox");
 		//initialize the daos
-		frontlineFormDao = (FormDao) appCon.getBean("formDao");
 		patientViewFormDao = (MedicFormDao) appCon.getBean("MedicFormDao");
 		patientViewFieldDao = (MedicFormFieldDao) appCon.getBean("MedicFormFieldDao");
 		eventNotifier = (EventBus) appCon.getBean("eventBus");
 		eventNotifier.registerObserver(this);
 		//initialize the lists, etc..
-		populateFrontlineFormList();
 		populatePatientViewFormList();
 	}
-	
-	
-	/**
-	 * Gets all FrontlineSMS forms, removes the ones that already
-	 * have a patient view form match and the ones that are not
-	 * finalized, and then places them in the list
-	 */
-	private void populateFrontlineFormList(){
-		Collection<Form> frontlineForms = frontlineFormDao.getAllForms();
-		Collection<MedicForm> pvForms = patientViewFormDao.getAllMedicForms();
-		for(MedicForm mf : pvForms){
-			patientViewFormDao.reattach(mf);
-			frontlineForms.remove(initializeAndUnproxy(mf.getForm()));
-		}
-		uiController.removeAll(frontlineFormList);
-		for(Form f: frontlineForms){
-			if(f.isFinalised()){
-				Object item = uiController.createListItem(f.getName(), f);
-				uiController.add(frontlineFormList,item);
-			}
-		}
-		uiController.setSelectedIndex(frontlineFormList, 0);
-	}
-	
+
 	/**
 	 * Takes a hibernate proxy object and returns the real object
 	 * @param entity
@@ -118,14 +88,12 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 	 */
 	public static Form initializeAndUnproxy(Form entity) {
 	    if (entity == null) {
-	        throw new 
-	           NullPointerException("Entity passed for initialization is null");
+	        throw new  NullPointerException("Entity passed for initialization is null");
 	    }
 
 	    Hibernate.initialize(entity);
 	    if (entity instanceof HibernateProxy) {
-	        entity = (Form) ((HibernateProxy) entity).getHibernateLazyInitializer()
-	                .getImplementation();
+	        entity = (Form) ((HibernateProxy) entity).getHibernateLazyInitializer().getImplementation();
 	    }
 	    return entity;
 	}
@@ -153,7 +121,8 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 	 */
 	public void patientViewFormListSelectionChanged(){
 		MedicForm selectedForm = (MedicForm) uiController.getAttachedObject(uiController.getSelectedItem(patientViewFormList));
-		populateFieldList(selectedForm);
+		if(selectedForm != null)
+			populateFieldList(selectedForm);
 	}
 	
 	/**
@@ -216,40 +185,32 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 		return mainPanel;
 	}
 	
-	public void importButtonClicked(){
-		MedicForm mf = new MedicForm((Form) uiController.getAttachedObject(uiController.getSelectedItem(frontlineFormList)));
-		patientViewFormDao.saveMedicForm(mf);
-		populateFrontlineFormList();
-		populatePatientViewFormList();
-	}
-	
-	public void removeButtonClicked(){
-		MedicForm mf = (MedicForm) uiController.getAttachedObject(uiController.getSelectedItem(patientViewFormList));
-		if(((MedicFormResponseDao) appCon.getBean("MedicFormResponseDao")).getFormResponsesForForm(mf).size() == 0){
-			patientViewFormDao.deleteMedicForm(mf);
-			populatePatientViewFormList();
-		}else{
-			uiController.alert(getI18NString(FORM_ALREADY_RESPONDED_TO_DIALG));
+	public void removeButtonClicked() {
+		MedicForm mf = (MedicForm) uiController.getAttachedObject(uiController .getSelectedItem(patientViewFormList));
+		if (mf != null) {
+			if (((MedicFormResponseDao) appCon.getBean("MedicFormResponseDao")) .getFormResponsesForForm(mf).size() == 0) {
+				patientViewFormDao.deleteMedicForm(mf);
+				populatePatientViewFormList();
+			} else {
+				uiController.alert(getI18NString(FORM_ALREADY_RESPONDED_TO_DIALG));
+			}
 		}
 	}
 
-	public void notify(FrontlineEvent event) {
+	public void notify(FrontlineEventNotification event) {
 		if(event instanceof DidSaveNotification){
 			DidSaveNotification castEvent = (DidSaveNotification) event;
 			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
-				populateFrontlineFormList();
 				populatePatientViewFormList();
 			}
 		}else if(event instanceof DidUpdateNotification){
 			DidUpdateNotification castEvent = (DidUpdateNotification) event;
 			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
-				populateFrontlineFormList();
 				populatePatientViewFormList();
 			}
 		}else if(event instanceof DidDeleteNotification){
 			DidDeleteNotification castEvent = (DidDeleteNotification) event;
 			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
-				populateFrontlineFormList();
 				populatePatientViewFormList();
 			}
 		}

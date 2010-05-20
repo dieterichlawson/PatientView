@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.administration;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,28 +20,27 @@ public class CommunityHealthWorkerAdministrationPanelController extends PersonAd
 	
 	public CommunityHealthWorkerAdministrationPanelController(UiGeneratorController uiController, ApplicationContext appCon) {
 		super(uiController, appCon);
+		chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
+		search("");
 	}
 
 	@Override
 	protected List<CommunityHealthWorker> getPeopleForString(String s) {
-		if(chwDao == null){
-			chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
-		}
-		return new ArrayList<CommunityHealthWorker>(chwDao.getCommunityHealthWorkerByName(s, -1));
+		return new ArrayList<CommunityHealthWorker>(chwDao.getCommunityHealthWorkerByName(s, 30));
 	}
 
 	@Override
 	protected String getPersonType() {
-		return "CHW";
+		return getI18NString("medic.common.chw");
 	}
 
 	@Override
 	protected void putHeader() {
-		advancedTableController.putHeader(CommunityHealthWorker.class, new String[]{"Name","Age","Phone Number"}, new String[]{"getName", "getStringAge","getPhoneNumber"});		
+		advancedTableController.putHeader(CommunityHealthWorker.class, new String[]{getI18NString("medic.common.labels.name"),getI18NString("medic.common.labels.age"),getI18NString("medic.common.labels.phone.number")}, new String[]{"getName", "getStringAge","getPhoneNumber"});		
 	}
 
 	public String getListItemTitle() {
-		return "Manage CHWs";
+		return getI18NString("admin.actionlist.manage.chws");
 	}
 
 	@Override

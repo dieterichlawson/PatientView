@@ -17,14 +17,13 @@ public class PatientAdministrationPanelController extends PersonAdministrationPa
 	private PatientDao patientDao;
 	
 	public PatientAdministrationPanelController(UiGeneratorController uiController, ApplicationContext appCon) {
-		super(uiController, appCon);	
+		super(uiController, appCon);
+		patientDao = (PatientDao) appCon.getBean("PatientDao");
+		search("");
 	}
 
 	@Override
 	protected List<Patient> getPeopleForString(String s) {
-		if(patientDao == null){
-			patientDao = (PatientDao) appCon.getBean("PatientDao");
-		}
 		return new ArrayList<Patient>(patientDao.getPatientsByNameWithLimit(s, 30));
 	}
 

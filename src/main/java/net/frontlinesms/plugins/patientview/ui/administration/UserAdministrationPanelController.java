@@ -1,6 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.administration;
 
-import java.util.ArrayList;
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.util.List;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
@@ -11,23 +12,20 @@ import net.frontlinesms.plugins.patientview.ui.personpanel.UserPanel;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
 public class UserAdministrationPanelController extends PersonAdministrationPanelController<User>{
 
 	private UserDao userDao;
 	
-	public UserAdministrationPanelController(
-			UiGeneratorController uiController, ApplicationContext appCon) {
+	public UserAdministrationPanelController( UiGeneratorController uiController, ApplicationContext appCon) {
 		super(uiController, appCon);
+		this.userDao = (UserDao) appCon.getBean("UserDao");
+		search("");
 	}
 
 	@Override
 	protected List<User> getPeopleForString(String s) {
-		if(userDao == null){
-			userDao = (UserDao) appCon.getBean("UserDao");
-		}
-		return new ArrayList<User>(userDao.getUsersByName(s,-1));
+		return userDao.getUsersByName(s,30);
 	}
 
 	@Override

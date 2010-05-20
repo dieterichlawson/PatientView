@@ -44,7 +44,6 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 	private Object fieldSearchBar;
 	private Object labelTextField;
 	private Object currentItemTable;
-	private Object previewPanel;
 	private Object dataTypeComboBox;
 	
 	private Object mainPanel;
@@ -82,7 +81,6 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 		fieldSearchBar = uiController.find(mainPanel,"fieldSearchBar");
 		labelTextField = uiController.find(mainPanel,"labelTextField");
 		currentItemTable = uiController.find(mainPanel,"currentItemList");
-		previewPanel = uiController.find(mainPanel,"previewPanel");
 		dataTypeComboBox = uiController.find(mainPanel,"dataTypeComboBox");
 		
 		//initialize the advanced tables
@@ -98,7 +96,11 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 		//initialize the combo box choices
 		uiController.removeAll(dataTypeComboBox);
 		for(DataType d: DataType.values()){
-			if(!(d.equals(DataType.CURRENCY_FIELD) || d.equals(DataType.EMAIL_FIELD) || d.equals(DataType.PASSWORD_FIELD))){
+			if(!(d.equals(DataType.CURRENCY_FIELD) || 
+				d.equals(DataType.EMAIL_FIELD) || 
+				d.equals(DataType.PASSWORD_FIELD) || 
+				d.equals(DataType.WRAPPED_TEXT) || 
+				d.equals(DataType.TRUNCATED_TEXT))){
 			Object choice = uiController.createComboboxChoice(d.toString(), d);
 			uiController.add(dataTypeComboBox,choice);
 			}
@@ -123,7 +125,6 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 		uiController.setEnabled(fieldSearchBar,true);
 		uiController.setEnabled(uiController.find(mainPanel,"fieldSearchLabel"),true);
 		updateCurrentItemTable();
-		updatePreview();
 	}
 	
 	/**
@@ -136,7 +137,6 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 		uiController.setEnabled(uiController.find("fieldSearchLabel"),false);
 		uiController.setText(fieldSearchBar, "");
 		updateCurrentItemTable();
-		updatePreview();
 	}
 	
 	/**
@@ -176,7 +176,6 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 			uiController.createDialog(getI18NString(ATTRIBUTE_INFO_MISSING_DIALOG));
 		}
 		updateCurrentItemTable();
-		updatePreview();
 		clearInputs();
 	}
 	
@@ -201,34 +200,6 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 			}
 		}
 		updateCurrentItemTable();
-		updatePreview();
-	}
-	
-	private void updatePreview(){
-		uiController.removeAll(previewPanel);
-		if(currentlyEditingPatient){
-			uiController.add(previewPanel,new PatientPanel(uiController).getMainPanel());
-			uiController.setInteger(uiController.find(previewPanel,"personAAGPanel"), "colspan", 1);
-			//add all the form attribute fields
-			for(MedicFormField f: formFieldDao.getAttributePanelFields()){
-				Object item = uiController.createLabel(f.getLabel() + ":");
-				uiController.add(previewPanel,item);
-				uiController.setInteger(item,"colspan",1);
-			}
-			for(PersonAttribute pa: attributeDao.getAttributesForPersonType(PersonType.PATIENT)){
-				Object item = uiController.createLabel(pa.getLabel() + ":");
-				uiController.add(previewPanel,item);
-				uiController.setInteger(item,"colspan",1);
-			}
-		}else{
-			uiController.add(previewPanel,new CommunityHealthWorkerPanel(uiController).getMainPanel());
-			uiController.setInteger(uiController.find(previewPanel,"personAAGPanel"), "colspan", 1);
-			for(PersonAttribute pa: attributeDao.getAttributesForPersonType(PersonType.CHW)){
-				Object item = uiController.createLabel(pa.getLabel() + ":");
-				uiController.add(previewPanel,item);
-				uiController.setInteger(item,"colspan",1);
-			}
-		}
 	}
 	
 	private void updateCurrentItemTable(){
