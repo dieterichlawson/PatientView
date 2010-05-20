@@ -52,6 +52,7 @@ public class FormSearchArea implements ThinletUiEventHandler{
 			uiController.add(resultsList,uiController.createListItem(mf.getName(), mf));
 		}
 		uiController.setSelectedIndex(resultsList, 0);
+		selectionChanged();
 	}
 	
 	public MedicForm getCurrentlySelectedForm(){
