@@ -66,7 +66,7 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 	public SubmitFormTab(UiGeneratorController uiController, ApplicationContext appContext, Patient patient){
 		super(uiController, appContext);
 		super.setIconPath("/icons/big_form_edit.png");
-		super.setTitle("Submit a Form");
+		super.setTitle(InternationalisationUtils.getI18NString("submitform.title"));
 		//load the main panel from the file
 		uiController.add(mainPanel,uiController.loadComponentFromFile(SUBMIT_FORM_DIALOG, this));
 		//create the new thinlet instance, and add the main panel

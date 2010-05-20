@@ -40,6 +40,7 @@ public abstract class PersonDashboard<P extends Person> extends Dashboard {
 		uiController.setHAlign(button, Thinlet.LEFT);
 		uiController.setVAlign(button, Thinlet.BOTTOM);
 		uiController.setWeight(button, 1, 1);
+		uiController.setIcon(button, "/icons/arrow_turn_left.png");
 		uiController.add(leftPanel,button);
 	}
 	

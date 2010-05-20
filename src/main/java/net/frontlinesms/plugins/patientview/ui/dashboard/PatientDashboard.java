@@ -1,9 +1,11 @@
 package net.frontlinesms.plugins.patientview.ui.dashboard;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonAttributePanel;
+import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
@@ -20,7 +22,10 @@ public class PatientDashboard extends PersonDashboard<Patient> {
 		uiController.add(leftPanel,new CommunityHealthWorkerPanel(uiController,appCon,person.getChw()).getMainPanel());
 		uiController.add(leftPanel,new PersonAttributePanel(uiController,appCon,person).getMainPanel());
 		tabs.add(new FormResponseTab(uiController,appCon,person));
-		tabs.add(new SubmitFormTab(uiController,appCon,person));
+		if(UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.READWRITE||
+		   UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.ADMIN){
+				tabs.add(new SubmitFormTab(uiController,appCon,person));
+		}
 	}
 
 }

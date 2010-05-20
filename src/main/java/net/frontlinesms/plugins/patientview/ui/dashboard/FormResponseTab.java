@@ -2,10 +2,10 @@ package net.frontlinesms.plugins.patientview.ui.dashboard;
 
 import java.util.List;
 
+import net.frontlinesms.data.events.DatabaseNotification;
 import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
-import net.frontlinesms.events.FrontlineEvent;
-import net.frontlinesms.events.impl.DatabaseNotification;
+import net.frontlinesms.events.FrontlineEventNotification;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
@@ -40,7 +40,7 @@ public class FormResponseTab<P extends Person> extends TabController implements 
 	}
 
 	protected void init() {
-		super.setTitle("Form Responses");
+		super.setTitle(InternationalisationUtils.getI18NString("medic.common.form.responses"));
 		super.setIconPath("/icons/big_form.png");
 		//register this object as an event observer
 		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
@@ -94,7 +94,7 @@ public class FormResponseTab<P extends Person> extends TabController implements 
 			formResponsePanel.viewWillAppear((MedicFormResponse) selectedObject);
 	}
 
-	public void notify(FrontlineEvent event) {
+	public void notify(FrontlineEventNotification event) {
 		if(event instanceof DatabaseNotification<?>){
 			if(((DatabaseNotification<?>) event).getDatabaseEntity() instanceof MedicFormResponse){
 				updateTable();
