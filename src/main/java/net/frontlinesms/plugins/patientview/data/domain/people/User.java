@@ -23,7 +23,7 @@ import javax.persistence.OneToMany;
 
 /** A login identity for medic users. */
 @Entity
-@DiscriminatorValue(value = "user")
+@DiscriminatorValue(value = "usr")
 public class User extends Person {
 
 	/**

@@ -15,7 +15,7 @@ import net.frontlinesms.plugins.patientview.data.domain.framework.PersonAttribut
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 
 @Entity
-@DiscriminatorValue(value="attributeresponse")
+@DiscriminatorValue(value="attr")
 public class PersonAttributeResponse extends Response {
 
 	/**

@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 
 @Entity
-@DiscriminatorValue(value = "patient")
+@DiscriminatorValue(value = "pat")
 public class Patient extends Person {
 
 	/**

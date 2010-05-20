@@ -10,7 +10,7 @@ import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 
 @Entity
-@DiscriminatorValue(value="fieldresponse")
+@DiscriminatorValue(value="field")
 public class MedicFormFieldResponse extends Response {
 
 	@ManyToOne(targetEntity=MedicFormField.class,cascade ={},fetch=FetchType.EAGER)
@@ -22,6 +22,8 @@ public class MedicFormFieldResponse extends Response {
 	private MedicFormResponse formResponse;
 
 	private String value;
+	
+	private int position;
 
 	public MedicFormFieldResponse(){}
 	
@@ -65,5 +67,14 @@ public class MedicFormFieldResponse extends Response {
 	public void setValue(String value) {
 		this.value = value;
 	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+	
 
 }

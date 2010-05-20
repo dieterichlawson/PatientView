@@ -2,7 +2,6 @@ package net.frontlinesms.plugins.patientview.data.domain.response;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -15,13 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
-import net.frontlinesms.plugins.patientview.utils.DateUtils;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 
@@ -46,12 +42,6 @@ public abstract class Response {
 	protected Person subject;
 	
 	protected long dateSubmitted;
-	
-	@ManyToMany(cascade={},fetch=FetchType.LAZY)
-	@JoinTable(name="tag_map",
-			joinColumns= @JoinColumn(name="response"),
-			inverseJoinColumns=@JoinColumn(name="tag"))
-	protected List<Tag> tags;
 
 	public Response(){}
 	

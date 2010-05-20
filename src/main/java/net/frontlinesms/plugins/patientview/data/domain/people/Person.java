@@ -1,15 +1,30 @@
 package net.frontlinesms.plugins.patientview.data.domain.people;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.awt.image.BufferedImage;
 import java.util.Date;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageUtils;
-import net.frontlinesms.plugins.patientview.utils.DateUtils;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
 import org.hibernate.annotations.IndexColumn;
 
@@ -17,7 +32,7 @@ import org.hibernate.annotations.IndexColumn;
 @Entity
 @Table(name="medic_people")
 @DiscriminatorColumn(name="person_type", discriminatorType=DiscriminatorType.STRING)
-@DiscriminatorValue(value="person")
+@DiscriminatorValue(value="per")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class Person{
 	
@@ -69,9 +84,11 @@ public abstract class Person{
 	protected Gender gender;
 	
 	@Lob
+	@Basic(fetch=FetchType.LAZY)
 	protected byte[] unscaledImageContent;
 
 	@Lob
+	@Basic(fetch=FetchType.LAZY)
 	protected byte[] thumbnailImageContent;
 	
 	/**

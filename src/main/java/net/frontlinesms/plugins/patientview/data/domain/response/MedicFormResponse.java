@@ -11,13 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.OrderBy;
+
+import net.frontlinesms.plugins.forms.data.domain.FormResponse;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
-import net.frontlinesms.plugins.patientview.history.HistoryManager;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 @Entity
-@DiscriminatorValue(value="formresponse")
+@DiscriminatorValue(value="form")
 public class MedicFormResponse extends Response{
 
 	@ManyToOne(fetch=FetchType.EAGER,cascade={})
@@ -25,9 +27,24 @@ public class MedicFormResponse extends Response{
 	private MedicForm form;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="formResponse",cascade=CascadeType.ALL)
+	@OrderBy(clause = "position asc")
 	private List<MedicFormFieldResponse> responses;
 	
 	public MedicFormResponse(){}
+	
+	
+	public MedicFormResponse(FormResponse fr, MedicForm mForm, Person submitter, Person subject){
+		this.form = mForm;
+		this.subject = subject;
+		this.submitter = submitter;
+		responses = new ArrayList<MedicFormFieldResponse>();
+		for(int i = 0; i < mForm.getFields().size(); i++){
+			MedicFormFieldResponse mffr = new MedicFormFieldResponse(fr.getResults().get(i).toString(),mForm.getFields().get(i),subject,submitter);
+			mffr.setFormResponse(this);
+			mffr.setPosition(responses.size());
+			responses.add(mffr);
+		}
+	}
 	
 	public MedicFormResponse(MedicForm form, List<MedicFormFieldResponse> responses,Person submitter, Person subject) {
 		super(submitter,subject);
@@ -36,9 +53,15 @@ public class MedicFormResponse extends Response{
 			mfr.setFormResponse(this);
 		}
 		this.responses = responses;
-		HistoryManager.logFormSubmssion(subject, form);
+		updateFieldPositions();
 	}
 
+	public MedicFormResponse(MedicForm form, Person submitter, Person subject) {
+		super(submitter, subject);
+		this.form = form;
+		responses = new ArrayList<MedicFormFieldResponse>();
+	}
+	
 	public List<MedicFormFieldResponse> getResponses() {
 		return responses;
 	}
@@ -48,12 +71,7 @@ public class MedicFormResponse extends Response{
 		for(MedicFormFieldResponse mfr : responses){
 			mfr.setFormResponse(this);
 		}
-	}
-
-	public MedicFormResponse(MedicForm form, Person submitter, Person subject) {
-		super(submitter, subject);
-		this.form = form;
-		responses = new ArrayList<MedicFormFieldResponse>();
+		updateFieldPositions();
 	}
 
 	public MedicForm getForm(){
@@ -71,10 +89,12 @@ public class MedicFormResponse extends Response{
 	public void addFieldResponse(MedicFormFieldResponse response){
 		responses.add(response);
 		response.setFormResponse(this);
+		response.setPosition(responses.size());
 	}
 	
 	public void removeFieldResponse(MedicFormFieldResponse response){
 		responses.remove(response);
+		updateFieldPositions();
 	}
 	
 	@Override
@@ -99,6 +119,12 @@ public class MedicFormResponse extends Response{
 	
 	public String isMappedString(){
 		return InternationalisationUtils.getI18NString(isMapped()?"datatype.true":"datatype.false");
+	}
+	
+	private void updateFieldPositions(){
+		for(int i = 0; i < responses.size();i++){
+			responses.get(i).setPosition(i);
+		}
 	}
 	
 }

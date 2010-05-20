@@ -19,7 +19,7 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 
 
 @Entity
-@DiscriminatorValue(value="messageresponse")
+@DiscriminatorValue(value="mess")
 public class MedicMessageResponse extends Response{
 
 	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)

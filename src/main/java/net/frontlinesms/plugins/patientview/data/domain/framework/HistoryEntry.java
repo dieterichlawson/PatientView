@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.utils.DateUtils;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 @Entity
 @Table(name="medic_history")
@@ -86,7 +87,7 @@ public class HistoryEntry {
 	}
 	
 	public String getStringDateSubmitted(){
-		DateFormat df = DateUtils.getDateFormatter();
+		DateFormat df = InternationalisationUtils.getDateFormat();
 		return df.format(getDateSubmitted());
 	}
 
