@@ -46,7 +46,8 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 		panels.add(new PatientAdministrationPanelController(uiController,appCon));
 		panels.add(new CommunityHealthWorkerAdministrationPanelController(uiController,appCon));
 		panels.add(new UserAdministrationPanelController(uiController,appCon));
-		panels.add(new FormAdministrationPanelController(uiController,appCon));
+//			panels.add(new FormAdministrationPanelController(uiController,appCon));
+		panels.add(new SecurityPanelController(uiController));
 		panels.add(new AttributeAdministrationPanelController(uiController,appCon));
 		panels.add(new FormResponseMappingPanelController(uiController,appCon));
 		panels.add(new CsvImporterPanelController(uiController,appCon));

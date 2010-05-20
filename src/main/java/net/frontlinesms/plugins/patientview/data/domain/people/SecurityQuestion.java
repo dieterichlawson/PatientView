@@ -26,11 +26,11 @@ public class SecurityQuestion {
 	@Column(unique = true, nullable = false, updatable = false)
 	protected long qid;
 
+	@ManyToOne(cascade={},fetch=FetchType.EAGER,optional=false,targetEntity=User.class)
+	private User user;
+	
 	/** The question. */
 	private String question;
-	
-	@ManyToOne(cascade={},fetch=FetchType.EAGER,targetEntity=User.class)
-	private User user;
 
 	/** A hashed version of the answer. */
 	@Lob
@@ -39,9 +39,13 @@ public class SecurityQuestion {
 	/** The salt used to hash the answer. */
 	@Lob
 	private byte[] salt;
+	
+	/** For hibernate. */
+	SecurityQuestion() {}
 
 	public SecurityQuestion(String question, String answer, User user) throws GeneralSecurityException {
 		this.question = question;
+		this.user = user;
 		salt = new byte[4];
 		fillRandomBytes(salt);
 		hash = cryptoHash(answer, salt);

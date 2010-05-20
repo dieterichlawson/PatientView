@@ -11,6 +11,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -73,6 +74,9 @@ public class User extends Person {
 			return getI18NString(name);
 		}
 	}
+	
+	@OneToMany(cascade=CascadeType.REMOVE,fetch=FetchType.LAZY,mappedBy="user",targetEntity=SecurityQuestion.class)
+	protected Set<SecurityQuestion> questions;
 
 	/** The login name of this user. */
 	private String username;
