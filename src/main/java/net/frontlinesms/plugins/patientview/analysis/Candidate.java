@@ -1,9 +1,7 @@
 package net.frontlinesms.plugins.patientview.analysis;
 
-import java.text.DateFormat;
-
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
-import net.frontlinesms.plugins.patientview.utils.DateUtils;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 public class Candidate implements Comparable<Candidate>{
 
@@ -23,10 +21,15 @@ public class Candidate implements Comparable<Candidate>{
 	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
+	
 	public float getTotalScore() {
 		return birthdateScore + idScore + nameScore;
 	}
 
+	public float getAverageScore(){
+		return (getTotalScore() / total) * 100F;
+	}
+	
 	public float getBirthdateScore() {
 		return birthdateScore;
 	}
@@ -58,7 +61,7 @@ public class Candidate implements Comparable<Candidate>{
 	}
 	
 	public String getStringBirthdate(){
-		return DateUtils.getDateFormatter().format(patient.getBirthdate());
+		return InternationalisationUtils.getDateFormat().format(patient.getBirthdate());
 	}
 
 	public int compareTo(Candidate o) {

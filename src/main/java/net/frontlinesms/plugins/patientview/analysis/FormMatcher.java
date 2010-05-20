@@ -1,46 +1,83 @@
 package net.frontlinesms.plugins.patientview.analysis;
 
-import java.text.DateFormat;
-import java.text.ParseException;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
+import net.frontlinesms.data.events.DidSaveNotification;
+import net.frontlinesms.events.EventBus;
+import net.frontlinesms.events.EventObserver;
+import net.frontlinesms.events.FrontlineEventNotification;
 import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.forms.data.domain.FormResponse;
+import net.frontlinesms.plugins.forms.data.domain.ResponseValue;
+import net.frontlinesms.plugins.forms.data.repository.FormDao;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
-import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField.PatientFieldMapping;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
-import net.frontlinesms.plugins.patientview.utils.DateUtils;
+import net.frontlinesms.ui.ExtendedThinlet;
 
 import org.springframework.context.ApplicationContext;
 
+import thinlet.FrameLauncher;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.JaroWinkler;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.Levenshtein;
 
-public class FormMatcher {
+public class FormMatcher implements EventObserver{
 
 	
 	private Levenshtein levenshtein;
 	private JaroWinkler jaroWinkler;
-	private static FormMatcher formMatcher;
-	private ApplicationContext applicationContext;
+	
+	private FormDao vanillaFormDao;
+	private MedicFormDao formDao;
+	private MedicFormResponseDao formResponseDao;
+	private MedicFormFieldResponseDao formFieldResponseDao;
+	private PatientDao patientDao;
+	private CommunityHealthWorkerDao chwDao;
 	
 	public FormMatcher(ApplicationContext appCon){
-		this.applicationContext= appCon;
+		vanillaFormDao = (FormDao) appCon.getBean("formDao");
+		formDao = (MedicFormDao) appCon.getBean("MedicFormDao");
+		formResponseDao = (MedicFormResponseDao) appCon.getBean("MedicFormResponseDao");
+		formFieldResponseDao = (MedicFormFieldResponseDao) appCon.getBean("MedicFormFieldResponseDao");
+		patientDao = (PatientDao) appCon.getBean("PatientDao");
+		chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
+		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
+		//create the test harness
+//		ExtendedThinlet thinlet = new ExtendedThinlet();
+//		Object panel = thinlet.createPanel("mainPanel");
+//		thinlet.setWeight(panel, 1, 1);
+//		Object button = thinlet.createButton("Click me to test form handling");
+//		thinlet.setAction(button, "testHandler", null, this);
+//		thinlet.add(panel,button);
+//		thinlet.add(panel);
+//		FrameLauncher f = new FrameLauncher("Test form handling",thinlet,200,100,null)
+//		{ public void windowClosing(WindowEvent e){  dispose(); }};
 	}
 	
+//	public void testHandler(){
+//		List<ResponseValue> responses = new ArrayList<ResponseValue>();
+//		responses.add(new ResponseValue("John Dod"));
+//		responses.add(new ResponseValue("14/08/1987"));
+//		responses.add(new ResponseValue("1232"));
+//		
+//		FormResponse fr = new FormResponse("9940426745",vanillaFormDao.getFromId(2L),responses);
+//		handleFormResponse(fr);
+//	}
+	
 	public boolean isMedicForm(Form f){
-		return ((MedicFormDao) applicationContext.getBean("MedicFormDao")).getMedicFormForForm(f) !=null;
+		return formDao.getMedicFormForForm(f) != null;
 	}
 	
 	/**
@@ -52,48 +89,17 @@ public class FormMatcher {
 	 * 
 	 * @param formResponse
 	 */
-	private void handleFormResponse(FormResponse formResponse){
+	public void handleFormResponse(FormResponse formResponse){
 		//if the form submitted is not a medic form, then do nothing
 		if(!isMedicForm(formResponse.getParentForm())){
 			return;
 		}
 		//get the medic form equivalent of the form submitted
-		MedicForm mForm = ((MedicFormDao) applicationContext.getBean("MedicFormDao")).getMedicFormForForm(formResponse.getParentForm());
-		//get the CHW that submitted the form
-		CommunityHealthWorker chw = ((CommunityHealthWorkerDao) applicationContext.getBean("CHWDao")).getCommunityHealthWorkerByPhoneNumber(formResponse.getSubmitter());
-		//get the list of patients that the CHW cares for
-		ArrayList<Patient> patients = new ArrayList<Patient>(((PatientDao) applicationContext.getBean("PatientDao")).getPatientsForCHW(chw));
-		//create an array of scores for the patients
-		float[] scores = new float[patients.size()];
-		float numberOfFields = 0f;
-		//iterate through all fields on the form, seeing if they are mapped to patient identifying fields
-		//e.g. Birthdate, Name, and Patient ID
-		for(MedicFormField formField : mForm.getFields()){
-			//if it is mapped to a namefield, score it as a name
-			if(formField.getMapping() == PatientFieldMapping.NAMEFIELD){
-				for(int i = 0; i < patients.size(); i++){
-					scores[i] += getNameDistance(patients.get(i).getName(),formResponse.getResults().get(formField.getPosition()).toString());
-				}
-				numberOfFields++;
-			//if it is mapped to an id field, score it as an ID
-			}else if(formField.getMapping() == PatientFieldMapping.IDFIELD){
-				for(int i = 0; i < patients.size(); i++){
-					scores[i] += getEditDistance(patients.get(i).getStringID(),formResponse.getResults().get(formField.getPosition()).toString());
-				}
-				numberOfFields++;
-			//if it is mapped as a bday field, score it as a bday
-			}else if(formField.getMapping() == PatientFieldMapping.BIRTHDATEFIELD){
-				float[] dateScores = getCombinedBirthdateDistances(patients,formResponse.getResults().get(formField.getPosition()).toString());
-				for(int i = 0; i < dateScores.length; i++){
-					scores[i] += dateScores[i] * 0.6f;
-				}
-				numberOfFields+=0.6f;
-			}
-		}
-		System.out.println("Scores for all patients of "+ chw.getName());
-		for(int i = 0; i < scores.length; i++){
-			System.out.println(patients.get(i).getName() + " " + scores[i]);
-		}
+		MedicForm mForm = formDao.getMedicFormForForm(formResponse.getParentForm());
+		CommunityHealthWorker submitter = chwDao.getCommunityHealthWorkerByPhoneNumber(formResponse.getSubmitter());
+		MedicFormResponse mfr = new MedicFormResponse(formResponse,mForm,submitter,null);
+		mfr.setSubject(getFinalCandidate(mfr));
+		formResponseDao.saveMedicFormResponse(mfr);
 	}
 	
 	
@@ -104,76 +110,11 @@ public class FormMatcher {
 	 * @param responseName	string 2 (generally the name typed into the form
 	 * @return a float from 1.0 - 0.0
 	 */
-	public float getNameDistance(String patientName, String responseName){
+	private float getNameDistance(String patientName, String responseName){
 		if(jaroWinkler == null){
 			jaroWinkler = new JaroWinkler();
 		}
 		return jaroWinkler.getSimilarity(patientName, responseName);
-	}
-	
-	/**
-	 * Returns an array of floats (1 score for each person) from 1.0 - 0.0 that measures the similarity between 
-	 * 2 dates (specifically the patient's birthdate and the date provided on the form)
-	 * using a hybrid method. Half of the score is edit distance (Leshvenstein) and the other half
-	 * of the score is based on the number of milliseconds difference between the 2 dates.
-	 * The higher the number, the greater the similarity
-	 * @param patients the patients whose birthdates will be compared
-	 * @param stringDate the compare date (generally the date typed into the form)
-	 * @return a float[] with scores from 1.0 - 0.0
-	 */
-	public float[] getCombinedBirthdateDistances(ArrayList<Patient> patients, String stringDate){
-		
-		DateFormat df = DateUtils.getDateFormatter();
-		Date responseDate;
-		try {
-			responseDate = df.parse(stringDate);
-		} catch (ParseException e) {
-			return null;
-		}
-		float[] scores = getBirthdateTimeDistances(patients,responseDate);
-		for(int i = 0; i < scores.length;i++){
-			scores[i] = scores[i] * 0.5f;
-		}
-		for(int i = 0; i < scores.length; i++){
-			scores[i] += 0.5f * getEditDistance(df.format(patients.get(i).getBirthdate()),stringDate);
-		}
-		return scores;
-	}
-	
-	/**
-	 * Returns a float array of scores that reflect the distance between a list of
-	 * dates (in this case the patients' birthdates) and the provided date. This is
-	 * calculated by getting the milliseconds between the dates and then re-distributing 
-	 * them over the interval from 0 - 1. The greater the number, the higher the similarity
-	 * @param patients
-	 * @param responseDate
-	 * @return
-	 */
-	public float[] getBirthdateTimeDistances(ArrayList<Patient> patients, Date responseDate){
-		//create the results array
-		float[] scores = new float[patients.size()];
-		//compute all the distances
-		for(int i = 0; i< patients.size();i++){
-			scores[i] = responseDate.getTime() - patients.get(i).getBirthdate().getTime();
-		}
-		//compute the min value and start the set at the min score (to start the set at 0)
-		float min = Float.MAX_VALUE;
-		for(float f:scores){
-			min = Math.min(min, f);
-		}
-		for(int i = 0; i <scores.length;i++){
-			scores[i] = scores[i] - min;
-		}
-		//compute the max value to re-distribute all the scores
-		//across the interval from 0 -1 as percents of the max score
-		float max = Float.MIN_VALUE;
-		for(float f:scores){
-			max = Math.max(max, f);
-		}
-		for(int i = 0; i <scores.length;i++){
-			scores[i] = 1.0f - (scores[i] / max) ;
-		}
-		return scores;
 	}
 	
 	/**
@@ -190,18 +131,23 @@ public class FormMatcher {
 	}
 	
 	public List<Candidate> getCandidatesForResponse(MedicFormResponse response){
-		MedicForm mForm = response.getForm();
 		//get the CHW that submitted the form
 		CommunityHealthWorker chw = (CommunityHealthWorker) response.getSubmitter();
 		//get the list of patients that the CHW cares for
-		ArrayList<Patient> patients = (ArrayList<Patient>) ((PatientDao) applicationContext.getBean("PatientDao")).getPatientsForCHW(chw);
+		ArrayList<Patient> patients = (ArrayList<Patient>) patientDao.getPatientsForCHW(chw);
 		ArrayList<Candidate> candidates = new ArrayList<Candidate>();
 		//iterate through all fields on the form, seeing if they are mapped to patient identifying fields
 		//e.g. Birthdate, Name, and Patient ID
 		for(Patient patient: patients){
 			candidates.add(new Candidate(patient));
 		}
-		List<MedicFormFieldResponse> responses = ((MedicFormFieldResponseDao) applicationContext.getBean("MedicFormFieldResponseDao")).getResponsesForForm(response);
+		List<MedicFormFieldResponse> responses = response.getResponses();
+		try{
+			responses.get(0).getDateSubmitted();
+		}catch(Exception e){
+			responses = formFieldResponseDao.getResponsesForForm(response);
+		}
+		
 		for(MedicFormFieldResponse fieldResponse : responses){
 			//if it is mapped to a namefield, score it as a name
 			if(fieldResponse.getField().getMapping() == PatientFieldMapping.NAMEFIELD){
@@ -225,7 +171,7 @@ public class FormMatcher {
 	}
 	
 	public float getConfidence(Patient subject, MedicFormResponse mfr){
-		List<MedicFormFieldResponse> responses = ((MedicFormFieldResponseDao) applicationContext.getBean("MedicFormFieldResponseDao")).getResponsesForForm(mfr);
+		List<MedicFormFieldResponse> responses = formFieldResponseDao.getResponsesForForm(mfr);
 		float result = 0.0F;
 		float total = 0.0F;
 		for(MedicFormFieldResponse fieldResponse : responses){
@@ -245,4 +191,36 @@ public class FormMatcher {
 		}
 		return (result/total)*100 ;
 	}
+	
+	/**
+	 * Returns the 'final candidate', i.e. the most likely candidate for the subject
+	 * of the supplied form response. This is determined by fetching all candidates,
+	 * and selecting the ones that are over 97% confidence. If there is only one over 97%
+	 * confidence, then that candidate is returned. Otherwise, this method returns null
+	 * @param response
+	 * @return
+	 */
+	public Person getFinalCandidate(MedicFormResponse response){
+		List<Candidate> candidates = getCandidatesForResponse(response);
+		List<Candidate> finalCandidates = new ArrayList<Candidate>();
+		for(Candidate c: candidates){
+			if(c.getAverageScore()  >= 97F){
+				finalCandidates.add(c);
+			}
+		}
+		if(finalCandidates.size() == 1){
+			return finalCandidates.get(0).getPatient();
+		}
+		return null;
+	}
+
+	public void notify(FrontlineEventNotification notification) {
+		if(notification instanceof DidSaveNotification<?>){
+			DidSaveNotification<?> sNotification = (DidSaveNotification<?>) notification;
+			if(sNotification.getDatabaseEntity() instanceof FormResponse){
+				handleFormResponse((FormResponse) sNotification.getDatabaseEntity());
+			}
+		}
+	}
+	
 }
