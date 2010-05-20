@@ -12,6 +12,7 @@ import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -93,14 +94,17 @@ public class FlexibleFormResponsePanel implements ThinletUiEventHandler{
 		for(MedicFormField ff: fields){
 			if(!(ff.getMapping()==null && state == State.ID_FIELDS_VISIBLE)){
 				Object field = null;
-				if(ff.getDatatype() == DataType.CHECK_BOX){
+				if(ff.getDatatype() == DataType.CHECK_BOX ||
+				   ff.getDatatype() == DataType.TRUEFALSE ||
+				   ff.getDatatype() == DataType.POSITIVENEGATIVE ||
+				   ff.getDatatype() == DataType.YESNO){
 					field =uiController.createCheckbox(null, ff.getLabel(), false);
 					uiController.add(formPanel,field);
 					uiController.setEnabled(field, false);
 					uiController.setInteger(field, "weightx", 1);
 					uiController.setChoice(field, "halign", "fill");
 					String r = responseIt.next();
-					if(r.equals("true")){
+					if(r.equalsIgnoreCase(InternationalisationUtils.getI18NString("datatype.true"))){
 						uiController.setSelected(field, true);
 					}
 				}else if(ff.getDatatype() == DataType.TEXT_AREA){
