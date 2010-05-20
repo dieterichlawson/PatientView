@@ -5,12 +5,14 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import java.util.HashMap;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
 import net.frontlinesms.plugins.patientview.ui.dashboard.PatientDashboard;
 import net.frontlinesms.plugins.patientview.ui.dashboard.PersonDashboard;
 import net.frontlinesms.plugins.patientview.ui.dialogs.SubmitFormDialog;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonAttributePanel;
+import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
@@ -24,6 +26,10 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	private static final String CANCEL = "detailview.buttons.cancel";
 	private static final String SEE_MORE = "detailview.buttons.see.more";
 	private static final String SUBMIT_FORM_FOR_PATIENT = "detailview.buttons.submit.form.patient";
+	private static final String EDIT_ATTRIBUTE_ICON = "/icons/user_edit.png";
+	private static final String SAVE_ICON = "/icons/tick.png";
+	private static final String CANCEL_ICON = "/icons/cross.png";
+	private static final String EXPAND_DETAIL_VIEW_ICON = "/icons/folder_user.png";
 	private Object mainPanel;
 	private Patient currentPatient;
 	private UiGeneratorController uiController;
@@ -81,13 +87,21 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 		if(inEditingMode){
 			uiController.setAction(leftButton, "saveButtonClicked", null, this);
 			uiController.setAction(rightButton, "cancelButtonClicked", null, this);
+			uiController.setIcon(leftButton, SAVE_ICON);
+			uiController.setIcon(rightButton, CANCEL_ICON);
+			
 		}else{
 			uiController.setAction(leftButton, "editButtonClicked", null, this);
 			uiController.setAction(rightButton, "showPatientDashboard", null, this);
+			uiController.setIcon(leftButton, EDIT_ATTRIBUTE_ICON);
+			uiController.setIcon(rightButton, EXPAND_DETAIL_VIEW_ICON);
 		}
 		uiController.setHAlign(leftButton, Thinlet.LEFT);
 		uiController.setVAlign(leftButton, Thinlet.BOTTOM);
-		uiController.add(buttonPanel,leftButton);
+		if(UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.READWRITE||
+		   UserSessionManager.getUserSessionManager().getCurrentUserRole() == Role.ADMIN){
+			uiController.add(buttonPanel,leftButton);
+		}
 		Object spacerLabel = uiController.createLabel("");
 		uiController.setWeight(spacerLabel, 1, 0);
 		uiController.add(buttonPanel,spacerLabel);
