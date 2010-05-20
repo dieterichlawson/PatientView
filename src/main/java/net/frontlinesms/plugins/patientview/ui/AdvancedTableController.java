@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +15,7 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 
 import net.frontlinesms.ui.UiGeneratorController;
+
 /**
  * This class provides a controller for a thinlet table that can handle creating
  * headers, doing all the thinlet grunt-work, and autofitting columns.
@@ -145,11 +145,13 @@ public class AdvancedTableController{
 		for(Object result: results){
 			Object row = uiController.createTableRow(result);
 			for(Method m:methods){
+				String value;
 				try {
-					uiController.add(row,uiController.createTableCell((String) m.invoke(result,null)));
+					value = (String) m.invoke(result,null);
 				} catch (Exception e) {
-					e.printStackTrace();
+					value = "";
 				}
+				uiController.add(row,uiController.createTableCell(value));
 			}
 			uiController.add(table,row);
 		}
@@ -233,23 +235,23 @@ public class AdvancedTableController{
 		m.setAccessible(true);
 		for(Object r :results){
 			int tempWidth = 0;
+			String s;
 			try {
-				String s = (String) m.invoke(r,null);
-				tempWidth = getStringWidth(s);
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+				s = (String) m.invoke(r,null);
+			} catch (Exception e) {
+				s = "";
 			}
+			tempWidth = getStringWidth(s);
 			result = Math.max(result, tempWidth);
 		}
 		return result;
 	}
 	
 	private int getStringWidth(String text){
-		return metrics.stringWidth(text);
+		if(text != null){
+			return metrics.stringWidth(text);
+		}
+		return 0;
 	}
 	
 	public void setTable(Object table){
