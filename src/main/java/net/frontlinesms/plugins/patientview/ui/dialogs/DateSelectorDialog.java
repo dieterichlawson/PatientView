@@ -27,7 +27,6 @@ import java.util.Date;
 
 import net.frontlinesms.FrontlineSMSConstants;
 import net.frontlinesms.Utils;
-import net.frontlinesms.ui.DateSelecter;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
@@ -52,7 +51,7 @@ public class DateSelectorDialog {
 	private static final String UI_FILE_DATE_SELECTER_FORM = "/ui/dialog/dateSelecter.xml";
 	
 	/** Logger for this class */
-	private static Logger LOG = Utils.getLogger(DateSelecter.class);
+	private static Logger LOG = Utils.getLogger(DateSelectorDialog.class);
 
 //> INSTANCE PROPERTIES
 	/** A calendar object with a poorly-defined role */
@@ -82,7 +81,6 @@ public class DateSelectorDialog {
 	
 	/**
 	 * Shows the date selecter dialog, showing the previous date or today.
-	 * 
 	 * @throws IOException
 	 */
 	public void showSelecter() throws IOException {
@@ -184,6 +182,8 @@ public class DateSelectorDialog {
 		c.set(Calendar.YEAR, this.curYear);
 		String date = InternationalisationUtils.getDateFormat().format(c.getTime());
 		ui.setText(textField, date);
+		ui.remove(dialog);
+		ui.invokeAction(this.textField);
 	}
 	
 //> UI HELPER METHODS
