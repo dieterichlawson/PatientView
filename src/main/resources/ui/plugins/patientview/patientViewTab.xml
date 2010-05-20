@@ -17,9 +17,6 @@
             	<label name="userStatusLabel"/>
             	<button action="logout()" text="i18n.buttons.logout" icon="/icons/exit.png"/>
             	<label weightx="1"/>
-            	<label name="searchSelectLabel" text="i18n.labels.switch.search.controls" visible="false"/>
-            	<togglebutton name="simpleSearchButton" group="searchgroup" text="i18n.buttons.simplesearch" action="switchSearchControls(this)" selected="true" visible="false"/>
-            	<togglebutton name="drillDownSearchButton" group="searchgroup" text="i18n.buttons.drilldownsearch" action="switchSearchControls(this)" visible="false"/>
             	<label name="resultsLabel" text="Results 1-30 of 3000"/>
             	<button name="leftPageButton" icon="/icons/left.png" action="pageLeft()"/>
             	<button name="rightPageButton" icon="/icons/right.png" action="pageRight()"/>

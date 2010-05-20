@@ -3,9 +3,9 @@
 <panel bottom="5" columns="1" gap="5" left="5" right="5" top="5" weightx="1">
     <label halign="center" name="formNameLabel" text="Intake Form" weightx="1"/>
     <panel gap="5" halign="center" name="buttonPanel" weightx="1">
-        <button action="hide()" halign="left" name="hideButton" text="Hide Form"/>
-        <button action="showAll()" halign="left" name="showAllButton" text="Show All Fields"/>
-        <button action="showId()" halign="left" name="showIdButton" text="Show Id Fields"/>
+        <button action="hide()" halign="left" name="hideButton" text="i18n.flexible.form.panel.hide"/>
+        <button action="showAll()" halign="left" name="showAllButton" text="i18n.flexible.form.panel.show.all"/>
+        <button action="showId()" halign="left" name="showIdButton" text="i18n.flexible.form.panel.show.id"/>
     </panel>
     <panel border="true" bottom="4" columns="1" gap="5" left="4" name="formPanel" right="4" top="4" weightx="1"/>
 </panel>

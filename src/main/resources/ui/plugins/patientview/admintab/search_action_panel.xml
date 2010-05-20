@@ -7,9 +7,9 @@
         <label text="i18n.medic.common.labels.search"/>
         <textfield action="search(searchbox.text)" name="searchbox" weightx="1"/>
         <panel colspan="3" gap="31" halign="center" weightx="1">
-            <button name="addbutton" text=""/>
-            <button name="removebutton" text=""/>
-            <button name="editbutton" text=""/>
+            <button name="addbutton" text="" icon="/icons/big_user_add.png"/>
+            <button name="removebutton" text="" icon="/icons/big_user_delete.png"/>
+            <button name="editbutton" text="" icon="/icons/big_user_edit.png"/>
         </panel>
         <table colspan="2" name="resultstable" weightx="1" weighty="1"/>
     </panel>

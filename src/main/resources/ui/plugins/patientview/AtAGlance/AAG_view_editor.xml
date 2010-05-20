@@ -9,7 +9,7 @@
     </panel>
     <separator/>
     <panel bottom="5" columns="3" gap="5" left="5" right="5" top="5" weightx="1" weighty="1">
-        <panel bottom="5" columns="1" gap="6" left="5" right="5" top="5" weighty="1" weightx="1">
+        <panel bottom="5" columns="1" gap="6" left="5" right="5" top="5" weightx="1" weighty="1">
             <label halign="center" text="i18n.editdetailview.labels.create.attribute" weightx="1"/>
             <panel border="true" bottom="5" columns="2" gap="5" left="5" right="6" top="5" weightx="1">
                 <label text="i18n.medic.common.labels.label"/>
@@ -23,17 +23,15 @@
             <button action="addItemButtonPressed()" halign="center" text="i18n.editdetailview.buttons.add.item"/>
         </panel>
         <panel bottom="5" columns="1" gap="6" left="5" right="5" top="5" weightx="2" weighty="1">
-            <label halign="center" text="i18n.editdetailview.labels.current.aag.items" weightx="1"/>
-            <table name="currentItemList" weightx="1" weighty="1"/>
-            <button action="removeItemButtonPressed()" halign="center" text="i18n.editdetailview.buttons.remove.item" weightx="1"/>
-        </panel>
-        <panel bottom="5" columns="1" gap="6" left="5" right="5" top="5" weightx="2" weighty="1">
-            <label halign="center" text="i18n.editdetailview.labels.aag.preview" weightx="1"/>
-            <panel bottom="5" columns="1" gap="6" left="5" name="previewPanel" right="5" top="5" weightx="1" weighty="1"/>
-            <separator/>
-            <label font="bold" halign="center" text="i18n.editdetailview.about.attributes.title"/>
-            <textarea border="false" editable="false" rows="7" text="i18n.editdetailview.about.attributes.content" wrap="true"/>
-            <label text="   "/>
+            <panel bottom="5" columns="1" gap="6" left="5" right="5" top="5" weightx="2" weighty="1">
+                <label halign="center" text="i18n.editdetailview.labels.current.aag.items" weightx="1"/>
+                <table name="currentItemList" weightx="1" weighty="1"/>
+                <button action="removeItemButtonPressed()" halign="center" text="i18n.editdetailview.buttons.remove.item" weightx="1"/>
+            </panel>
+            <separator weightx="1"/>
+            <label font="bold" halign="center" text="i18n.editdetailview.about.attributes.title" weightx="1"/>
+            <textarea border="false" editable="false" rows="7" text="i18n.editdetailview.about.attributes.content" weightx="1" wrap="true"/>
+            <label text="   " weightx="1"/>
         </panel>
     </panel>
 </panel>
