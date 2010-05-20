@@ -5,6 +5,7 @@ import java.util.Collection;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -30,7 +31,7 @@ public class CollapsibleFormSearchArea extends EntitySearchArea<MedicForm>{
 
 	@Override
 	protected String getEntityTypeName() {
-		return "Form";
+		return InternationalisationUtils.getI18NString("medic.common.form");
 	}
 	
 }
