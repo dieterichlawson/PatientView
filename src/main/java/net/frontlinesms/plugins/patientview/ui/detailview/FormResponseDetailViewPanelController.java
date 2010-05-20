@@ -14,17 +14,17 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldR
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
-import net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao;
-import net.frontlinesms.plugins.patientview.utils.DateUtils;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.springframework.context.ApplicationContext;
 
 public class FormResponseDetailViewPanelController implements DetailViewPanelController<MedicFormResponse>, ThinletUiEventHandler {
 
 	private UiGeneratorController uiController;
-	private ApplicationContext appCon;
+	private MedicFormFieldResponseDao fieldResponseDao;
+	private MedicFormFieldDao formFieldDao;
 	private Object mainPanel;
 	
 	private static final String FORM_RESPONSE_PANEL = "/ui/plugins/patientview/AtAGlance/form_AAG.xml";
@@ -36,7 +36,8 @@ public class FormResponseDetailViewPanelController implements DetailViewPanelCon
 	
 	public FormResponseDetailViewPanelController(UiGeneratorController uiController, ApplicationContext appCon){
 		this.uiController = uiController;
-		this.appCon = appCon;
+		this.fieldResponseDao = (MedicFormFieldResponseDao) appCon.getBean("MedicFormFieldResponseDao");
+		this.formFieldDao = (MedicFormFieldDao) appCon.getBean("MedicFormFieldDao");
 		mainPanel = uiController.loadComponentFromFile(FORM_RESPONSE_PANEL, this);
 	}
 	
@@ -53,19 +54,21 @@ public class FormResponseDetailViewPanelController implements DetailViewPanelCon
 	}
 
 	public void viewWillAppear(MedicFormResponse response) {
-		//set up the label meta-data
-		try{
-			response.getResponses();
-			response.getForm().getName();
-			response.getSubject().getName();
-			response.getDateSubmitted();
-		}catch(Exception e){
-			((MedicFormResponseDao) appCon.getBean("MedicFormResponseDao")).reattach(response);
-		}
+		//set the header information
 		String form = getI18NString(FORM) + ": " + response.getForm().getName();
-		String submitter = getI18NString(SUBMITTER) + ": " + response.getSubmitter().getName();
-		String subject = getI18NString(SUBJECT) + ": " + response.getSubject().getName();
-		DateFormat df = DateUtils.getDateFormatter();
+		String submitter;
+		try{
+			submitter = getI18NString(SUBMITTER) + ": " + response.getSubmitter().getName();
+		}catch(Exception e){
+			submitter = submitter = getI18NString(SUBMITTER) + ": "+ getI18NString("medic.common.labels.unknown");
+		}
+		String subject;
+		try{
+			subject = getI18NString(SUBJECT) + ": " + response.getSubjectName();
+		}catch(Exception e){
+			subject = getI18NString(SUBJECT) + ": " + getI18NString("medic.common.labels.unknown");
+		}
+		DateFormat df = InternationalisationUtils.getDateFormat();
 		String date = getI18NString(DATE_SUBMITTED) + " " + df.format(response.getDateSubmitted());
 		uiController.setText(uiController.find(mainPanel,"nameLabel"),  form);
 		uiController.setText(uiController.find(mainPanel,"submitterLabel"),  submitter);
@@ -73,13 +76,15 @@ public class FormResponseDetailViewPanelController implements DetailViewPanelCon
 		uiController.setText(uiController.find(mainPanel,"subjectLabel"), subject);
 		Object fieldContainer = uiController.find(mainPanel,"fieldPanel");
 		uiController.removeAll(fieldContainer);
+		//get all the responses
 		ArrayList<String> responses = new ArrayList<String>();
-		List<MedicFormFieldResponse> fieldResponses = ((MedicFormFieldResponseDao) appCon.getBean("MedicFormFieldResponseDao")).getResponsesForForm(response);
+		List<MedicFormFieldResponse> fieldResponses = fieldResponseDao.getResponsesForForm(response);
 		for(MedicFormFieldResponse r: fieldResponses){
 			responses.add(r.getValue());
 		}
+		//iterate over them, displaying them in the proper fashion
 		Iterator<String> responseIt = responses.iterator();
-		List<MedicFormField> fields = ((MedicFormFieldDao) appCon.getBean("MedicFormFieldDao")).getFieldsOnForm(response.getForm());
+		List<MedicFormField> fields = formFieldDao.getFieldsOnForm(response.getForm());
 		for(MedicFormField ff: fields){
 			Object field = null;
 			if(ff.getDatatype() == DataType.CHECK_BOX){
@@ -89,7 +94,7 @@ public class FormResponseDetailViewPanelController implements DetailViewPanelCon
 				uiController.setInteger(field, "weightx", 1);
 				uiController.setChoice(field, "halign", "fill");
 				String r = responseIt.next();
-				if(r.equals("true")){
+				if(r.equalsIgnoreCase(InternationalisationUtils.getI18NString("datatype.true"))){
 					uiController.setSelected(field, true);
 				}
 			}else if(ff.getDatatype() == DataType.TEXT_AREA){
