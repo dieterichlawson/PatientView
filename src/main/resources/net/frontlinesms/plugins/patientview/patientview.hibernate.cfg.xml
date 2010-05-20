@@ -15,7 +15,8 @@
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.Response" />
-		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.Tag" />
-		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.TagKeyword" />
+		<mapping class="net.frontlinesms.plugins.patientview.data.domain.graph.BooleanGraphSettings" />
+		<mapping class="net.frontlinesms.plugins.patientview.data.domain.graph.NumericGraphSettings" />
 	</session-factory>
+	
 </hibernate-configuration>
