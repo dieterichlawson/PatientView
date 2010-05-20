@@ -4,12 +4,13 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
 import java.util.List;
 
-import net.frontlinesms.plugins.patientview.search.QueryGenerator;
+import net.frontlinesms.plugins.patientview.search.PagedResultSet;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 public class PagedAdvancedTableController extends AdvancedTableController implements ThinletUiEventHandler{
 
-	private QueryGenerator queryGenerator;
+	private PagedResultSet resultSet;
+	
 	protected Object pagingControls;
 	protected Object mainPanel;
 	private final static String PAGING_CONTROLS_XML = "/ui/plugins/patientview/pagingControls.xml";
@@ -28,12 +29,17 @@ public class PagedAdvancedTableController extends AdvancedTableController implem
 			pagingControls = uiController.loadComponentFromFile(PAGING_CONTROLS_XML, this);
 			uiController.add(mainPanel,pagingControls);			
 	}
+	
+	public void updateTable(){
+		setResults(resultSet.getResultsPage());
+	}
 
 	/**
 	 * action method for left page button
 	 */
 	public void pageLeft(){
-		this.getQueryGenerator().previousPage();
+		this.resultSet.previousPage();
+		this.setResults(resultSet.getResultsPage());
 		updatePagingControls();
 	}
 	
@@ -41,13 +47,16 @@ public class PagedAdvancedTableController extends AdvancedTableController implem
 	 * action method for right page button
 	 */
 	public void pageRight(){
-		this.getQueryGenerator().nextPage();
+		this.resultSet.nextPage();
+		this.setResults(resultSet.getResultsPage());
 		updatePagingControls();
 	}
 	
-	private void updatePagingControls(){
-		System.out.println(this.getQueryGenerator().getTotalResults());
-		if(getQueryGenerator().getTotalResults() == 0){
+	
+	//TODO: this should be private
+	public void updatePagingControls(){
+		System.out.println(this.resultSet.getTotalResults());
+		if(resultSet.getTotalResults() == 0){
 			uiController.setEnabled(uiController.find(pagingControls, "rightPageButton"),false);
 			uiController.setEnabled(uiController.find(pagingControls, "leftPageButton"),false);
 			uiController.setText(uiController.find(pagingControls, "resultsLabel"),getI18NString("pagingcontrols.no.results"));
@@ -55,10 +64,10 @@ public class PagedAdvancedTableController extends AdvancedTableController implem
 		}
 		
 		//set the paging buttons
-		uiController.setEnabled(uiController.find(pagingControls, "leftPageButton"),getQueryGenerator().hasPreviousPage());
-		uiController.setEnabled(uiController.find(pagingControls, "rightPageButton"),getQueryGenerator().hasNextPage());
-		String pagingLabel = getI18NString("pagingcontrols.results")+" " + getQueryGenerator().getFirstResultOnPage() + " "+getI18NString("pagingcontrols.to")+" " +
-							 getQueryGenerator().getLastResultOnPage() + " "+getI18NString("pagingcontrols.of")+" " + getQueryGenerator().getTotalResults();
+		uiController.setEnabled(uiController.find(pagingControls, "leftPageButton"),resultSet.hasPreviousPage());
+		uiController.setEnabled(uiController.find(pagingControls, "rightPageButton"),resultSet.hasNextPage());
+		String pagingLabel = getI18NString("pagingcontrols.results")+" " + getResultsManager().getFirstResultOnPage() + " "+getI18NString("pagingcontrols.to")+" " +
+					resultSet.getLastResultOnPage() + " "+getI18NString("pagingcontrols.of")+" " + resultSet.getTotalResults();
 		uiController.setText(uiController.find(pagingControls, "resultsLabel"),pagingLabel);
 	}
 
@@ -68,16 +77,16 @@ public class PagedAdvancedTableController extends AdvancedTableController implem
 		updatePagingControls();
 	}
 
-	public void setQueryGenerator(QueryGenerator queryGenerator) {
-		this.queryGenerator = queryGenerator;
-	}
-
-	public QueryGenerator getQueryGenerator() {
-		return queryGenerator;
-	}
-	
 	public Object getMainPanel(){
 		return mainPanel;
+	}
+
+	public void setResultsManager(PagedResultSet resultsManager) {
+		this.resultSet = resultsManager;
+	}
+
+	public PagedResultSet getResultsManager() {
+		return resultSet;
 	}
 
 }
