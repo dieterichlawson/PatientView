@@ -73,7 +73,7 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 
 	// i18n strings
 	private static final String NAME_COLUMN = "medic.common.labels.name";
-	private static final String AGE_COLUMN = "medic.common.labels.age";
+	private static final String BDAY_COLUMN = "thinletformfields.birthdate";
 	private static final String GENDER_COLUMN = "medic.common.labels.gender";
 	private static final String PHONE_NUMBER_COLUMN = "medic.common.labels.phone.number";
 	private static final String SENDER_COLUMN = "medic.common.labels.sender";
@@ -157,7 +157,7 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 			//initialize the results table
 			tableController = new AdvancedTableController(this, uiController, uiController.find(mainTab, "resultTable"));
 			String nameLabel= getI18NString(NAME_COLUMN);
-			String ageLabel=getI18NString(AGE_COLUMN);
+			String bdayLabel=getI18NString(BDAY_COLUMN);
 			String genderLabel=getI18NString(GENDER_COLUMN);
 			String phoneNumberLabel=getI18NString(PHONE_NUMBER_COLUMN);
 			String chwLabel=getI18NString(CHW_COLUMN);
@@ -171,8 +171,8 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 			String formNameLabel = getI18NString(FORM_NAME_COLUMN);
 			String fieldLabelLabel =getI18NString(FIELD_LABEL_COLUMN);
 			String responseLabel =getI18NString(RESPONSE_COLUMN);
-			tableController.putHeader(CommunityHealthWorker.class, new String[]{nameLabel,ageLabel,genderLabel, phoneNumberLabel}, new String[]{"getName", "getStringAge","getStringGender","getPhoneNumber"});
-			tableController.putHeader(Patient.class, new String[]{nameLabel,ageLabel,genderLabel, chwLabel}, new String[]{"getName", "getStringAge","getStringGender","getCHWName"});
+			tableController.putHeader(CommunityHealthWorker.class, new String[]{nameLabel,bdayLabel,genderLabel, phoneNumberLabel}, new String[]{"getName", "getStringBirthdate","getStringGender","getPhoneNumber"});
+			tableController.putHeader(Patient.class, new String[]{nameLabel,bdayLabel,genderLabel, chwLabel}, new String[]{"getName", "getStringBirthdate","getStringGender","getCHWName"});
 			tableController.putHeader(MedicForm.class, new String[]{nameLabel}, new String[]{"getName"});
 			tableController.putHeader(PersonAttribute.class, new String[]{labelLabel}, new String[]{"getLabel"});
 			tableController.putHeader(PersonAttributeResponse.class, new String[]{labelLabel, senderLabel,subjectLabel, dateSubmittedLabel,responseLabel}, new String[]{"getAttributeLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"});
@@ -263,6 +263,7 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	public void pageLeft() {
 		this.getQueryGenerator().previousPage();
 		updatePagingControls();
+		simpleSearch.refresh();
 	}
 
 	/**
@@ -271,6 +272,7 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	public void pageRight() {
 		this.getQueryGenerator().nextPage();
 		updatePagingControls();
+		simpleSearch.refresh();
 	}
 
 	private void updatePagingControls() {
