@@ -12,7 +12,7 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormRespon
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate;
 import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
-import net.frontlinesms.plugins.patientview.ui.detailview.FormResponseDetailViewPanelController;
+import net.frontlinesms.plugins.patientview.ui.detailview.panels.FormResponseDetailViewPanelController;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 

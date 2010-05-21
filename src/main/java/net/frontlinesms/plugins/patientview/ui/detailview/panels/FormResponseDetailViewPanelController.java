@@ -1,4 +1,4 @@
-package net.frontlinesms.plugins.patientview.ui.detailview;
+package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
@@ -14,6 +14,7 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldR
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
+import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
@@ -43,10 +44,6 @@ public class FormResponseDetailViewPanelController implements DetailViewPanelCon
 	
 	public Class getEntityClass() {
 		return MedicFormResponse.class;
-	}
-
-	public HashMap<String, String> getFurtherOptions() {
-		return null;
 	}
 
 	public Object getPanel() {

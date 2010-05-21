@@ -1,4 +1,4 @@
-package net.frontlinesms.plugins.patientview.ui.detailview;
+package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
@@ -8,6 +8,7 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
 import net.frontlinesms.plugins.patientview.ui.dashboard.PatientDashboard;
 import net.frontlinesms.plugins.patientview.ui.dashboard.PersonDashboard;
+import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
 import net.frontlinesms.plugins.patientview.ui.dialogs.SubmitFormDialog;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
@@ -47,12 +48,6 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	}
 	public Class getEntityClass() {
 		return Patient.class;
-	}
-
-	public HashMap<String, String> getFurtherOptions() {
-		HashMap<String,String> furtherOptions = new HashMap<String,String>();
-		furtherOptions.put(getI18NString(SUBMIT_FORM_FOR_PATIENT), "submitForm()");
-		return furtherOptions;
 	}
 
 	public Object getPanel() {

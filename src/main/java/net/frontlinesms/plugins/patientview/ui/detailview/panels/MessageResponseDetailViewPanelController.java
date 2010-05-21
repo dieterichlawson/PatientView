@@ -1,9 +1,10 @@
-package net.frontlinesms.plugins.patientview.ui.detailview;
+package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
 import java.text.DateFormat;
 import java.util.HashMap;
 
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
+import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
@@ -26,10 +27,6 @@ public class MessageResponseDetailViewPanelController implements
 	
 	public Class<MedicMessageResponse> getEntityClass() {
 		return MedicMessageResponse.class;
-	}
-
-	public HashMap<String, String> getFurtherOptions() {
-		return null;
 	}
 
 	public Object getPanel() {

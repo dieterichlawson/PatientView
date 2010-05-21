@@ -36,12 +36,4 @@ public interface DetailViewPanelController<E> {
 	 * Notifies the object just before it disappears
 	 */
 	public void viewWillDisappear();
-	
-	/**
-	 * Return a String/String map that represents button titles and button method calls.
-	 * These buttons will be placed in the Further Options box below the detail view
-	 * panel
-	 * @return
-	 */
-	public HashMap<String,String> getFurtherOptions();
 }

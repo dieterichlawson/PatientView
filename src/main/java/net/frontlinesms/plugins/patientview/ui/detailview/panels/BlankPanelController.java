@@ -1,6 +1,8 @@
-package net.frontlinesms.plugins.patientview.ui.detailview;
+package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
 import java.util.HashMap;
+
+import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
 
 public class BlankPanelController implements DetailViewPanelController<Object>{
 

@@ -1,10 +1,11 @@
-package net.frontlinesms.plugins.patientview.ui.detailview;
+package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
 import java.util.HashMap;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
+import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 import thinlet.Thinlet;
@@ -29,14 +30,7 @@ public class FormDetailViewPanelController implements DetailViewPanelController<
 	public Class getEntityClass() {
 		return MedicForm.class;
 	}
-
-	/**
-	 * @see net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController#getFurtherOptions()
-	 */
-	public HashMap<String, String> getFurtherOptions() {
-		return null;
-	}
-
+	
 	/**
 	 * @see net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController#getPanel()
 	 */

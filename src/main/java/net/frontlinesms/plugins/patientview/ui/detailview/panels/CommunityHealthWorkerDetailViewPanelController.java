@@ -1,13 +1,10 @@
-package net.frontlinesms.plugins.patientview.ui.detailview;
+package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
-
-import java.util.HashMap;
-
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
 import net.frontlinesms.plugins.patientview.ui.dashboard.CommunityHealthWorkerDashboard;
-import net.frontlinesms.plugins.patientview.ui.dashboard.PatientDashboard;
+import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonAttributePanel;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
@@ -17,8 +14,7 @@ import org.springframework.context.ApplicationContext;
 
 import thinlet.Thinlet;
 
-public class CommunityHealthWorkerDetailViewPanelController implements
-		DetailViewPanelController<CommunityHealthWorker> {
+public class CommunityHealthWorkerDetailViewPanelController implements DetailViewPanelController<CommunityHealthWorker> {
 
 	private static final String EDIT_CHW_ATTRIBUTES = "detailview.buttons.edit.chw.attributes";
 	private static final String SAVE_CHW_ATTRIBUTES = "detailview.buttons.save";
@@ -39,18 +35,6 @@ public class CommunityHealthWorkerDetailViewPanelController implements
 	}
 	public Class getEntityClass() {
 		return CommunityHealthWorker.class;
-	}
-
-	/**
-	 * Returns a string-string map describing the further options buttons.
-	 * In this case, the only further option is a 'message this chw' option
-	 * that allows the user to send that chw a text message.
-	 * @see net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController#getFurtherOptions()
-	 */
-	public HashMap<String, String> getFurtherOptions() {
-		HashMap<String,String> fOptions = new HashMap<String,String>();
-		fOptions.put("Message this CHW", "messageCHWButtonClicked");
-		return null;
 	}
 
 	public Object getPanel() {
