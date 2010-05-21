@@ -55,6 +55,9 @@ public class FormResponseDetailViewPanelController implements DetailViewPanelCon
 
 	public void viewWillAppear(MedicFormResponse response) {
 		//set the header information
+		if(response == null){
+			return;
+		}
 		String form = getI18NString(FORM) + ": " + response.getForm().getName();
 		String submitter;
 		try{
