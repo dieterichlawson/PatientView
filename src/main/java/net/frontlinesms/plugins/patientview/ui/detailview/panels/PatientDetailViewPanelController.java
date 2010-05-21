@@ -1,13 +1,9 @@
 package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
-
-import java.util.HashMap;
-
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
 import net.frontlinesms.plugins.patientview.ui.dashboard.PatientDashboard;
-import net.frontlinesms.plugins.patientview.ui.dashboard.PersonDashboard;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
 import net.frontlinesms.plugins.patientview.ui.dialogs.SubmitFormDialog;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
@@ -26,11 +22,10 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	private static final String SAVE_PATIENT_ATTRIBUTES = "detailview.buttons.save";
 	private static final String CANCEL = "detailview.buttons.cancel";
 	private static final String SEE_MORE = "detailview.buttons.see.more";
-	private static final String SUBMIT_FORM_FOR_PATIENT = "detailview.buttons.submit.form.patient";
 	private static final String EDIT_ATTRIBUTE_ICON = "/icons/user_edit.png";
 	private static final String SAVE_ICON = "/icons/tick.png";
 	private static final String CANCEL_ICON = "/icons/cross.png";
-	private static final String EXPAND_DETAIL_VIEW_ICON = "/icons/folder_user.png";
+	private static final String EXPAND_DETAIL_VIEW_ICON = "/icons/patient_file.png";
 	private Object mainPanel;
 	private Patient currentPatient;
 	private UiGeneratorController uiController;
