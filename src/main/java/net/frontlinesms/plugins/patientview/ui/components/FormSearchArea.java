@@ -25,7 +25,7 @@ public class FormSearchArea implements ThinletUiEventHandler{
 	
 	protected List<MedicForm> results;
 	
-	private static final String SEARCH_AREA_XML = "/ui/plugins/patientview/searchPanel.xml";
+	private static final String SEARCH_AREA_XML = "/ui/plugins/patientview/components/searchPanel.xml";
 	
 	public FormSearchArea(UiGeneratorController uiController, ApplicationContext appCon, SearchAreaDelegate<MedicForm> delegate){
 		this.uiController = uiController;

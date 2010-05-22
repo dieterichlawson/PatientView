@@ -34,7 +34,7 @@ public abstract class PersonPanel<E extends Person> implements
 
 	protected PersonPanelDelegate delegate;
 
-	private static String PERSON_PANEL_XML = "/ui/plugins/patientview/AtAGlance/person_AAG.xml";
+	private static String PERSON_PANEL_XML = "/ui/plugins/patientview/components/personPanel.xml";
 	// i18n constants
 	private static final String BDAY_LABEL = "thinletformfields.birthdate";
 	private static final String ID_LABEL = "medic.common.labels.id";

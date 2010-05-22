@@ -27,7 +27,7 @@ public class CsvImporterPanelController implements AdministrationTabPanel, Thinl
 	
 	private UiGeneratorController uiController;
 	
-	private static final String UI_FILE_XML = "/ui/plugins/patientview/csvImportTab.xml";
+	private static final String UI_FILE_XML = "/ui/plugins/patientview/administration/dataimport/dataImportAdministrationPanel.xml";
 	
 	
 	public CsvImporterPanelController(UiGeneratorController uiController, ApplicationContext appCon){

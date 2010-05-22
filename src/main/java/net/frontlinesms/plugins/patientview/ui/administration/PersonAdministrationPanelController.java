@@ -43,7 +43,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	protected static final int ADD_INDEX= 0;
 	protected static final int EDIT_INDEX= 1;
 	protected static final int REMOVE_INDEX= 2;
-	private String UI_FILE_MANAGE_PERSON_PANEL = "/ui/plugins/patientview/admintab/search_action_panel.xml";
+	private String UI_FILE_MANAGE_PERSON_PANEL = "/ui/plugins/patientview/administration/personAdministrationPanel.xml";
 	
 	
 	public PersonAdministrationPanelController(UiGeneratorController uiController, ApplicationContext appCon){

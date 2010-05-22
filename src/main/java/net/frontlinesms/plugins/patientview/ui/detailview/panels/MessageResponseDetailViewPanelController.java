@@ -1,7 +1,6 @@
 package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
 import java.text.DateFormat;
-import java.util.HashMap;
 
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
@@ -15,7 +14,7 @@ public class MessageResponseDetailViewPanelController implements
 	private UiGeneratorController uiController;
 	private Object mainPanel;
 	
-	private static final String MESSAGE_RESPONSE_PANEL = "/ui/plugins/patientview/AtAGlance/form_AAG.xml";
+	private static final String MESSAGE_RESPONSE_PANEL = "/ui/plugins/patientview/components/formPanel.xml";
 	//i18n
 	private static final String SUBMITTED_BY = "detailview.labels.submitted.by";
 	private static final String ON = "detailview.labels.on";

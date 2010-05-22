@@ -42,7 +42,7 @@ public class CandidateSearchPanel implements ThinletUiEventHandler, AdvancedTabl
 	
 	private FormMatcher matcher;
 	
-	private static final String UI_FILE= "/ui/plugins/patientview/candidateSearchPanel.xml";
+	private static final String UI_FILE= "/ui/plugins/patientview/administration/responsemapping/candidateSearchPanel.xml";
 	
 	public CandidateSearchPanel(UiGeneratorController uiController, ApplicationContext appCon, MedicFormResponse response){
 		this.uiController = uiController;

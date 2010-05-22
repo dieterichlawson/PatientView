@@ -74,7 +74,7 @@ public class SecurityPanelController implements AdministrationTabPanel,
 	}
 
 	// Files
-	private final String XML_FILE = "/ui/plugins/patientview/admintab/security_settings.xml";
+	private final String XML_FILE = "/ui/plugins/patientview/administration/security/securitySettingsAdministrationPanel.xml";
 
 	// I18N Strings
 	private final String LOCKOUT_DURATION = "admin.security.lockout.duration";

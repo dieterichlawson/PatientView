@@ -28,7 +28,7 @@ public class FormResponseDetailViewPanelController implements DetailViewPanelCon
 	private MedicFormFieldDao formFieldDao;
 	private Object mainPanel;
 	
-	private static final String FORM_RESPONSE_PANEL = "/ui/plugins/patientview/AtAGlance/form_AAG.xml";
+	private static final String FORM_RESPONSE_PANEL = "/ui/plugins/patientview/components/formPanel.xml";
 	//i18n
 	private static final String FORM = "medic.common.form";
 	private static final String SUBJECT = "medic.common.labels.subject";

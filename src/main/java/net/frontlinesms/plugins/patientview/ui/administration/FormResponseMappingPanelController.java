@@ -34,7 +34,7 @@ public class FormResponseMappingPanelController implements AdministrationTabPane
 	private FormMappingResultSet resultSet;
 	private FormMatcher matcher;
 	
-	private static final String UI_FILE ="/ui/plugins/patientview/admintab/manageFormResponsesPanel.xml";
+	private static final String UI_FILE ="/ui/plugins/patientview/administration/responsemapping/formResponseMappingAdministrationPanel.xml";
 	
 	public FormResponseMappingPanelController(UiGeneratorController uiController, ApplicationContext appCon) {
 		this.uiController = uiController;

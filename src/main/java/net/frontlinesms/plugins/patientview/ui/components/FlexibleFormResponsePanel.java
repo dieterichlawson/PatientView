@@ -33,7 +33,7 @@ public class FlexibleFormResponsePanel implements ThinletUiEventHandler{
 	
 	private UiGeneratorController uiController;
 	private ApplicationContext appCon;
-	private static final String UI_FILE= "/ui/plugins/patientview/flexibleFormResponsePanel.xml";
+	private static final String UI_FILE= "/ui/plugins/patientview/components/flexibleFormResponsePanel.xml";
 	
 	private MedicFormResponse response;
 	public FlexibleFormResponsePanel(UiGeneratorController uiController, ApplicationContext appCon, MedicFormResponse response){

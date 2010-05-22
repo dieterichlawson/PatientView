@@ -12,7 +12,7 @@ public class AdditionalInfoPanel {
 	
 	private int currentColumn =1;
 	
-	private static final String UI_FILE_XML = "/ui/plugins/patientview/additionalInfoPanel.xml";
+	private static final String UI_FILE_XML = "/ui/plugins/patientview/administration/dataimport/additionalInfoPanel.xml";
 	
 	public AdditionalInfoPanel(UiGeneratorController uiController){
 		this.uiController = uiController;

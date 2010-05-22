@@ -6,7 +6,6 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
 import net.frontlinesms.plugins.patientview.ui.dashboard.PatientDashboard;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
-import net.frontlinesms.plugins.patientview.ui.dialogs.SubmitFormDialog;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonAttributePanel;
@@ -48,10 +47,6 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 
 	public Object getPanel() {
 		return mainPanel;
-	}
-	
-	public void submitForm(){
-		SubmitFormDialog sfd = new SubmitFormDialog(uiController,appCon,null,currentPatient);
 	}
 
 	public void viewWillAppear(Patient p) {

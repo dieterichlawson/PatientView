@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationContext;
 
 public abstract class Dashboard implements ThinletUiEventHandler{
 
-	private static final String UI_FILE = "/ui/plugins/patientview/expanded_detail_view.xml";
+	private static final String UI_FILE = "/ui/plugins/patientview/dashboard/dashboard.xml";
 
 	//cached thinlet objects
 	protected Object mainPanel;

@@ -13,7 +13,7 @@ public class PagedAdvancedTableController extends AdvancedTableController implem
 	
 	protected Object pagingControls;
 	protected Object mainPanel;
-	private final static String PAGING_CONTROLS_XML = "/ui/plugins/patientview/pagingControls.xml";
+	private final static String PAGING_CONTROLS_XML = "/ui/plugins/patientview/components/pagingControls.xml";
 		
 	public PagedAdvancedTableController(AdvancedTableActionDelegate delegate,UiGeneratorController uiController, Object panel) {
 			super(delegate, uiController);

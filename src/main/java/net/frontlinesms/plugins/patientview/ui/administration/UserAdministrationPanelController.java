@@ -26,7 +26,7 @@ public class UserAdministrationPanelController extends PersonAdministrationPanel
 	/**
 	 * The path to the .xml widget that appears when a user's password is reset.
 	 */
-	private String XML_PASSWORD_RESET_NOTICE = "/ui/plugins/patientview/admintab/password_reset_notice.xml";
+	private String XML_PASSWORD_RESET_NOTICE = "/ui/plugins/patientview/administration/security/passwordResetDialog.xml";
 
 	private static final String ADD_ICON = "/icons/doctor_add_female.png";
 	private static final String EDIT_ICON = "/icons/doctor_edit_female.png";

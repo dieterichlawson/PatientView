@@ -32,7 +32,7 @@ import thinlet.Thinlet;
 
 public class SubmitFormTab extends TabController implements ThinletUiEventHandler, SearchAreaDelegate<MedicForm>{
 	
-	private static final String SUBMIT_FORM_DIALOG = "/ui/plugins/patientview/submit_form_dialog.xml";
+	private static final String SUBMIT_FORM_DIALOG = "/ui/plugins/patientview/submitFormPanel.xml";
 	
 	/**Thinlet Components**/
 	private Object formPanel;

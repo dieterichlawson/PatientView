@@ -33,7 +33,7 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 	private static final String FIELDS_ON_FORM_PREFIX = "admin.forms.fields.on.form.prefix";
 	private static final String FORM_ALREADY_RESPONDED_TO_DIALG = "admin.forms.form.already.responded.to.dialog";
 	
-	private static final String FORM_PANEL_XML = "/ui/plugins/patientview/admintab/manageFormsPanel.xml";
+	private static final String FORM_PANEL_XML = "/ui/plugins/patientview/administration/formAdministrationPanel.xml";
 
 	private UiGeneratorController uiController;
 	private ApplicationContext appCon;

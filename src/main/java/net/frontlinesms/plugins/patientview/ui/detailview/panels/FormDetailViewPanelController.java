@@ -1,7 +1,5 @@
 package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
-import java.util.HashMap;
-
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
@@ -15,7 +13,7 @@ public class FormDetailViewPanelController implements DetailViewPanelController<
 	private UiGeneratorController uiController;
 	private Object mainPanel;
 	
-	private static final String FORM_PANEL = "/ui/plugins/patientview/AtAGlance/form_AAG.xml";
+	private static final String FORM_PANEL = "/ui/plugins/patientview/components/formPanel.xml";
 	
 	public FormDetailViewPanelController(UiGeneratorController uiController){
 		this.uiController = uiController;

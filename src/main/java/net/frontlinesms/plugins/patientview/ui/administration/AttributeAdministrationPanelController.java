@@ -58,7 +58,7 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 	private MedicFormFieldDao formFieldDao;
 	
 	//resource files containing ui components
-	private static final String UI_FILE_AAG_VIEW_EDITOR = "/ui/plugins/patientview/AtAGlance/AAG_view_editor.xml";
+	private static final String UI_FILE_AAG_VIEW_EDITOR = "/ui/plugins/patientview/administration/attributeAdministrationPanel.xml";
 	
 	/** the Ui Controller**/
 	private UiGeneratorController uiController;

@@ -19,7 +19,7 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 	private Object splitPanel;
 	
 	/**the Thinlet XML files used for this tab **/
-	private static final String UI_FILE_MAINTAB =  "/ui/plugins/patientview/admintab/admin_tab.xml";
+	private static final String UI_FILE_MAINTAB =  "/ui/plugins/patientview/administration/administrationTab.xml";
 	private static final String TASK_LIST = "tasklist";
 	private static final String SPLIT_PANEL = "splitpanel";
 	private static final String ACTION_PANEL = "actionPanel";
