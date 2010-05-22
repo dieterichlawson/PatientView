@@ -226,4 +226,8 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 	public void resultsChanged() {/*do nothing*/}
 
 	public void selectionChanged(Object selectedObject) {/*do nothing*/}
+	
+	public String getIconPath() {
+		return "/icons/patient_data_card.png";
+	}
 }

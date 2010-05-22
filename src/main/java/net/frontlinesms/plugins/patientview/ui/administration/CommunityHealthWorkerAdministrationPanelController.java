@@ -18,6 +18,10 @@ public class CommunityHealthWorkerAdministrationPanelController extends PersonAd
 
 	CommunityHealthWorkerDao chwDao;
 	
+	private static final String ADD_ICON = "/icons/big_user_add.png";
+	private static final String EDIT_ICON = "/icons/big_user_edit.png";
+	private static final String DELETE_ICON = "/icons/big_user_delete.png";
+	
 	public CommunityHealthWorkerAdministrationPanelController(UiGeneratorController uiController, ApplicationContext appCon) {
 		super(uiController, appCon);
 		chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
@@ -46,6 +50,19 @@ public class CommunityHealthWorkerAdministrationPanelController extends PersonAd
 	@Override
 	protected PersonPanel getPersonPanelForPerson(Person person) {
 		return new CommunityHealthWorkerPanel(uiController,appCon,(CommunityHealthWorker) person);
+	}
+
+	public String getIconPath() {
+		return "/icons/big_users.png";
+	}
+
+	@Override
+	protected String[] getIcons() {
+		String[] icons = new String[3];
+		icons[ADD_INDEX] = ADD_ICON;
+		icons[EDIT_INDEX] = EDIT_ICON;
+		icons[REMOVE_INDEX] = DELETE_ICON;
+		return icons;
 	}
 
 }

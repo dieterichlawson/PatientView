@@ -120,4 +120,8 @@ public class FormResponseMappingPanelController implements AdministrationTabPane
 	public void notify(FrontlineEventNotification notification) {
 		tableController.updateTable();
 	}
+
+	public String getIconPath() {
+		return "/icons/map_form.png";
+	}
 }

@@ -17,6 +17,10 @@ public class PatientAdministrationPanelController extends PersonAdministrationPa
 
 	private PatientDao patientDao;
 	
+	private static final String ADD_ICON = "/icons/patient_add_male.png";
+	private static final String EDIT_ICON = "/icons/patient_edit_male.png";
+	private static final String DELETE_ICON = "/icons/patient_delete_male.png";
+	
 	public PatientAdministrationPanelController(UiGeneratorController uiController, ApplicationContext appCon) {
 		super(uiController, appCon);
 		patientDao = (PatientDao) appCon.getBean("PatientDao");
@@ -45,6 +49,19 @@ public class PatientAdministrationPanelController extends PersonAdministrationPa
 	@Override
 	protected PersonPanel getPersonPanelForPerson(Person person) {
 		return new PatientPanel(uiController,appCon,(Patient) person);
+	}
+
+	public String getIconPath() {
+		return "/icons/patients_large.png";
+	}
+	
+	@Override
+	protected String[] getIcons() {
+		String[] icons = new String[3];
+		icons[ADD_INDEX] = ADD_ICON;
+		icons[EDIT_INDEX] = EDIT_ICON;
+		icons[REMOVE_INDEX] = DELETE_ICON;
+		return icons;
 	}
 
 }

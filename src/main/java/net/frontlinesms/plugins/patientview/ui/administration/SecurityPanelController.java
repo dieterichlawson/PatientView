@@ -251,4 +251,8 @@ public class SecurityPanelController implements AdministrationTabPanel,
 		}
 	}
 
+	public String getIconPath() {
+		return "/icons/big_lock.png";
+	}
+
 }

@@ -2,6 +2,7 @@ package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
 import net.frontlinesms.plugins.patientview.ui.dashboard.PatientDashboard;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
@@ -22,7 +23,7 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	private static final String SAVE_PATIENT_ATTRIBUTES = "detailview.buttons.save";
 	private static final String CANCEL = "detailview.buttons.cancel";
 	private static final String SEE_MORE = "detailview.buttons.see.more";
-	private static final String EDIT_ATTRIBUTE_ICON = "/icons/user_edit.png";
+	private static final String EDIT_ATTRIBUTE_ICON = "/icons/patient_edit_";
 	private static final String SAVE_ICON = "/icons/tick.png";
 	private static final String CANCEL_ICON = "/icons/cross.png";
 	private static final String EXPAND_DETAIL_VIEW_ICON = "/icons/patient_file.png";
@@ -83,7 +84,7 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 		}else{
 			uiController.setAction(leftButton, "editButtonClicked", null, this);
 			uiController.setAction(rightButton, "showPatientDashboard", null, this);
-			uiController.setIcon(leftButton, EDIT_ATTRIBUTE_ICON);
+			uiController.setIcon(leftButton, EDIT_ATTRIBUTE_ICON + (currentPatient.getGender() == Gender.MALE?"male.png":"female.png"));
 			uiController.setIcon(rightButton, EXPAND_DETAIL_VIEW_ICON);
 		}
 		uiController.setHAlign(leftButton, Thinlet.LEFT);

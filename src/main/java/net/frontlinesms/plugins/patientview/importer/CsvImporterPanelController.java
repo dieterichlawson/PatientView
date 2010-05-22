@@ -88,4 +88,8 @@ public class CsvImporterPanelController implements AdministrationTabPanel, Thinl
 		uiController.setText(messageList, "");
 	}
 
+	public String getIconPath() {
+		return "/icons/import_data.png";
+	}
+
 }

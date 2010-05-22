@@ -216,4 +216,8 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 		
 	}
 
+	public String getIconPath() {
+		return "/icons/big_form.png";
+	}
+
 }

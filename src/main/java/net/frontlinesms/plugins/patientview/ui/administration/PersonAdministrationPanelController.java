@@ -39,6 +39,10 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	private static final String ADD = "medic.common.labels.add";
 	private static final String REMOVE = "medic.common.labels.remove";
 	private static final String EDIT = "medic.common.labels.edit";
+	
+	protected static final int ADD_INDEX= 0;
+	protected static final int EDIT_INDEX= 1;
+	protected static final int REMOVE_INDEX= 2;
 	private String UI_FILE_MANAGE_PERSON_PANEL = "/ui/plugins/patientview/admintab/search_action_panel.xml";
 	
 	
@@ -59,6 +63,9 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 		uiController.setText(uiController.find(mainPanel,EDIT_BUTTON), getI18NString(EDIT)+ " " + getPersonType());
 		uiController.setAction(uiController.find(mainPanel,EDIT_BUTTON), "editButtonClicked()", null, this);
 		uiController.setAction(uiController.find(mainPanel,ADD_BUTTON), "addButtonClicked()", null, this);
+		uiController.setIcon(uiController.find(mainPanel,ADD_BUTTON), getIcons()[ADD_INDEX]);
+		uiController.setIcon(uiController.find(mainPanel,EDIT_BUTTON), getIcons()[EDIT_INDEX]);
+		uiController.setIcon(uiController.find(mainPanel,REMOVE_BUTTON), getIcons()[REMOVE_INDEX]);
 		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
 	}
 	
@@ -137,4 +144,6 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	public void notify(FrontlineEventNotification event){
 		advancedTableController.setResults(getPeopleForString(uiController.getText(uiController.find(mainPanel, SEARCH_FIELD))));
 	}
+	
+	protected abstract String[] getIcons();
 }

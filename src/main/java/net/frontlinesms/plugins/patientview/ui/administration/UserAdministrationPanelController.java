@@ -21,14 +21,16 @@ import org.springframework.context.ApplicationContext;
  *<code>search_action_panel.xml</code><br/>
  *<code>password_reset_notice.xml</code>
  */
-public class UserAdministrationPanelController extends
-		PersonAdministrationPanelController<User> {
+public class UserAdministrationPanelController extends PersonAdministrationPanelController<User> {
 
 	/**
 	 * The path to the .xml widget that appears when a user's password is reset.
 	 */
 	private String XML_PASSWORD_RESET_NOTICE = "/ui/plugins/patientview/admintab/password_reset_notice.xml";
 
+	private static final String ADD_ICON = "/icons/doctor_add_female.png";
+	private static final String EDIT_ICON = "/icons/doctor_edit_female.png";
+	private static final String DELETE_ICON = "/icons/doctor_delete_female.png";
 	/**
 	 * The notice that appears when a uses's password is reset. This is
 	 * persistant so that multiple copies do not show up if the button is
@@ -109,6 +111,19 @@ public class UserAdministrationPanelController extends
 		Object buttonsPanel = uiController.find(currentPersonPanel
 				.getMainPanel(), PersonPanel.BUTTON_PANEL);
 		uiController.add(buttonsPanel, resetPasswordButton);
+	}
+
+	public String getIconPath() {
+		return "/icons/doctors.png";
+	}
+
+	@Override
+	protected String[] getIcons() {
+		String[] icons = new String[3];
+		icons[ADD_INDEX] = ADD_ICON;
+		icons[EDIT_INDEX] = EDIT_ICON;
+		icons[REMOVE_INDEX] = DELETE_ICON;
+		return icons;
 	}
 
 }

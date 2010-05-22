@@ -12,4 +12,6 @@ public interface AdministrationTabPanel {
 	 * @return the thinlet panel
 	 */
 	public Object getPanel();
+	
+	public String getIconPath();
 }

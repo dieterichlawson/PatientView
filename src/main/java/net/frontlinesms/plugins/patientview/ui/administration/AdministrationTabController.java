@@ -54,6 +54,7 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 		//create all the list items
 		for(AdministrationTabPanel panel: panels){
 			Object listItem = uiController.createListItem(panel.getListItemTitle(), panel.getPanel());
+			uiController.setIcon(listItem, panel.getIconPath());
 			uiController.add(actionList,listItem);
 		}
 		setSelection(0);
