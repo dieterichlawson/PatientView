@@ -11,8 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.OrderBy;
 
+import net.frontlinesms.FrontlineSMS;
+import net.frontlinesms.Utils;
 import net.frontlinesms.plugins.forms.data.domain.FormResponse;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
@@ -22,6 +25,8 @@ import net.frontlinesms.ui.i18n.InternationalisationUtils;
 @DiscriminatorValue(value="form")
 public class MedicFormResponse extends Response{
 
+	private static Logger LOG = Utils.getLogger(MedicFormResponse.class);
+	
 	@ManyToOne(fetch=FetchType.EAGER,cascade={})
 	@JoinColumn(name="form" )
 	private MedicForm form;
@@ -38,12 +43,16 @@ public class MedicFormResponse extends Response{
 		this.subject = subject;
 		this.submitter = submitter;
 		responses = new ArrayList<MedicFormFieldResponse>();
+		LOG.info("Beginning conversion from FSMS form response to PV form fesponse");
+		LOG.info("Form: " + mForm.getName());
 		for(int i = 0; i < mForm.getFields().size(); i++){
+			LOG.info("Creating field #"+i+" . Label: "+ mForm.getFields().get(i).getLabel()+ " Value: "+fr.getResults().get(i).toString());
 			MedicFormFieldResponse mffr = new MedicFormFieldResponse(fr.getResults().get(i).toString(),mForm.getFields().get(i),subject,submitter);
 			mffr.setFormResponse(this);
 			mffr.setPosition(responses.size());
 			responses.add(mffr);
 		}
+		LOG.info("Done creating PV form response");
 	}
 	
 	public MedicFormResponse(MedicForm form, List<MedicFormFieldResponse> responses,Person submitter, Person subject) {

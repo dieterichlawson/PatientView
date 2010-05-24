@@ -4,6 +4,8 @@ public interface CsvDataImporter {
 	
 	public Object getAdditionalOptionsPanel();
 	
+	public Object getInformationPanel();
+	
 	public void importFile(String path);
 	
 	public String getTypeLabel();

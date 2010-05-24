@@ -24,7 +24,7 @@ public class DetailViewController {
 	public DetailViewController(Object panel, UiGeneratorController uiController, ApplicationContext appCon){
 		this.mainPanel = panel;
 		this.uiController = uiController;
-		this.detailViewPanel = uiController.find(mainPanel,"mainDetailPanel");
+		this.detailViewPanel = uiController.find(mainPanel,"detailViewPanel");
 		CommunityHealthWorkerDetailViewPanelController chwPanel = new CommunityHealthWorkerDetailViewPanelController(uiController, appCon);
 		FormDetailViewPanelController formPanel = new FormDetailViewPanelController(uiController);
 	//	FormFieldDetailViewPanelController fieldPanel = new FormFieldDetailViewPanelController(uiController);

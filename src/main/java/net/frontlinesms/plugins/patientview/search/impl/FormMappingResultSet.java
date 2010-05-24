@@ -19,30 +19,23 @@ public class FormMappingResultSet extends PagedResultSet {
 	
 	private static final String QUERY = "from MedicFormResponse fr where fr.subject is";
 	
-	public static enum SearchState{
-		MAPPED,
-		UNMAPPED,
-		ALL;
-	}
-	
-	private SearchState state;
+	private boolean searchingMapped;
 	
 	public FormMappingResultSet(ApplicationContext appCon){
 		//this.responseDao = (MedicFormResponseDao) appCon.getBean("MedicFormResponseDao");
 		this.sessionFactory = (SessionFactory) appCon.getBean("sessionFactory");
-		super.pageSize=17;
+		super.pageSize=30;
+		setSearchingMapped(false);
 	}
 	@Override
 	public List getResultsPage() {
 		int startIndex = currentPage * pageSize;
 		Session session = sessionFactory.openSession();
 		String query;
-		if(state == SearchState.MAPPED){
-			query = QUERY + " not null order by dateSubmitted desc"; 
-		}else if(state == SearchState.UNMAPPED){
-			query = QUERY + " null order by dateSubmitted desc";
+		if(isSearchingMapped()){
+			query = QUERY + " not null and fr.submitter.class = 'chw'"; 
 		}else{
-			query = "from MedicFormResponse  order by dateSubmitted desc";
+			query = QUERY + " null order by dateSubmitted desc";
 		}
 		results = session.createQuery(query).setFirstResult(startIndex).setMaxResults(pageSize).list();
 		super.setTotalResults(((Long) session.createQuery("select count(*) " + query).uniqueResult()).intValue());
@@ -57,13 +50,10 @@ public class FormMappingResultSet extends PagedResultSet {
 	public void refresh() {
 		getResultsPage();
 	}
-	
-	public void setSearchState(SearchState state) {
-		this.state = state;
+	public void setSearchingMapped(boolean searchingMapped) {
+		this.searchingMapped = searchingMapped;
 	}
-	
-	public SearchState getState() {
-		return state;
+	public boolean isSearchingMapped() {
+		return searchingMapped;
 	}
-
 }

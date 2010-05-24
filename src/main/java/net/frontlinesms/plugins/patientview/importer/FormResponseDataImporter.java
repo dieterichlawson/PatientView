@@ -65,11 +65,18 @@ public class FormResponseDataImporter implements CsvDataImporter{
 		validator = new FormResponseCsvValidator(appCon);
 	}
 	
+	public Object getInformationPanel(){
+		Object panel = uiController.createPanel("");
+		uiController.setColumns(panel, 1);
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.labels.column") + " 1: "+getI18NString("medic.importer.forms.id.info")));
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.forms.remaining.columns") + " " +getI18NString("medic.importer.forms.form.response.data")));
+		return panel;
+	}
 	public Object getAdditionalOptionsPanel() {
 		Object panel = uiController.createPanel("");
-		uiController.setGap(panel, 5);
-		uiController.setWeight(panel, 1, 1);
-		uiController.setColumns(panel,2);
+		uiController.setColumns(panel,3);
+		uiController.setWeight(panel, 1, 0);
+		uiController.setGap(panel,5);
 		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.import.form.select")));
 		formComboBox=  uiController.create(Thinlet.COMBOBOX);
 		uiController.setWeight(formComboBox, 1, 0);
@@ -81,12 +88,9 @@ public class FormResponseDataImporter implements CsvDataImporter{
 			}
 		}
 		uiController.add(panel,formComboBox);
-		AdditionalInfoPanel infoPanel = new AdditionalInfoPanel(uiController);
-		infoPanel.addLine(getI18NString("medic.importer.forms.id.info"));
-		uiController.add(infoPanel.getMainPanel(),uiController.createLabel(getI18NString("medic.importer.forms.remaining.columns")));
-		uiController.add(infoPanel.getMainPanel(),uiController.createLabel(getI18NString("medic.importer.forms.form.response.data")));
-		uiController.setColspan(infoPanel.getMainPanel(), 2);
-		uiController.add(panel,infoPanel.getMainPanel());
+		Object spacer = uiController.createLabel("");
+		uiController.setWeight(spacer, 2, 0);
+		uiController.add(panel,spacer);
 		return panel;
 	}
 

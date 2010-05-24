@@ -22,8 +22,8 @@
             	<button name="rightPageButton" icon="/icons/right.png" action="pageRight()"/>
             </panel> 
         </panel>
-        <panel  columns="1" gap="7" weightx="1" halign="fill" left="5" name="detailViewPanel">
-            <panel border="true" name="mainDetailPanel" weightx="1" weighty="5" halign="fill" columns="1" gap="5" left ="5" right="5" bottom="5" top="5" scrollable="true"/>
+        <panel border="true" name="detailViewPanel" weightx="1" weighty="1" halign="fill" columns="1" gap="5" left ="5" right="5" bottom="5" top="5" scrollable="true">
+        	<label halign="center" text="i18n.detailview.null.selection.message" valign="center" weightx="1" weighty="1"/>
         </panel>
     </splitpane>
   </panel>

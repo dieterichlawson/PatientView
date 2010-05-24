@@ -16,10 +16,16 @@ import thinlet.Thinlet;
 
 public class CommunityHealthWorkerDetailViewPanelController implements DetailViewPanelController<CommunityHealthWorker> {
 
-	private static final String EDIT_CHW_ATTRIBUTES = "detailview.buttons.edit.chw.attributes";
+	private static final String EDIT_CHW_ATTRIBUTES = "detailview.buttons.edit.attributes";
 	private static final String SAVE_CHW_ATTRIBUTES = "detailview.buttons.save";
 	private static final String SEE_MORE = "detailview.buttons.see.more";
 	private static final String CANCEL = "detailview.buttons.cancel";
+	private static final String EDIT_ATTRIBUTE_ICON = "/icons/big_user_edit.png";
+	private static final String SAVE_ICON = "/icons/tick.png";
+	private static final String CANCEL_ICON = "/icons/cross.png";
+	private static final String EXPAND_DETAIL_VIEW_ICON = "/icons/patient_file.png";
+	
+	
 	private Object mainPanel;
 	private UiGeneratorController uiController;
 	private ApplicationContext appCon;
@@ -72,10 +78,14 @@ public class CommunityHealthWorkerDetailViewPanelController implements DetailVie
 		Object rightButton = uiController.createButton(!inEditingMode?getI18NString(SEE_MORE):getI18NString(CANCEL));
 		if(inEditingMode){
 			uiController.setAction(leftButton, "saveButtonClicked", null, this);
+			uiController.setIcon(leftButton, SAVE_ICON);
 			uiController.setAction(rightButton, "cancelButtonClicked", null, this);
+			uiController.setIcon(rightButton, CANCEL_ICON);
 		}else{
 			uiController.setAction(leftButton, "editButtonClicked", null, this);
+			uiController.setIcon(leftButton, EDIT_ATTRIBUTE_ICON);
 			uiController.setAction(rightButton, "showCHWDashboard", null, this);
+			uiController.setIcon(rightButton, EXPAND_DETAIL_VIEW_ICON);
 		}
 		uiController.setHAlign(leftButton, Thinlet.LEFT);
 		uiController.setVAlign(leftButton, Thinlet.BOTTOM);

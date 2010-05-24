@@ -44,13 +44,19 @@ public class PatientDataImporter implements CsvDataImporter{
 	}
 	
 	public Object getAdditionalOptionsPanel() {
-		AdditionalInfoPanel infoPanel = new AdditionalInfoPanel(uiController);
+		return uiController.createPanel("");
+	}
+	
+	
+	public Object getInformationPanel() {
+		Object panel = uiController.createPanel("");
+		uiController.setColumns(panel, 1);
 		String patient = getI18NString("medic.common.patient");
-		infoPanel.addLine(patient+ " " + getI18NString("simplesearch.fields.name"));
-		infoPanel.addLine(patient+ " " + getI18NString("simplesearch.fields.birthdate")+" ("+getI18NString(FrontlineSMSConstants.DATEFORMAT_YMD)+")");
-		infoPanel.addLine(patient+ " " + getI18NString("simplesearch.fields.gender")+" (" +getI18NString("medic.common.male")+", " +getI18NString("medic.common.female")+", or " +getI18NString("medic.common.transgender") +")");
-		infoPanel.addLine(getI18NString("medic.importer.patient.chw.info"));
-		return infoPanel.getMainPanel();
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.labels.column") + " 1: "+patient+ " " + getI18NString("simplesearch.fields.name")));
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.labels.column") + " 2: "+patient+ " " + getI18NString("simplesearch.fields.birthdate")+" ("+getI18NString(FrontlineSMSConstants.DATEFORMAT_YMD)+")"));
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.labels.column") + " 3: "+patient+ " " + getI18NString("simplesearch.fields.gender")+" (" +getI18NString("medic.common.male")+", " +getI18NString("medic.common.female")+", or " +getI18NString("medic.common.transgender") +")"));
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.labels.column") + " 4: "+getI18NString("medic.importer.patient.chw.info")));
+		return panel;
 	}
 
 	public void importFile(String path) {
@@ -116,5 +122,6 @@ public class PatientDataImporter implements CsvDataImporter{
 	public String getTypeLabel() {
 		return "Patients";
 	}
+
 
 }

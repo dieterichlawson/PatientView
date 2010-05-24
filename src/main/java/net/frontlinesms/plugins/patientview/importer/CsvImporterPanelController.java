@@ -26,6 +26,7 @@ public class CsvImporterPanelController implements AdministrationTabPanel, Thinl
 	private ApplicationContext appContext;
 	
 	private UiGeneratorController uiController;
+	private Object infoPanel;
 	
 	private static final String UI_FILE_XML = "/ui/plugins/patientview/administration/dataimport/dataImportAdministrationPanel.xml";
 	
@@ -41,6 +42,7 @@ public class CsvImporterPanelController implements AdministrationTabPanel, Thinl
 		messageList = uiController.find(mainPanel,"messageArea");
 		fileTextField = uiController.find(mainPanel,"pathField");
 		additionalOptionsPanel= uiController.find(mainPanel,"additionalOptionsPanel");
+		infoPanel = uiController.find(mainPanel,"infoPanel");
 		dataTypeComboBox = uiController.find(mainPanel,"dataTypeComboBox");
 
 		//initialize the importers
@@ -66,8 +68,10 @@ public class CsvImporterPanelController implements AdministrationTabPanel, Thinl
 	
 	public void datatypeChanged(){
 		uiController.removeAll(additionalOptionsPanel);
+		uiController.removeAll(infoPanel);
 		CsvDataImporter importer = uiController.getAttachedObject(uiController.getSelectedItem(dataTypeComboBox),CsvDataImporter.class);
 		uiController.add(additionalOptionsPanel,importer.getAdditionalOptionsPanel());
+		uiController.add(infoPanel,importer.getInformationPanel());
 	}
 	
 	public void browseButtonClicked(){

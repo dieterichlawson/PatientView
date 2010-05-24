@@ -214,9 +214,7 @@ public abstract class PersonPanel<E extends Person> implements
 			height = Math.min(height, image.getHeight());
 			thinlet.setIcon(panel, "icon", person.getImage());
 			thinlet.add(panel);
-			FrameLauncher f = new FrameLauncher(person.getName()
-					+ getI18NString(PICTURE_TITLE_SUFFIX), thinlet, width + 10,
-					height + 10, null) {
+			FrameLauncher f = new FrameLauncher(person.getName(), thinlet, width + 10, height + 10, null) {
 				public void windowClosing(WindowEvent e) {
 					dispose();
 				}

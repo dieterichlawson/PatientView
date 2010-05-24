@@ -39,14 +39,21 @@ public class CommunityHealthWorkerDataImporter implements CsvDataImporter, Thinl
 		validator = new CommunityHealthWorkerCsvValidator();
 	}
 	
+	
 	public Object getAdditionalOptionsPanel() {
-		AdditionalInfoPanel infoPanel = new AdditionalInfoPanel(uiController);
+		return uiController.createPanel("");
+	}
+
+	
+	public Object getInformationPanel() {
+		Object panel = uiController.createPanel("");
 		String chw = getI18NString("medic.common.chw");
-		infoPanel.addLine(chw + " " + getI18NString("simplesearch.fields.name"));
-		infoPanel.addLine(chw+ " "+ getI18NString("simplesearch.fields.birthdate")+" ("+getI18NString(FrontlineSMSConstants.DATEFORMAT_YMD)+")");
-		infoPanel.addLine(chw + " "+ getI18NString("simplesearch.fields.gender")+ " (" +getI18NString("medic.common.male")+", " +getI18NString("medic.common.female")+", or " +getI18NString("medic.common.transgender") +")");
-		infoPanel.addLine(chw +  " "+getI18NString("medic.importer.formatting.info.phone.number"));
-		return infoPanel.getMainPanel();
+		uiController.setColumns(panel, 1);
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.labels.column") + " 1: "+chw + " " + getI18NString("simplesearch.fields.name")));
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.labels.column") + " 2: "+chw+ " "+ getI18NString("simplesearch.fields.birthdate")+" ("+getI18NString(FrontlineSMSConstants.DATEFORMAT_YMD)+")"));
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.labels.column") + " 3: "+chw + " "+ getI18NString("simplesearch.fields.gender")+ " (" +getI18NString("medic.common.male")+", " +getI18NString("medic.common.female")+", or " +getI18NString("medic.common.transgender") +")"));
+		uiController.add(panel,uiController.createLabel(getI18NString("medic.importer.labels.column") + " 4: "+chw +  " "+getI18NString("medic.importer.formatting.info.phone.number")));
+		return panel;
 	}
 
 	public void importFile(String path) {
@@ -107,5 +114,4 @@ public class CommunityHealthWorkerDataImporter implements CsvDataImporter, Thinl
 	public String getTypeLabel() {
 		return getI18NString("medic.common.chws");
 	}
-
 }

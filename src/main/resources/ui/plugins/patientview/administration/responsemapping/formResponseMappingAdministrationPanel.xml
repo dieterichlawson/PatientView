@@ -3,18 +3,17 @@
 <panel bottom="5" columns="1" gap="2" left="5" right="5" top="5" weightx="1" weighty="1">
     <label font="17 bold" text="i18n.medic.common.form.responses" weightx="1" halign="left"/>
     <separator weightx="1"/>
-    <splitpane orientation="vertical" weightx="1" weighty="1">
 	    <splitpane divider="753" weightx="1" weighty="4">
 	        <panel columns="1" gap="5">
 	            <panel gap="5" halign="center" weightx="1">
 	                <togglebutton action="toggleChanged(this)" group="1" halign="center" name="mappedToggle" text="i18n.medic.form.response.mapping.panel.mapped.responses"/>
 	                <togglebutton action="toggleChanged(this)" group="1" halign="center" name="unmappedToggle" selected="true" text="i18n.medic.form.response.mapping.panel.unmapped.responses"/>
-	                <togglebutton action="toggleChanged(this)" group="1" halign="center" name="allToggle" text="i18n.medic.common.labels.all"/>
 	            </panel>
 	            <panel name="tablePanel" weightx="1" weighty="1" columns="1"/>
 	        </panel>
-	        <panel border="true" name="actionPanel" columns="1" weightx="1" weighty="1" top="5" bottom="5" left="5" right="5" gap="5" scrollable="true"/>
+	        <panel border="true" name="actionPanel" columns="1" weightx="1" weighty="1" top="5" bottom="5" left="5" right="5" gap="5" scrollable="true">
+	        	<label halign="center" text="i18n.medic.form.response.mapping.panel.empty.selection.message" valign="center" weightx="1" weighty="1"/>
+	        </panel>
 	    </splitpane>
-	    <panel name="bottomPanel" weightx="1" weighty="1"/>
-    </splitpane>
+	    <panel name="bottomPanel" weightx="1" />
 </panel>

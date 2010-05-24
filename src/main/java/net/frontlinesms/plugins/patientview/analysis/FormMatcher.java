@@ -55,26 +55,26 @@ public class FormMatcher implements EventObserver{
 		chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
 		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
 		//create the test harness
-//		ExtendedThinlet thinlet = new ExtendedThinlet();
-//		Object panel = thinlet.createPanel("mainPanel");
-//		thinlet.setWeight(panel, 1, 1);
-//		Object button = thinlet.createButton("Click me to test form handling");
-//		thinlet.setAction(button, "testHandler", null, this);
-//		thinlet.add(panel,button);
-//		thinlet.add(panel);
-//		FrameLauncher f = new FrameLauncher("Test form handling",thinlet,200,100,null)
-//		{ public void windowClosing(WindowEvent e){  dispose(); }};
+		ExtendedThinlet thinlet = new ExtendedThinlet();
+		Object panel = thinlet.createPanel("mainPanel");
+		thinlet.setWeight(panel, 1, 1);
+		Object button = thinlet.createButton("Click me to test form handling");
+		thinlet.setAction(button, "testHandler", null, this);
+		thinlet.add(panel,button);
+		thinlet.add(panel);
+		FrameLauncher f = new FrameLauncher("Test form handling",thinlet,200,100,null)
+		{ public void windowClosing(WindowEvent e){  dispose(); }};
 	}
 	
-//	public void testHandler(){
-//		List<ResponseValue> responses = new ArrayList<ResponseValue>();
-//		responses.add(new ResponseValue("John Dod"));
-//		responses.add(new ResponseValue("14/08/1987"));
-//		responses.add(new ResponseValue("1232"));
-//		
-//		FormResponse fr = new FormResponse("9940426745",vanillaFormDao.getFromId(2L),responses);
-//		handleFormResponse(fr);
-//	}
+	public void testHandler(){
+		List<ResponseValue> responses = new ArrayList<ResponseValue>();
+		responses.add(new ResponseValue("John Dod"));
+		responses.add(new ResponseValue("14/08/1987"));
+		responses.add(new ResponseValue("1232"));
+		
+		FormResponse fr = new FormResponse("4199996863",vanillaFormDao.getFromId(2L),responses);
+		handleFormResponse(fr);
+	}
 	
 	public boolean isMedicForm(Form f){
 		return formDao.getMedicFormForForm(f) != null;

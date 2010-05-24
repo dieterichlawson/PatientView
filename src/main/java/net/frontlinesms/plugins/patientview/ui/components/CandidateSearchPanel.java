@@ -32,6 +32,8 @@ public class CandidateSearchPanel implements ThinletUiEventHandler, AdvancedTabl
 	private AdvancedTableController tableController;
 	
 	private boolean searchingCandidates;
+	private boolean expanded;
+	
 	private List<Candidate> candidates;
 	
 	private Object mainPanel;
@@ -44,20 +46,36 @@ public class CandidateSearchPanel implements ThinletUiEventHandler, AdvancedTabl
 	
 	private static final String UI_FILE= "/ui/plugins/patientview/administration/responsemapping/candidateSearchPanel.xml";
 	
-	public CandidateSearchPanel(UiGeneratorController uiController, ApplicationContext appCon, MedicFormResponse response){
+	public CandidateSearchPanel(UiGeneratorController uiController, ApplicationContext appCon, MedicFormResponse response, boolean expanded){
 		this.uiController = uiController;
 		this.patientDao = (PatientDao) appCon.getBean("PatientDao");
 		responseDao = (MedicFormResponseDao) appCon.getBean("MedicFormResponseDao");
 		matcher = PatientViewPluginController.getFormMatcher();
 		this.response = response;
 		this.appCon = appCon;
+		this.expanded = expanded;
 		init();
 	}
 	
 	public void init(){
-		mainPanel = uiController.loadComponentFromFile(UI_FILE, this);
-		uiController.setText(uiController.find(mainPanel,"titleLabel"), response.isMapped()?getI18NString("medic.candidate.search.panel.change.response.mapping"): getI18NString("medic.candidate.search.panel.map.response"));
+		mainPanel = uiController.createPanel("");
+		uiController.setWeight(mainPanel, 1, 1);
+		candidates = matcher.getCandidatesForResponse(response);
+		if(isExpanded()){
+			expand();
+		}else{
+			collapse();
+		}
+	}
+	
+	public void expand(){
+		expanded = true;
+		uiController.removeAll(mainPanel);
+		uiController.add(mainPanel,uiController.loadComponentFromFile(UI_FILE, this));
+		uiController.setWeight(mainPanel, 1, 1);
+		uiController.setText(uiController.find(mainPanel,"collapseButton"), response.isMapped()?getI18NString("searchareas.buttons.collapse"): getI18NString("medic.candidate.search.panel.see.fewer.candidates"));
 		uiController.setText(uiController.find(mainPanel,"changeButton"), response.isMapped() ? getI18NString("medic.candidate.search.panel.change.mapping.to.person"): getI18NString("medic.candidate.search.panel.set.mapping.to.person"));
+		uiController.setIcon(uiController.find(mainPanel,"collapseButton"), "/icons/bullet_arrow_down.png");
 		personPanel = uiController.find(mainPanel,"personPanel");
 		tableController = new AdvancedTableController(this, uiController, uiController.find(mainPanel,"resultsTable"));
 		tableController.putHeader(Patient.class, new String[]{getI18NString("medic.common.labels.name"),getI18NString("medic.common.labels.age"),getI18NString("medic.common.chw")}, new String[]{"getName", "getStringAge", "getCHWName"});
@@ -66,9 +84,22 @@ public class CandidateSearchPanel implements ThinletUiEventHandler, AdvancedTabl
 		search("");
 		tableController.setSelected(0);
 	}
+	
+	public void collapse(){
+		expanded = false;
+		uiController.removeAll(mainPanel);
+		uiController.setWeight(mainPanel, 1, 0);
+		uiController.setGap(mainPanel, 5);
+		Object expandButton = uiController.createButton(response.isMapped()?getI18NString("medic.candidate.search.panel.change.response.mapping"):getI18NString("medic.candidate.search.panel.see.more.candidates"));
+		uiController.setIcon(expandButton, "/icons/bullet_arrow_up.png");
+		uiController.setAction(expandButton, "expand()", null, this);
+		uiController.add(mainPanel, expandButton);
+	}
+	
+	
 	public void search(String text){
 		if(!searchingCandidates){
-			tableController.setResults(patientDao.getPatientsByNameWithLimit(text,10));
+			tableController.setResults(patientDao.getPatientsByNameWithLimit(text,5));
 		}else{
 			candidates = matcher.getCandidatesForResponse(response);
 			ArrayList<Candidate> results = new ArrayList<Candidate>();
@@ -116,5 +147,8 @@ public class CandidateSearchPanel implements ThinletUiEventHandler, AdvancedTabl
 		response.setSubject(currentlySelectedPatient);
 		//((SessionFactory) appCon.getBean("sessionFactory")).getCurrentSession().merge(response);
 		responseDao.updateMedicFormResponse(response);
+	}
+	public boolean isExpanded() {
+		return expanded;
 	}
 }

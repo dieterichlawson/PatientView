@@ -18,7 +18,7 @@ import thinlet.Thinlet;
 
 public class PatientDetailViewPanelController implements DetailViewPanelController<Patient> {
 
-	private static final String EDIT_PATIENT_ATTRIBUTES = "detailview.buttons.edit.patient.attributes";
+	private static final String EDIT_PATIENT_ATTRIBUTES = "detailview.buttons.edit.attributes";
 	private static final String SAVE_PATIENT_ATTRIBUTES = "detailview.buttons.save";
 	private static final String CANCEL = "detailview.buttons.cancel";
 	private static final String SEE_MORE = "detailview.buttons.see.more";
