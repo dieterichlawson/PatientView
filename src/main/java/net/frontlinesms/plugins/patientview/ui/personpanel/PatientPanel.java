@@ -65,7 +65,7 @@ public class PatientPanel extends PersonPanel<Patient> {
 	 */
 	@Override
 	protected void addAdditionalEditableFields() {
-		CHWComboBox chwCombo = new CHWComboBox(uiController,appCon,isNewPersonPanel?null:person.getChw());
+		CHWComboBox chwCombo = new CHWComboBox(uiController,appCon,isNewPersonPanel?null:person.getChw(),null);
 		uiController.add(getLabelPanel(),chwCombo.getThinletPanel());
 	}
 

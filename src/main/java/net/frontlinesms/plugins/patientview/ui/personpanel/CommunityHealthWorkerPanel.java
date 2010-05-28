@@ -37,7 +37,7 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	 */
 	@Override
 	protected void addAdditionalEditableFields() {
-		PhoneNumberField phoneNumber = new PhoneNumberField(uiController,isNewPersonPanel?"":person.getPhoneNumber());
+		PhoneNumberField phoneNumber = new PhoneNumberField(uiController,isNewPersonPanel?"":person.getPhoneNumber(),null);
 		uiController.add(getLabelPanel(),phoneNumber.getThinletPanel());
 	}
 

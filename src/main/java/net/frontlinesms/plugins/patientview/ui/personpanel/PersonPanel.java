@@ -38,7 +38,6 @@ public abstract class PersonPanel<E extends Person> implements
 	// i18n constants
 	private static final String BDAY_LABEL = "thinletformfields.birthdate";
 	private static final String ID_LABEL = "medic.common.labels.id";
-	private static final String PICTURE_TITLE_SUFFIX = "detailview.picture.title.suffix";
 	private static final String DEMO_NAME = "editdetailview.demo.name";
 	private static final String DEMO_ID = "editdetailview.demo.id";
 	private static final String DEMO_GENDER = "medic.common.male";
@@ -267,17 +266,14 @@ public abstract class PersonPanel<E extends Person> implements
 		uiController.removeAll(labelPanel);
 		// create and add the thinlet form fields
 		// the name field
-		NameField name = new NameField(uiController, isNewPersonPanel ? ""
-				: person.getName());
+		NameField name = new NameField(uiController, isNewPersonPanel ? "" : person.getName(),null);
 		uiController.setInteger(name.getThinletPanel(), "colspan", 1);
 		uiController.add(labelPanel, name.getThinletPanel());
 		// the gender field
-		GenderComboBox gender = new GenderComboBox(uiController,
-				isNewPersonPanel ? null : person.getGender());
+		GenderComboBox gender = new GenderComboBox(uiController,isNewPersonPanel ? null : person.getGender(),null);
 		uiController.add(labelPanel, gender.getThinletPanel());
 		// the birthdate field
-		BirthdateField bday = new BirthdateField(uiController,
-				isNewPersonPanel ? new Date() : person.getBirthdate());
+		BirthdateField bday = new BirthdateField(uiController, isNewPersonPanel ? new Date() : person.getBirthdate(),null);
 		uiController.add(labelPanel, bday.getThinletPanel());
 		addAdditionalEditableFields();
 		inEditingMode = true;
@@ -303,11 +299,11 @@ public abstract class PersonPanel<E extends Person> implements
 		ArrayList<PersonalFormField> fields = getFieldsInLabelPanel();
 		for (PersonalFormField pff : fields) {
 			// if the field is valid, and has changed, then set the value
-			if (pff.isValid() && pff.hasChanged()) {
+			//if it's  a new person panel, it doesn't need to have changed
+			if (pff.isValid() && ((!isNewPersonPanel && pff.hasChanged()) || isNewPersonPanel)) {
 				pff.setFieldForPerson(person);
 			} else if (!pff.isValid()) {
-				uiController
-						.alert(getI18NString("personpanel.edit.details.error.prefix")
+				uiController.alert(getI18NString("personpanel.edit.details.error.prefix")
 								+ " \""
 								+ pff.getLabel()
 								+ "\" "

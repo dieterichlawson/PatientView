@@ -47,14 +47,14 @@ public class UserPanel extends PersonPanel<User> {
 	@Override
 	protected void addAdditionalEditableFields() {
 		if (isNewPersonPanel) {
-			UsernameField usernameField = new UsernameField(uiController, appCon, true, isNewPersonPanel ? "" : person.getUsername());
+			UsernameField usernameField = new UsernameField(uiController, appCon, true, isNewPersonPanel ? "" : person.getUsername(),null);
 			uiController.add(getLabelPanel(), usernameField.getThinletPanel());
 		} else {
 			addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": " + person.getUsername());
 		}
-		PasswordTextField pwordField = new PasswordTextField(uiController,"Password");
+		PasswordTextField pwordField = new PasswordTextField(uiController,"",null);
 		uiController.add(getLabelPanel(),pwordField.getThinletPanel());
-		RoleComboBox roleCombo = new RoleComboBox(uiController, isNewPersonPanel ? null : person.getRole());
+		RoleComboBox roleCombo = new RoleComboBox(uiController, isNewPersonPanel ? null : person.getRole(),null);
 		uiController.add(getLabelPanel(), roleCombo.getThinletPanel());
 	}
 

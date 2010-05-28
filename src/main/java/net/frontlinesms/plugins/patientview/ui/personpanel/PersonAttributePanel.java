@@ -139,17 +139,17 @@ public class PersonAttributePanel {
 			attributes.addAll(fieldDao.getAttributePanelFields());
 		}
 		for(Field f: attributes){
-			ThinletFormField tff = ThinletFormField.getThinletFormFieldForDataType(f.getDatatype(), uiController, f.getLabel());
+			ThinletFormField tff = ThinletFormField.getThinletFormFieldForDataType(f.getDatatype(), uiController, f.getLabel(),null);
 			tff.setField(f);
 			if(f instanceof PersonAttribute){
 				PersonAttributeResponse response= attributeResponseDao.getMostRecentAttributeResponse((PersonAttribute) f, person);
 				if(response !=null){
-					tff.setResponse(response.getValue());
+					tff.setStringResponse(response.getValue());
 				}
 			}else{
 				MedicFormFieldResponse mffr =fieldResponseDao.getMostRecentFieldResponse((MedicFormField) f, person); 
 				if(mffr !=null){
-					tff.setResponse(mffr.getValue());
+					tff.setStringResponse(mffr.getValue());
 				}
 			}
 			uiController.add(mainPanel,uiController.create("separator"));
@@ -171,11 +171,11 @@ public class PersonAttributePanel {
 			ThinletFormField tff = (ThinletFormField) uiController.getAttachedObject(panel);
 			if(tff !=null && tff.hasResponse() && tff.isValid() && tff.hasChanged()){
 				if(tff.getField() instanceof PersonAttribute){
-					PersonAttributeResponse response = new PersonAttributeResponse(tff.getResponse(), (PersonAttribute) tff.getField(),
+					PersonAttributeResponse response = new PersonAttributeResponse(tff.getStringResponse(), (PersonAttribute) tff.getField(),
 							person, UserSessionManager.getUserSessionManager().getCurrentUser());
 					attributeResponseDao.saveAttributeResponse(response);
 				}else if(tff.getField() instanceof MedicFormField){
-					MedicFormFieldResponse mffr = new MedicFormFieldResponse(tff.getResponse(),(MedicFormField) tff.getField(),
+					MedicFormFieldResponse mffr = new MedicFormFieldResponse(tff.getStringResponse(),(MedicFormField) tff.getField(),
 							person,UserSessionManager.getUserSessionManager().getCurrentUser());
 					fieldResponseDao.saveFieldResponse(mffr);
 				}
