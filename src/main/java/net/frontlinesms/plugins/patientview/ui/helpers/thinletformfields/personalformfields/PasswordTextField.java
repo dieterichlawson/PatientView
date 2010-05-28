@@ -1,26 +1,26 @@
 package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
+import java.security.GeneralSecurityException;
+
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
+import net.frontlinesms.plugins.patientview.data.domain.people.User;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.FormFieldDelegate;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextField;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 /** A masked password box. */
-public class PasswordTextField extends TextBox implements PersonalFormField {
+public class PasswordTextField extends TextField implements PersonalFormField {
 
-	public static final String NAME = "passwordField";
 	private String response;
 
-	
-	public PasswordTextField(ExtendedThinlet thinlet, String label) {
-		this(thinlet, InternationalisationUtils.getI18NString("login.password")+":", NAME);
-	}
-
-	protected PasswordTextField(ExtendedThinlet thinlet, String label, String name) {
-		super(thinlet, label, name);
+	public PasswordTextField(ExtendedThinlet thinlet, String initialText, FormFieldDelegate delegate) {
+		super(thinlet, InternationalisationUtils.getI18NString("login.password")+":", delegate);
 		response = "";
-		thinlet.setInteger(mainPanel, "colspan", 1);
-		thinlet.setAttachedObject(mainPanel, this);
+		if(initialText != null && !initialText.equals("")){
+			textBoxKeyPressed(initialText);
+		}
+		thinlet.setColspan(mainPanel, 1);
 	}
 
 	public void textBoxKeyPressed(String typed) {
@@ -44,17 +44,22 @@ public class PasswordTextField extends TextBox implements PersonalFormField {
 	}
 
 	@Override
-	public String getResponse() {
+	public String getStringResponse() {
 		return response;
 	}
 
 	@Override
-	public void setResponse(String s) {
+	public void setStringResponse(String s) {
 		textBoxKeyPressed(s);
 	}
 
 	public void setFieldForPerson(Person p) {
-		// do nothing, password fields should never start filled
+		User user = (User) p;
+		try {
+			user.setPassword(getStringResponse());
+		} catch (GeneralSecurityException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

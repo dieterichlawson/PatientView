@@ -3,32 +3,25 @@ package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.person
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.FormFieldDelegate;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
-public class RoleComboBox extends ThinletFormField<Role> implements
-		PersonalFormField {
+public class RoleComboBox extends ThinletFormField<Role> implements PersonalFormField {
 
 	protected Object comboBox;
-	protected boolean hasChanged;
-	public static final String NAME = "roleComboBox";
-
-	public RoleComboBox(ExtendedThinlet thinlet, Role role) {
-		super(thinlet, InternationalisationUtils
-				.getI18NString("medic.common.labels.role")
-				+ ":", NAME);
-		hasChanged = false;
+	protected boolean hasChanged = false;
+	
+	public RoleComboBox(ExtendedThinlet thinlet, Role role, FormFieldDelegate delegate) {
+		super(thinlet, InternationalisationUtils.getI18NString("medic.common.labels.role") + ":",delegate);
 		comboBox = thinlet.create("combobox");
 		for (Role r : Role.values()) {
-			thinlet
-					.add(comboBox, thinlet
-							.createComboboxChoice(r.toString(), r));
+			thinlet.add(comboBox, thinlet.createComboboxChoice(r.toString(), r));
 		}
-		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null,
-				this);
+		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null, this);
 		thinlet.add(mainPanel, comboBox);
-		thinlet.setInteger(comboBox, "weightx", 5);
+		thinlet.setWeight(comboBox, 5, 0);
 		setRawResponse(role);
 		thinlet.setAttachedObject(mainPanel, this);
 	}
@@ -36,6 +29,7 @@ public class RoleComboBox extends ThinletFormField<Role> implements
 	public void selectionChanged(int index) {
 		if (index >= 0) {
 			hasChanged = true;
+			super.responseChanged();
 		}
 	}
 
@@ -50,8 +44,7 @@ public class RoleComboBox extends ThinletFormField<Role> implements
 
 	@Override
 	public Role getRawResponse() {
-		return (Role) thinlet.getAttachedObject(thinlet
-				.getSelectedItem(comboBox));
+		return (Role) thinlet.getAttachedObject(thinlet.getSelectedItem(comboBox));
 	}
 
 	@Override
@@ -70,14 +63,15 @@ public class RoleComboBox extends ThinletFormField<Role> implements
 	}
 
 	@Override
-	public String getResponse() {
+	public String getStringResponse() {
 		return getRawResponse().toString();
 	}
 
 	@Override
-	public void setResponse(String response) {
-		if (Role.getRoleForName(response) != null)
+	public void setStringResponse(String response) {
+		if (Role.getRoleForName(response) != null){
 			setRawResponse(Role.getRoleForName(response));
+		}
 	}
 
 	/**

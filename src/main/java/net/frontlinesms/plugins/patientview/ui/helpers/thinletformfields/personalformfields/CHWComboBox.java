@@ -6,6 +6,7 @@ import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWo
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateCommunityHealthWorkerDao;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.FormFieldDelegate;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
@@ -17,13 +18,11 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 	private CommunityHealthWorker response;
 	private Object comboBox;
 	private HibernateCommunityHealthWorkerDao chwDao;
-	private boolean hasChanged;
-	public static final String NAME = "chwComboBox";
+	private boolean hasChanged = false;
 	
-	public CHWComboBox(ExtendedThinlet thinlet, ApplicationContext appCon, CommunityHealthWorker chw) {
-		super(thinlet, InternationalisationUtils.getI18NString("medic.common.chws")+":", NAME);
-		comboBox =thinlet.create("combobox");
-		hasChanged=false;
+	public CHWComboBox(ExtendedThinlet thinlet, ApplicationContext appCon, CommunityHealthWorker chw, FormFieldDelegate delegate) {
+		super(thinlet, InternationalisationUtils.getI18NString("medic.common.chws")+":", delegate);
+		comboBox =ExtendedThinlet.create("combobox");
 		thinlet.setInsert(comboBox,"textChanged(this.text)", null, this);
 		thinlet.setRemove(comboBox, "textChanged(this.text)", null, this);
 		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null, this);
@@ -34,27 +33,9 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 			textChanged(chw.getName());
 		}
 		thinlet.add(mainPanel,comboBox);
-		thinlet.setInteger(comboBox, "weightx", 5);
-		thinlet.setInteger(mainPanel, "colspan", 2);
-		thinlet.setAttachedObject(mainPanel, this);
-	}
-	
-	protected CHWComboBox(ExtendedThinlet thinlet, ApplicationContext appCon, CommunityHealthWorker chw, String name) {
-		super(thinlet, InternationalisationUtils.getI18NString("medic.common.chws")+":", name);
-		comboBox =thinlet.create("combobox");
-		hasChanged=false;
-		thinlet.setInsert(comboBox,"textChanged(this.text)", null, this);
-		thinlet.setRemove(comboBox, "textChanged(this.text)", null, this);
-		thinlet.setAction(comboBox, "selectionChanged(this.selected)", null, this);
-		chwDao = (HibernateCommunityHealthWorkerDao) appCon.getBean("CHWDao");
-		if(chw != null){
-			thinlet.setText(comboBox, chw.getName());
-			response = chw;
-			textChanged(chw.getName());
-		}
-		thinlet.add(mainPanel,comboBox);
-		thinlet.setInteger(comboBox, "weightx", 5);
-		thinlet.setInteger(mainPanel, "colspan", 2);
+		thinlet.setWeight(comboBox, 5, 0);
+		thinlet.setColspan(mainPanel, 2);
+		textChanged("");
 	}
 
 	public void textChanged(String text){
@@ -64,6 +45,10 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 			Object choice = thinlet.createComboboxChoice(chw.getName(), chw);
 			thinlet.add(comboBox,choice);
 		}
+		thinlet.setSelectedIndex(comboBox, 0);
+		response = (CommunityHealthWorker) thinlet.getAttachedObject(thinlet.getSelectedItem(comboBox));
+		thinlet.setText(comboBox, response.getName());
+		
 	}
 	
 	public void selectionChanged(int index){
@@ -73,6 +58,7 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 		}else{
 			response = null;
 		}
+		super.responseChanged();
 	}
 
 	@Override
@@ -92,7 +78,8 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 	}
 	
 	@Override
-	public void setResponse(String chw) {
+	/** DOES NOTHING**/
+	public void setStringResponse(String chw) {
 	}
 	
 	@Override
@@ -101,11 +88,11 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 	}
 	
 	public boolean hasResponse(){
-		return getResponse()!=null;
+		return getStringResponse()!=null;
 	}
 	
 	@Override
-	public String getResponse(){
+	public String getStringResponse(){
 		if(response!=null){
 			return response.getName();
 		}else{

@@ -1,36 +1,24 @@
 package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.FormFieldDelegate;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextField;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
-public class NameField extends TextBox implements PersonalFormField{
+public class NameField extends TextField implements PersonalFormField{
 
-	protected boolean hasChanged;
-	public static final String NAME = "nameField";
 	
-	public NameField(ExtendedThinlet thinlet, String initialText) {
-		super(thinlet, InternationalisationUtils.getI18NString("medic.common.labels.name")+":", NAME);
-		hasChanged = false;
+	public NameField(ExtendedThinlet thinlet, String initialText, FormFieldDelegate delegate) {
+		super(thinlet, InternationalisationUtils.getI18NString("medic.common.labels.name")+":", delegate);
 		if(initialText != null){
 			thinlet.setText(textBox, initialText);
 		}
-		thinlet.setAction(textBox, "textChanged(this.text)", null, this);
-		thinlet.setAttachedObject(mainPanel, this);
-	}
-	
-	public void textChanged(String text){
-		hasChanged = true;
-	}
-	
-	public boolean hasChanged(){
-		return hasChanged;
 	}
 	
 	@Override
 	public boolean isValid(){
-		return super.getResponse() !="" && super.getResponse() != null;
+		return super.getStringResponse() !="" && super.getStringResponse() != null;
 	}
 
 	public void setFieldForPerson(Person p) {

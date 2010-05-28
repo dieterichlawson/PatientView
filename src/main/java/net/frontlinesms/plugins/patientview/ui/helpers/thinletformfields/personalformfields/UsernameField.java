@@ -1,32 +1,23 @@
 package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateUserDao;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.FormFieldDelegate;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextField;
 import net.frontlinesms.ui.ExtendedThinlet;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
 import org.springframework.context.ApplicationContext;
 
 /** A field for inputting login names. */
-public class UsernameField extends TextBox implements PersonalFormField {
+public class UsernameField extends TextField implements PersonalFormField {
 
 	private Object picture;
-	public static final String NAME = "usernameField";
-	protected boolean hasChanged;
 	private HibernateUserDao userDao;
 
-	public UsernameField(ExtendedThinlet thinlet, ApplicationContext appCon,
-			boolean useIndicator, String initialUsername) {
-		this(thinlet, appCon, useIndicator, initialUsername,
-				getI18NString("login.username") + ":" + NAME);
-
-	}
-
-	protected UsernameField(ExtendedThinlet thinlet, ApplicationContext appCon,
-			boolean useIndicator, String initialUsername, String name) {
-		super(thinlet, "Username:", name);
+	public UsernameField(ExtendedThinlet thinlet, ApplicationContext appCon,boolean useIndicator, String initialUsername,FormFieldDelegate delegate) {
+		super(thinlet,getI18NString("login.username") + ":", delegate);
 		userDao = (HibernateUserDao) appCon.getBean("UserDao");
 		if (useIndicator) {
 			picture = thinlet.createButton("");
@@ -36,15 +27,15 @@ public class UsernameField extends TextBox implements PersonalFormField {
 			textBoxKeyPressed("");
 		}
 		hasChanged = false;
-		thinlet.setInteger(mainPanel, "columns", 3);
-		thinlet.setAttachedObject(mainPanel, this);
+		thinlet.setColumns(mainPanel, 3);
 		if (initialUsername != "" && initialUsername != null) {
-			thinlet.setText(super.textBox, initialUsername);
+			thinlet.setText(textBox, initialUsername);
 		}
 	}
 
 	public void textBoxKeyPressed(String r) {
 		hasChanged = true;
+		super.responseChanged();
 		// if we're using an icon for validation, set it depending on the
 		// username
 		if (picture != null) {

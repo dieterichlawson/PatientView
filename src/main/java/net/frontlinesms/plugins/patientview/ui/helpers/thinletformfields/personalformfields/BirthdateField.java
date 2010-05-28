@@ -4,40 +4,22 @@ import java.util.Date;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.FormFieldDelegate;
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 public class BirthdateField extends DateField implements PersonalFormField{
 	
-	protected boolean hasChanged;
-	public static final String NAME = "birthDatefield";
-	
-	public BirthdateField(ExtendedThinlet thinlet, Date initialDate) {
-		super(thinlet, "Birthdate:", NAME);
-		hasChanged = false;		
+	public BirthdateField(ExtendedThinlet thinlet, Date initialDate, FormFieldDelegate delegate) {
+		super(thinlet, InternationalisationUtils.getI18NString("thinletformfields.birthdate"), delegate);		
 		if(initialDate != null){
 			String initialText = df.format(initialDate);
 			thinlet.setText(textBox, initialText);
 		}
-		thinlet.setAction(textBox, "textChanged(this.text)", null, this);
-		thinlet.setAttachedObject(mainPanel, this);
-	}
-	
-	public void textChanged(String text){
-		hasChanged = true;
-	}
-	
-	public boolean hasChanged(){
-		return hasChanged;
-	}
-	
-	@Override
-	public void showDateSelector(){
-		hasChanged = true;
-		super.showDateSelector();
 	}
 
 	public void setFieldForPerson(Person p) {
-		p.setBirthdate(super.getDateResponse());
+		p.setBirthdate(super.getRawResponse());
 	}
 
 }

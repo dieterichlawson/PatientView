@@ -5,33 +5,18 @@ import net.frontlinesms.ui.ExtendedThinlet;
 public class TextArea extends ThinletFormField<String>{
 
 	private Object textArea;
-	protected boolean hasChanged;
-	public static final String NAME = "textAreaField";
+	protected boolean hasChanged = false;
 	
-	public TextArea(ExtendedThinlet thinlet, String label){
-		super(thinlet, label, NAME);
+	public TextArea(ExtendedThinlet thinlet, String label, FormFieldDelegate delegate){
+		super(thinlet, label, delegate);
 		textArea =ExtendedThinlet.create("textarea");
 		thinlet.add(mainPanel,textArea);
-		thinlet.setInteger(textArea, "weightx", 1);
-		thinlet.setInteger(textArea, "colspan", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
-		thinlet.setInteger(mainPanel, "columns", 1);
-		thinlet.setInteger(mainPanel, "gap", 4);
-		thinlet.setAttachedObject(mainPanel, this);
+		thinlet.setWeight(textArea, 1,0);
+		thinlet.setColspan(textArea,1);
+		thinlet.setColspan(mainPanel, 1);
+		thinlet.setColumns(mainPanel, 1);
+		thinlet.setGap(mainPanel, 4);
 		thinlet.setAction(textArea, "textAreaKeyPressed(this.text)", null, this);
-		hasChanged = false;
-	}
-	
-	protected TextArea(ExtendedThinlet thinlet, String label, String name){
-		super(thinlet, label, name);
-		textArea =ExtendedThinlet.create("textarea");
-		thinlet.add(mainPanel,textArea);
-		thinlet.setInteger(textArea, "weightx", 1);
-		thinlet.setInteger(textArea, "colspan", 1);
-		thinlet.setInteger(mainPanel, "colspan", 1);
-		thinlet.setInteger(mainPanel, "columns", 1);
-		thinlet.setAction(textArea, "textAreaKeyPressed(this.text)", null, this);
-		hasChanged = false;
 	}
 	
 	/** Text Areas are always valid**/
@@ -41,26 +26,27 @@ public class TextArea extends ThinletFormField<String>{
 	
 	public void textAreaKeyPressed(String text){
 		hasChanged = true;
+		super.responseChanged();
 	}
 
 	@Override
 	public String getRawResponse() {
-		return getResponse();
+		return getStringResponse();
 	}
 
 	@Override
-	public String getResponse() {
+	public String getStringResponse() {
 		return thinlet.getText(textArea);
 		
 	}
 
 	@Override
 	public void setRawResponse(String response) {
-		setResponse(response);
+		setStringResponse(response);
 	}
 
 	@Override
-	public void setResponse(String response) {
+	public void setStringResponse(String response) {
 		thinlet.setText(textArea, response);
 	}
 
