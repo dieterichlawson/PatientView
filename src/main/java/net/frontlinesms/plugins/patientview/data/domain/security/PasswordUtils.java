@@ -16,12 +16,6 @@ public class PasswordUtils {
 	/** A secure source of random data. */
 	private static final SecureRandom rand = new SecureRandom();
 
-	/** Generates a random 7 digit alphanumeric passowrd. */
-	public static String generatePassword() {
-		String result = new BigInteger(36, rand).toString(36).toUpperCase();
-		return result;
-	}
-
 	/**
 	 * The number of iterations the cryptographic function will be run through.
 	 * This is a key strengthening measure to prevent brute force attacks.
@@ -82,6 +76,71 @@ public class PasswordUtils {
 		rand.nextBytes(array);
 	}
 
+	/** Generates a random 7 digit alphanumeric passowrd. */
+	public static String generatePassword() {
+		String result = new BigInteger(36, rand).toString(36).toUpperCase();
+		return result;
+	}
+
+	public static void main(String[] args) throws java.io.IOException,
+			GeneralSecurityException {
+		// User u = new User("Hank", Person.Gender.FEMALE, new Date(), "hank",
+		// User.Role.READ, "");
+		java.io.BufferedReader in = new java.io.BufferedReader(
+				new java.io.InputStreamReader(System.in));
+		String pass = "";
+		while (!pass.equals("q")) {
+			System.out.println("Enter a test password:");
+			pass = in.readLine();
+			System.out.println("Password is acceptable: "
+					+ passwordMeetsRequirements(pass));
+		}
+		// while (!u.verifyPassword(guess)) {
+		// System.out.println("\nEnter guess for verification:");
+		// guess = in.readLine();
+		// System.out.println(u.verifyPassword(guess));
+		// }
+		// for (int i = 0; i < 10; i++) {
+		// System.out.println(generatePassword());
+		// }
+	}
+
+	/**
+	 * Checks to see if the input string meets all the requirements as set in
+	 * the SecurityOptions. This consists of a length requirement, and possibly
+	 * case, number and symbol requirements.
+	 * 
+	 * @param password
+	 *            the password to be checked
+	 * @return true if the password meets all requirements
+	 */
+	public static boolean passwordMeetsRequirements(String password) {
+		SecurityOptions settings = SecurityOptions.getInstance();
+		if (password.length() < settings.getPasswordLength()) {
+			System.out.println("hi");
+			return false;
+		}
+		if (settings.isCaseRequired()) {
+			boolean uppercase = password.matches(".*[A-Z].*");
+			boolean lowercase = password.matches(".*[a-z].*");
+			if (!uppercase || !lowercase) {
+				return false;
+			}
+		}
+
+		if (settings.isNumberRequired()) {
+			if (!password.matches(".*\\d.*")) {
+				return false;
+			}
+		}
+		if (settings.isSymbolRequired()) {
+			if (!password.matches(".*[^\\w].*")) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Check if a the hash of a string matches the stored password hash.
 	 * 
@@ -99,25 +158,5 @@ public class PasswordUtils {
 		}
 
 		return Arrays.equals(hash, ghash);
-	}
-
-	public static void main(String[] args) throws java.io.IOException,
-			GeneralSecurityException {
-//		User u = new User("Hank", Person.Gender.FEMALE, new Date(), "hank",
-//				User.Role.READ, "");
-//		System.out.println("Enter a test password:");
-//		java.io.BufferedReader in = new java.io.BufferedReader(
-//				new java.io.InputStreamReader(System.in));
-//		String pass = in.readLine();
-//		u.setPassword(pass);
-//		String guess = "";
-//		while (!u.verifyPassword(guess)) {
-//			System.out.println("\nEnter guess for verification:");
-//			guess = in.readLine();
-//			System.out.println(u.verifyPassword(guess));
-//		}
-		for (int i = 0; i < 10; i++) {
-			System.out.println(generatePassword());
-		}
 	}
 }

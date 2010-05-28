@@ -47,6 +47,21 @@ public class UserAdministrationPanelController extends
 	}
 
 	@Override
+	public void addButtonClicked() {
+		super.addButtonClicked();
+		Object saveButton = uiController.find(
+				currentPersonPanel.getMainPanel(), "savebutton");
+		uiController.setAction(saveButton, "saveNewUser()", null, this);
+	}
+
+	public void saveNewUser() throws GeneralSecurityException {
+		currentPersonPanel.stopEditingWithSave();
+		resetPassword(currentPersonPanel.getPerson());
+		Object titleLabel = uiController.find(resetNotice, "titlelabel");
+		uiController.setText(titleLabel, getI18NString("admin.user.new"));
+	}
+
+	@Override
 	protected List<User> getPeopleForString(String s) {
 		if (userDao == null) {
 			userDao = (UserDao) appCon.getBean("UserDao");
@@ -83,7 +98,20 @@ public class UserAdministrationPanelController extends
 	 */
 	public void resetPassword() throws GeneralSecurityException {
 		// TODO: error handling
-		User user = (User) advancedTableController.getCurrentlySelectedObject();
+		currentPersonPanel.stopEditingWithoutSave();
+		resetPassword(currentPersonPanel.getPerson());
+	}
+
+	/**
+	 * A helper method that resets a users password and displays a notice of
+	 * their new password.
+	 * 
+	 * @param user
+	 *            the user to be reset
+	 * @throws GeneralSecurityException
+	 *             if the crypto library cannot be found
+	 */
+	protected void resetPassword(User user) throws GeneralSecurityException {
 		String newPass = user.assignTempPassword();
 		userDao.updateUser(user);
 		if (resetNotice == null) {

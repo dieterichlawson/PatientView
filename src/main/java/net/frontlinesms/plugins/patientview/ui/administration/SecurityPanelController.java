@@ -20,8 +20,7 @@ public class SecurityPanelController implements AdministrationTabPanel,
 	private final UiGeneratorController ui;
 	private final Object mainPanel;
 	private final Object passwordLengthBox;
-	private final Object lowercaseCheckBox;
-	private final Object uppercaseCheckBox;
+	private final Object lettersCheckBox;
 	private final Object numbersCheckBox;
 	private final Object symbolsCheckBox;
 	private final Object requiredQuestionsBox;
@@ -38,8 +37,7 @@ public class SecurityPanelController implements AdministrationTabPanel,
 		securityOptions = SecurityOptions.getInstance();
 		mainPanel = ui.loadComponentFromFile(XML_FILE, this);
 		passwordLengthBox = ui.find(mainPanel, "passwordlengthbox");
-		lowercaseCheckBox = ui.find(mainPanel, "lowercasecheckbox");
-		uppercaseCheckBox = ui.find(mainPanel, "uppercasecheckbox");
+		lettersCheckBox = ui.find(mainPanel, "letterscheckbox");
 		numbersCheckBox = ui.find(mainPanel, "numberscheckbox");
 		symbolsCheckBox = ui.find(mainPanel, "symbolscheckbox");
 		requiredQuestionsBox = ui.find(mainPanel, "requiredquestionsbox");
@@ -58,34 +56,34 @@ public class SecurityPanelController implements AdministrationTabPanel,
 
 	/** Callback method for the lockoutDurationBox. */
 	public void boxChangedLockoutDuration() {
-		spinboxChanged(lockoutDurationBox, securityOptions.getLockoutDuration());
+		spinboxChanged(lockoutDurationBox, securityOptions.getLockoutDurationRange());
 	}
 
 	/** Callback method for the questionAttemptsBox */
 	public void boxChangedLoginAttempts() {
-		spinboxChanged(loginAttemptsBox, securityOptions.getLoginAttempts());
+		spinboxChanged(loginAttemptsBox, securityOptions.getLoginAttemptsRange());
 	}
 
 	/** Callback method for the passwordLengthBox */
 	public void boxChangedPasswordLength() {
-		spinboxChanged(passwordLengthBox, securityOptions.getPasswordLength());
+		spinboxChanged(passwordLengthBox, securityOptions.getPasswordLengthRange());
 	}
 
 	/** Callback method for the questionAttemptsBox */
 	public void boxChangedQuestionAttempts() {
 		spinboxChanged(questionAttemptsBox, securityOptions
-				.getQuestionAttempts());
+				.getQuestionAttemptsRange());
 	}
 
 	/** Callback method for the requiredAnswersBox */
 	public void boxChangedRequiredAnswers() {
-		spinboxChanged(requiredAnswersBox, securityOptions.getRequiredAnswers());
+		spinboxChanged(requiredAnswersBox, securityOptions.getRequiredAnswersRange());
 	}
 
 	/** Callback method for the requiredQuestionsBox */
 	public void boxChangedRequiredQuestions() {
-		Range reqQ = securityOptions.getRequiredQuestions();
-		Range reqA = securityOptions.getRequiredAnswers();
+		Range reqQ = securityOptions.getRequiredQuestionsRange();
+		Range reqA = securityOptions.getRequiredAnswersRange();
 		spinboxChanged(requiredQuestionsBox, reqQ);
 		// reduce required answers to less than required questions
 		int oldValue = reqA.value();
@@ -93,22 +91,16 @@ public class SecurityPanelController implements AdministrationTabPanel,
 			oldValue = reqA.value();
 		}
 		securityOptions
-				.setRequiredAnswers(new Range(1, reqQ.value(), oldValue));
+				.setRequiredAnswersRange(new Range(1, reqQ.value(), oldValue));
 		setSpinboxRange(requiredAnswersBox, securityOptions
-				.getRequiredAnswers());
+				.getRequiredAnswersRange());
 
 	}
 
-	/** Callback method for the lowercaseCheckBox */
-	public void boxChangedLowercase() {
-		securityOptions.setLowercaseLettersRequired(ui.getBoolean(
-				lowercaseCheckBox, "selected"));
-	}
-
-	/** Callback method for the uppercaseCheckBox */
-	public void boxChangedUppercase() {
-		securityOptions.setUppercaseLettersRequired(ui.getBoolean(
-				uppercaseCheckBox, "selected"));
+	/** Callback method for the lettersCheckBox */
+	public void boxChangedLetters() {
+		securityOptions.setLettersRequired(ui.getBoolean(
+				lettersCheckBox, "selected"));
 	}
 
 	/** Callback method for the numbersCheckBox */
@@ -136,22 +128,20 @@ public class SecurityPanelController implements AdministrationTabPanel,
 	 * Sets all of the components in the panel to be their default value.
 	 */
 	protected void setDefaultValues() {
-		setSpinboxRange(passwordLengthBox, securityOptions.getPasswordLength());
+		setSpinboxRange(passwordLengthBox, securityOptions.getPasswordLengthRange());
 		setSpinboxRange(requiredQuestionsBox, securityOptions
-				.getRequiredQuestions());
+				.getRequiredQuestionsRange());
 		setSpinboxRange(requiredAnswersBox, securityOptions
-				.getRequiredAnswers());
-		setSpinboxRange(loginAttemptsBox, securityOptions.getLoginAttempts());
+				.getRequiredAnswersRange());
+		setSpinboxRange(loginAttemptsBox, securityOptions.getLoginAttemptsRange());
 		setSpinboxRange(questionAttemptsBox, securityOptions
-				.getQuestionAttempts());
+				.getQuestionAttemptsRange());
 		setSpinboxRange(lockoutDurationBox, securityOptions
-				.getLockoutDuration());
-		ui.setSelected(lowercaseCheckBox, securityOptions
-				.isLowercaseLettersRequired());
-		ui.setSelected(uppercaseCheckBox, securityOptions
-				.isUppercaseLettersRequired());
-		ui.setSelected(numbersCheckBox, securityOptions.isNumbersRequired());
-		ui.setSelected(symbolsCheckBox, securityOptions.isSymbolsRequired());
+				.getLockoutDurationRange());
+		ui.setSelected(lettersCheckBox, securityOptions
+				.isCaseRequired());
+		ui.setSelected(numbersCheckBox, securityOptions.isNumberRequired());
+		ui.setSelected(symbolsCheckBox, securityOptions.isSymbolRequired());
 	}
 
 	/**

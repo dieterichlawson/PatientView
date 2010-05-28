@@ -31,20 +31,46 @@ public abstract class PersonPanel<E extends Person> implements
 	protected boolean inEditingMode;
 	protected boolean isNewPersonPanel;
 	protected ApplicationContext appCon;
-
 	protected PersonPanelDelegate delegate;
-
 	private static String PERSON_PANEL_XML = "/ui/plugins/patientview/AtAGlance/person_AAG.xml";
+
 	// i18n constants
 	private static final String AGE_LABEL = "medic.common.labels.age";
+
 	private static final String ID_LABEL = "medic.common.labels.id";
 	private static final String PICTURE_TITLE_SUFFIX = "detailview.picture.title.suffix";
 	private static final String DEMO_NAME = "editdetailview.demo.name";
 	private static final String DEMO_ID = "editdetailview.demo.id";
 	private static final String DEMO_GENDER = "medic.common.male";
 	private static final String DEMO_AGE = "editdetailview.demo.age";
-	
 	public static final String BUTTON_PANEL = "personpanelbuttons";
+	/**
+	 * Constructor for creating demo person panes
+	 * 
+	 * @param uiController
+	 */
+	public PersonPanel(UiGeneratorController uiController) {
+		this.uiController = uiController;
+		initDemoPanel();
+	}
+	
+	/**
+	 * A constructor for creating person panels that are meant to add new people
+	 * to the system
+	 * 
+	 * @param uiController
+	 *            the UI controller
+	 */
+	public PersonPanel(UiGeneratorController uiController,
+			ApplicationContext appCon) {
+		this.uiController = uiController;
+		this.appCon = appCon;
+		this.mainPanelContainer = Thinlet.create("panel");
+		isNewPersonPanel = true;
+		inEditingMode = true;
+		uiController.setInteger(mainPanelContainer, "weightx", 1);
+		addEditableFields();
+	}
 
 	/**
 	 * The general constructor that creates a panel for person p. If person p is
@@ -90,95 +116,7 @@ public abstract class PersonPanel<E extends Person> implements
 		addEditableFields();
 	}
 
-	/**
-	 * A constructor for creating person panels that are meant to add new people
-	 * to the system
-	 * 
-	 * @param uiController
-	 *            the UI controller
-	 */
-	public PersonPanel(UiGeneratorController uiController,
-			ApplicationContext appCon) {
-		this.uiController = uiController;
-		this.appCon = appCon;
-		this.mainPanelContainer = Thinlet.create("panel");
-		isNewPersonPanel = true;
-		inEditingMode = true;
-		uiController.setInteger(mainPanelContainer, "weightx", 1);
-		addEditableFields();
-	}
-
-	/**
-	 * Constructor for creating demo person panes
-	 * 
-	 * @param uiController
-	 */
-	public PersonPanel(UiGeneratorController uiController) {
-		this.uiController = uiController;
-		initDemoPanel();
-	}
-
-	private void initDemoPanel() {
-		mainPanelContainer = uiController.create("panel");
-		uiController.setInteger(mainPanelContainer, "weightx", 1);
-		uiController.removeAll(mainPanelContainer);
-		inEditingMode = false;
-		mainPanel = uiController.loadComponentFromFile(PERSON_PANEL_XML, this);
-		// add the core fields
-		addLabelToLabelPanel(getI18NString(DEMO_NAME));
-		addLabelToLabelPanel(getI18NString(ID_LABEL) + ": "
-				+ getI18NString(DEMO_ID));
-		addLabelToLabelPanel(getI18NString(DEMO_GENDER));
-		addLabelToLabelPanel(getI18NString(AGE_LABEL) + ": "
-				+ getI18NString(DEMO_AGE));
-		// let the subclasses add additional fields
-		addAdditionalDemoFields();
-		uiController.add(mainPanelContainer, mainPanel);
-		uiController.setText(mainPanel, getDefaultTitle());
-	}
-
 	protected abstract void addAdditionalDemoFields();
-
-	/**
-	 * Should perform a save operation on whatever person type the implementing
-	 * class is for
-	 */
-	protected abstract void savePerson();
-
-	/**
-	 * Should perform an update operation on whatever person type the
-	 * implementing class is for
-	 */
-	protected abstract void updatePerson();
-
-	/**
-	 * Should create a person of whichever person type the implementing class is
-	 * for. Should do this by instantiating the "person" field
-	 */
-	protected abstract E createPerson();
-
-	/**
-	 * @return The title for the Person Panel
-	 */
-	protected abstract String getDefaultTitle();
-
-	/**
-	 * @return The title for the person panel while editing
-	 */
-	protected abstract String getEditingTitle();
-
-	/**
-	 * @return The title for the person panel while adding
-	 */
-	protected abstract String getAddingTitle();
-
-	/**
-	 * Should perform additional setup after the core fields are added to the
-	 * panel
-	 * 
-	 * @param labelPanel
-	 */
-	protected abstract void addAdditionalFields();
 
 	/**
 	 * Should perform additional setup with editable fields after the core
@@ -187,70 +125,12 @@ public abstract class PersonPanel<E extends Person> implements
 	protected abstract void addAdditionalEditableFields();
 
 	/**
-	 * Method that is called when the picture is clicked If the panel is in
-	 * editing mode, then an add picture dialog is brought up Otherwise, the
-	 * picture is just displayed in a bigger size and a separate frame
+	 * Should perform additional setup after the core fields are added to the
+	 * panel
+	 * 
+	 * @param labelPanel
 	 */
-	@SuppressWarnings("serial")
-	public void imageClicked() {
-		if (inEditingMode) {
-			ImageChooser chooser = new ImageChooser();
-			if (chooser.getImage() != null) {
-				if (person == null) {
-					createPerson();
-				}
-				person.setImage(chooser.getImage(), chooser.getExtension());
-				uiController.setIcon(
-						uiController.find(mainPanel, "imagePanel"), person
-								.getResizedImage());
-			}
-		} else if (person.hasImage()) {
-			Thinlet thinlet = new Thinlet();
-			Object panel = Thinlet.create("panel");
-			BufferedImage image = person.getImage();
-			int width = 650;
-			int height = 650;
-			width = Math.min(width, image.getWidth());
-			height = Math.min(height, image.getHeight());
-			thinlet.setIcon(panel, "icon", person.getImage());
-			thinlet.add(panel);
-			FrameLauncher f = new FrameLauncher(person.getName()
-					+ getI18NString(PICTURE_TITLE_SUFFIX), thinlet, width + 10,
-					height + 10, null) {
-				public void windowClosing(WindowEvent e) {
-					dispose();
-				}
-			};
-		}
-	}
-
-	/**
-	 * creates a new panel with non-editable fields for the person that this
-	 * class was initialized with This method adds the first four fields: name,
-	 * id, gender, and age, and then calls the abstract method
-	 * addAdditionalFields, which should be implemented to do additional
-	 * displaying of information in subclasses
-	 */
-	private void addNonEditableFields() {
-		uiController.removeAll(mainPanelContainer);
-		inEditingMode = false;
-		mainPanel = uiController.loadComponentFromFile(PERSON_PANEL_XML, this);
-		uiController.setAction(uiController.find(mainPanel, "imagePanel"),
-				"imageClicked()", null, this);
-		if (person.hasImage()) {
-			uiController.setIcon(uiController.find(mainPanel, "imagePanel"),
-					person.getResizedImage());
-		}
-		// add the core fields
-		addLabelToLabelPanel(person.getName());
-		addLabelToLabelPanel(getI18NString(ID_LABEL) + ": " + person.getPid());
-		addLabelToLabelPanel(person.getGender().toString());
-		addLabelToLabelPanel(getI18NString(AGE_LABEL) + ": " + person.getAge());
-		// let the subclasses add additional fields
-		addAdditionalFields();
-		uiController.add(mainPanelContainer, mainPanel);
-		uiController.setText(mainPanel, getDefaultTitle());
-	}
+	protected abstract void addAdditionalFields();
 
 	/**
 	 * Replaces all labels in the person panel with editable controls for
@@ -293,6 +173,246 @@ public abstract class PersonPanel<E extends Person> implements
 	}
 
 	/**
+	 * Used to add descriptive labels to the space next to the picture. Used to
+	 * add name, gender, phone number, etc..
+	 * 
+	 * @param text
+	 *            The text for the label
+	 */
+	protected void addLabelToLabelPanel(String text) {
+		Object label = uiController.createLabel(text);
+		uiController.setInteger(label, "weightx", 1);
+		uiController.setInteger(label, "weighty", 1);
+		uiController.add(getLabelPanel(), label);
+	}
+
+	/**
+	 * creates a new panel with non-editable fields for the person that this
+	 * class was initialized with This method adds the first four fields: name,
+	 * id, gender, and age, and then calls the abstract method
+	 * addAdditionalFields, which should be implemented to do additional
+	 * displaying of information in subclasses
+	 */
+	private void addNonEditableFields() {
+		uiController.removeAll(mainPanelContainer);
+		inEditingMode = false;
+		mainPanel = uiController.loadComponentFromFile(PERSON_PANEL_XML, this);
+		uiController.setAction(uiController.find(mainPanel, "imagePanel"),
+				"imageClicked()", null, this);
+		if (person.hasImage()) {
+			uiController.setIcon(uiController.find(mainPanel, "imagePanel"),
+					person.getResizedImage());
+		}
+		// add the core fields
+		addLabelToLabelPanel(person.getName());
+		addLabelToLabelPanel(getI18NString(ID_LABEL) + ": " + person.getPid());
+		addLabelToLabelPanel(person.getGender().toString());
+		addLabelToLabelPanel(getI18NString(AGE_LABEL) + ": " + person.getAge());
+		// let the subclasses add additional fields
+		addAdditionalFields();
+		uiController.add(mainPanelContainer, mainPanel);
+		uiController.setText(mainPanel, getDefaultTitle());
+	}
+
+	/**
+	 * Should create a person of whichever person type the implementing class is
+	 * for. Should do this by instantiating the "person" field
+	 */
+	protected abstract E createPerson();
+
+	/**
+	 * @return The title for the person panel while adding
+	 */
+	protected abstract String getAddingTitle();
+
+	/**
+	 * @return The title for the Person Panel
+	 */
+	protected abstract String getDefaultTitle();
+
+	/**
+	 * @return The title for the person panel while editing
+	 */
+	protected abstract String getEditingTitle();
+
+	/**
+	 * All the panels in the label panel should have ThinletFormFields attached
+	 * to them. All of these thinlet form fields should be PersonalFormFields.
+	 * This method goes through each panel in the label panel, gets it's
+	 * attached object, and adds it to an arraylist if it conforms to
+	 * expectations
+	 * 
+	 * @return the arraylist of PersonalFormFields in the label panel
+	 */
+	public ArrayList<PersonalFormField> getFieldsInLabelPanel() {
+		if (inEditingMode) {
+			ArrayList<PersonalFormField> fields = new ArrayList<PersonalFormField>();
+			Object[] arrayFields = uiController.getItems(getLabelPanel());
+			for (Object o : arrayFields) {
+				Object f = uiController.getAttachedObject(o);
+				if (f instanceof PersonalFormField) {
+					fields.add((PersonalFormField) f);
+				}
+			}
+			return fields;
+		} else {
+			return null;
+		}
+	}
+
+	public Object getLabelPanel() {
+		return uiController.find(mainPanel, "labelPanel");
+	}
+
+	public Object getMainPanel() {
+		return mainPanelContainer;
+	}
+
+	public E getPerson() {
+		return person;
+	}
+
+	/**
+	 * @return a Thinlet panel with 2 buttons inside of it for saving and
+	 *         cancelling
+	 */
+	private Object getSaveCancelButtons() {
+		Object saveCancelPanel = Thinlet.create("panel");
+		uiController.setName(saveCancelPanel, BUTTON_PANEL);
+//		uiController.setInteger(saveCancelPanel, "columns", 2);
+		uiController.setInteger(saveCancelPanel, "gap", 10);
+		uiController.setInteger(saveCancelPanel, "right", 10);
+		uiController.setChoice(saveCancelPanel, "halign", "fill");
+		uiController.setWeight(saveCancelPanel, 1, 1);
+		Object saveButton = uiController
+				.createButton(getI18NString("detailview.buttons.save"));
+		uiController.setName(saveButton, "savebutton");
+		uiController.setAction(saveButton, "stopEditingWithSave()", null, this);
+		uiController.setChoice(saveButton, "halign", "left");
+		Object cancelButton = uiController
+				.createButton(getI18NString("detailview.buttons.cancel"));
+		uiController.setAction(cancelButton, "stopEditingWithoutSave()", null,
+				this);
+		uiController.setChoice(cancelButton, "halign", "right");
+		uiController.add(saveCancelPanel, saveButton);
+		if (delegate == null) {
+			uiController.add(saveCancelPanel, cancelButton);
+		}
+		return saveCancelPanel;
+	}
+
+	/**
+	 * Method that is called when the picture is clicked If the panel is in
+	 * editing mode, then an add picture dialog is brought up Otherwise, the
+	 * picture is just displayed in a bigger size and a separate frame
+	 */
+	@SuppressWarnings("serial")
+	public void imageClicked() {
+		if (inEditingMode) {
+			ImageChooser chooser = new ImageChooser();
+			if (chooser.getImage() != null) {
+				if (person == null) {
+					createPerson();
+				}
+				person.setImage(chooser.getImage(), chooser.getExtension());
+				uiController.setIcon(
+						uiController.find(mainPanel, "imagePanel"), person
+								.getResizedImage());
+			}
+		} else if (person.hasImage()) {
+			Thinlet thinlet = new Thinlet();
+			Object panel = Thinlet.create("panel");
+			BufferedImage image = person.getImage();
+			int width = 650;
+			int height = 650;
+			width = Math.min(width, image.getWidth());
+			height = Math.min(height, image.getHeight());
+			thinlet.setIcon(panel, "icon", person.getImage());
+			thinlet.add(panel);
+			FrameLauncher f = new FrameLauncher(person.getName()
+					+ getI18NString(PICTURE_TITLE_SUFFIX), thinlet, width + 10,
+					height + 10, null) {
+				public void windowClosing(WindowEvent e) {
+					dispose();
+				}
+			};
+		}
+	}
+
+	private void initDemoPanel() {
+		mainPanelContainer = uiController.create("panel");
+		uiController.setInteger(mainPanelContainer, "weightx", 1);
+		uiController.removeAll(mainPanelContainer);
+		inEditingMode = false;
+		mainPanel = uiController.loadComponentFromFile(PERSON_PANEL_XML, this);
+		// add the core fields
+		addLabelToLabelPanel(getI18NString(DEMO_NAME));
+		addLabelToLabelPanel(getI18NString(ID_LABEL) + ": "
+				+ getI18NString(DEMO_ID));
+		addLabelToLabelPanel(getI18NString(DEMO_GENDER));
+		addLabelToLabelPanel(getI18NString(AGE_LABEL) + ": "
+				+ getI18NString(DEMO_AGE));
+		// let the subclasses add additional fields
+		addAdditionalDemoFields();
+		uiController.add(mainPanelContainer, mainPanel);
+		uiController.setText(mainPanel, getDefaultTitle());
+	}
+
+	/**
+	 * Should perform a save operation on whatever person type the implementing
+	 * class is for
+	 */
+	protected abstract void savePerson();
+
+	protected void setNameLabel(String name) {
+		uiController.setText(uiController.find(mainPanel, "nameLabel"), name);
+	}
+
+	public void setPanelTitle(String title) {
+		uiController.setText(mainPanel, title);
+	}
+
+	public void setPerson(E person) {
+		this.person = person;
+	}
+
+	/**
+	 * Switches from editing mode back to normal mode, without saving any
+	 * changes
+	 */
+	public void stopEditingWithoutSave() {
+		if (isNewPersonPanel) {
+			uiController.removeAll(mainPanelContainer);
+			return;
+		}
+		addNonEditableFields();
+	}
+
+	/**
+	 * Switches from editing mode back to normal mode, saving any changes that
+	 * have occurred
+	 */
+	public void stopEditingWithSave() {
+		if (validateAndSaveFieldResponses()) {
+			addNonEditableFields();
+		}
+	}
+
+	/**
+	 * Switches the mode to editing mode, where the user can edit the person's
+	 * core info
+	 */
+	public void switchToEditingPanel() {
+		addEditableFields();
+	}
+
+	/**
+	 * Should perform an update operation on whatever person type the
+	 * implementing class is for
+	 */
+	protected abstract void updatePerson();
+
+	/**
 	 * Updates the person to reflect all the responses to the fields and then
 	 * writes the changes to the database
 	 */
@@ -332,119 +452,6 @@ public abstract class PersonPanel<E extends Person> implements
 			}
 		}
 		return isValid;
-	}
-
-	/**
-	 * @return a Thinlet panel with 2 buttons inside of it for saving and
-	 *         cancelling
-	 */
-	private Object getSaveCancelButtons() {
-		Object saveCancelPanel = Thinlet.create("panel");
-		uiController.setName(saveCancelPanel, BUTTON_PANEL);
-//		uiController.setInteger(saveCancelPanel, "columns", 2);
-		uiController.setInteger(saveCancelPanel, "gap", 10);
-		uiController.setInteger(saveCancelPanel, "right", 10);
-		uiController.setChoice(saveCancelPanel, "halign", "fill");
-		uiController.setWeight(saveCancelPanel, 1, 1);
-		Object saveButton = uiController
-				.createButton(getI18NString("detailview.buttons.save"));
-		uiController.setAction(saveButton, "stopEditingWithSave()", null, this);
-		uiController.setChoice(saveButton, "halign", "left");
-		Object cancelButton = uiController
-				.createButton(getI18NString("detailview.buttons.cancel"));
-		uiController.setAction(cancelButton, "stopEditingWithoutSave()", null,
-				this);
-		uiController.setChoice(cancelButton, "halign", "right");
-		uiController.add(saveCancelPanel, saveButton);
-		if (delegate == null) {
-			uiController.add(saveCancelPanel, cancelButton);
-		}
-		return saveCancelPanel;
-	}
-
-	public Object getLabelPanel() {
-		return uiController.find(mainPanel, "labelPanel");
-	}
-
-	/**
-	 * All the panels in the label panel should have ThinletFormFields attached
-	 * to them. All of these thinlet form fields should be PersonalFormFields.
-	 * This method goes through each panel in the label panel, gets it's
-	 * attached object, and adds it to an arraylist if it conforms to
-	 * expectations
-	 * 
-	 * @return the arraylist of PersonalFormFields in the label panel
-	 */
-	public ArrayList<PersonalFormField> getFieldsInLabelPanel() {
-		if (inEditingMode) {
-			ArrayList<PersonalFormField> fields = new ArrayList<PersonalFormField>();
-			Object[] arrayFields = uiController.getItems(getLabelPanel());
-			for (Object o : arrayFields) {
-				Object f = uiController.getAttachedObject(o);
-				if (f instanceof PersonalFormField) {
-					fields.add((PersonalFormField) f);
-				}
-			}
-			return fields;
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Switches the mode to editing mode, where the user can edit the person's
-	 * core info
-	 */
-	public void switchToEditingPanel() {
-		addEditableFields();
-	}
-
-	/**
-	 * Switches from editing mode back to normal mode, saving any changes that
-	 * have occurred
-	 */
-	public void stopEditingWithSave() {
-		if (validateAndSaveFieldResponses()) {
-			addNonEditableFields();
-		}
-	}
-
-	/**
-	 * Switches from editing mode back to normal mode, without saving any
-	 * changes
-	 */
-	public void stopEditingWithoutSave() {
-		if (isNewPersonPanel) {
-			uiController.removeAll(mainPanelContainer);
-			return;
-		}
-		addNonEditableFields();
-	}
-
-	public Object getMainPanel() {
-		return mainPanelContainer;
-	}
-
-	/**
-	 * Used to add descriptive labels to the space next to the picture. Used to
-	 * add name, gender, phone number, etc..
-	 * 
-	 * @param text
-	 *            The text for the label
-	 */
-	protected void addLabelToLabelPanel(String text) {
-		Object label = uiController.createLabel(text);
-		uiController.setInteger(label, "weightx", 1);
-		uiController.setInteger(label, "weighty", 1);
-		uiController.add(getLabelPanel(), label);
-	}
-
-	protected void setNameLabel(String name) {
-		uiController.setText(uiController.find(mainPanel, "nameLabel"), name);
-	}
-
-	public void setPanelTitle(String title) {
-		uiController.setText(mainPanel, title);
 	}
 
 }

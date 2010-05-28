@@ -9,8 +9,7 @@
             <spinbox columns="2" end="1" maximum="99" minimum="6" name="passwordlengthbox" start="1" text="9"/>
             <label text="i18n.admin.security.pass.length"/>
         </panel>
-        <checkbox action="boxChangedLowercase()" name="lowercasecheckbox" text="i18n.admin.security.pass.lowercase"/>
-        <checkbox action="boxChangedUppercase()" name="uppercasecheckbox" text="i18n.admin.security.pass.uppercase"/>
+        <checkbox action="boxChangedLetters()" name="letterscheckbox" text="i18n.admin.security.pass.letters"/>
         <checkbox action="boxChangedNumbers()" name="numberscheckbox" text="i18n.admin.security.pass.numbers"/>
         <checkbox action="boxChangedSymbols()" name="symbolscheckbox" text="i18n.admin.security.pass.symbols"/>
     </panel>

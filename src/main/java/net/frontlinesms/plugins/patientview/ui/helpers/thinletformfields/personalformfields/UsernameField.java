@@ -65,7 +65,7 @@ public class UsernameField extends TextBox implements PersonalFormField {
 		String r = thinlet.getText(super.textBox);
 		if (r != null && r.length() >= 3 && r.length() <= 7) {
 			// make sure no other users already have this name
-			if (userDao.getUsersByUsername(r).size() == 0) {
+			if (userDao.findUsersByUsername(r).size() == 0) {
 				return true;
 			}
 		}

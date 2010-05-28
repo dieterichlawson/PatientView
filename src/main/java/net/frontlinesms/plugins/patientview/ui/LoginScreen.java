@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationContext;
 
 import thinlet.Thinlet;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
+import net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils;
+import net.frontlinesms.plugins.patientview.data.domain.security.SecurityOptions;
 import net.frontlinesms.plugins.patientview.data.domain.security.SecurityQuestion;
 import net.frontlinesms.plugins.patientview.data.repository.SecurityQuestionDao;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
@@ -51,20 +53,17 @@ public class LoginScreen implements ThinletUiEventHandler {
 
 	// I18N lookups
 	private static final String INCORRECT_LOGIN_MESSAGE = "login.incorrect.login.message";
+	private static final String INVALID_USER_MESSAGE = "login.could.not.find.user";
 	private static final String QUESTION = "security.questions";
 	private static final String QUESTIONS_ON_FILE = QUESTION + ".on.file";
 	private static final String QUESTION_ON_FILE = QUESTION + ".on.file.1";
 	private static final String QUESTION_DEFAULT = QUESTION + ".default";
 
-	// TODO: These needs to be stored elsewhere
-	public static final int REQUIRED_QUESTIONS = 3;
-	public static final int REQUIRED_ANSWERS = 2;
-	public static final int LOGIN_ATTEMPTS = 3;
-	public static final int QUESTION_ATTEMPTS = 2;
-	public static final int MIN_PASSWORD_LENGTH = 6;
-
+	// Instance variables
 	private Object[] questions;
 	private Object[] answers;
+
+	private SecurityOptions settings;
 
 	/** The top level thinlet component for this object. */
 	private final Object mainPanel;
@@ -88,6 +87,7 @@ public class LoginScreen implements ThinletUiEventHandler {
 		userDao = (UserDao) appCon.getBean("UserDao");
 		questionDao = (SecurityQuestionDao) appCon
 				.getBean("SecurityQuestionDao");
+		settings = SecurityOptions.getInstance();
 		mainPanel = ui.createPanel("");
 		ui.setWeight(mainPanel, 1, 1);
 		reset();
@@ -99,18 +99,15 @@ public class LoginScreen implements ThinletUiEventHandler {
 	public void attemptForgotPassword() {
 		Object usernameField = ui.find(mainPanel, "usernameField");
 		String username = ui.getText(usernameField);
-		
 		if (username != null) {
-			List<User> userList = userDao.getUsersByUsername(username);
-			System.out.println(userList.size());
-			if (!userList.isEmpty()) {
-				user = userDao.getUsersByUsername(username).get(0);
+			user = userDao.getUserByUsername(username);
+			if (user != null) {
 				changeModeRecoverPassword();
 			} else {
-				displayIncorrectLoginMessage();
+				displayWarningMessage(INVALID_USER_MESSAGE);
 			}
 		} else {
-			displayIncorrectLoginMessage();
+			displayWarningMessage(INVALID_USER_MESSAGE);
 		}
 	}
 
@@ -122,22 +119,18 @@ public class LoginScreen implements ThinletUiEventHandler {
 		Object passwordField = ui.find(mainPanel, "passwordField");
 		String username = ui.getText(usernameField);
 		String password = ui.getText(passwordField);
-		// if (username == null || password == null) {
-		// displayIncorrectLoginMessage();
-		// return;
-		// }
 		UserSessionManager manager = UserSessionManager.getUserSessionManager();
 		AuthenticationResult result = manager.login(username, password);
 		if (result == AuthenticationResult.NOSUCHUSER
 				|| result == AuthenticationResult.WRONGPASSWORD) {
-			displayIncorrectLoginMessage();
-			return;
+			displayWarningMessage(INCORRECT_LOGIN_MESSAGE);
 		}
 		if (result == AuthenticationResult.SUCCESS) {
 			user = manager.getCurrentUser();
 			if (user.needsNewPassword()) {
 				changeModeNewPassword();
-			} else if (numberOfSecurityQuestions(user) < REQUIRED_QUESTIONS) {
+			} else if (numberOfSecurityQuestions(user) < settings
+					.getRequiredQuestionsRange().value()) {
 				changeModeNewQuestions();
 			} else {
 				changeModePatientView();
@@ -164,12 +157,12 @@ public class LoginScreen implements ThinletUiEventHandler {
 			}
 		}
 		System.out.println(correct);
-		if (correct >= REQUIRED_ANSWERS) {
+		if (correct >= settings.getRequiredAnswersRange().value()) {
 			changeModeNewPassword();
 		} else {
 			Object label = ui.find(mainPanel, MULTI_LABEL);
 			String text = getI18NString("password.reset.wrong.answer");
-//			text = text.replaceFirst("<X>", "" );
+			// text = text.replaceFirst("<X>", "" );
 			ui.setText(label, text);
 		}
 	}
@@ -187,15 +180,17 @@ public class LoginScreen implements ThinletUiEventHandler {
 		passwordBox = ui.find(mainPanel, "password2");
 		String pass2 = ui.getText(passwordBox);
 		if (pass1.equals(pass2)) {
-			user.setPassword(pass1);
-			userDao.updateUser(user);
-			resetSoft();
-			Object label = ui.find(mainPanel, "multiLabel");
-			ui.setText(label, getI18NString("password.new.use"));
+			if (PasswordUtils.passwordMeetsRequirements(pass1)) {
+				user.setPassword(pass1);
+				userDao.updateUser(user);
+				resetSoft();
+				Object label = ui.find(mainPanel, "multiLabel");
+				ui.setText(label, getI18NString("password.new.use"));
+			} else {
+				displayWarningMessage("password.new.warning.criteria");
+			}
 		} else {
-			Object label = ui.find(mainPanel, MULTI_LABEL);
-			ui.setText(label, getI18NString("password.new.warning"));
-			ui.setColor(label, Thinlet.FOREGROUND, Color.RED);
+			displayWarningMessage("password.new.warning.match");
 		}
 	}
 
@@ -220,7 +215,8 @@ public class LoginScreen implements ThinletUiEventHandler {
 			}
 		}
 		int count = numberOfSecurityQuestions(user);
-		if (count < REQUIRED_QUESTIONS) {
+		int requiredQuestions = settings.getRequiredQuestionsRange().value();
+		if (count < requiredQuestions) {
 			Object label = ui.find(mainPanel, MULTI_LABEL);
 			String text;
 			if (count == 1) {
@@ -229,7 +225,7 @@ public class LoginScreen implements ThinletUiEventHandler {
 				text = getI18NString(QUESTIONS_ON_FILE);
 				text = text.replaceAll("<X>", "" + count);
 			}
-			int req = REQUIRED_QUESTIONS - count;
+			int req = requiredQuestions - count;
 			text = text.replaceFirst("<Y>", "" + req);
 			ui.setText(label, text);
 		} else {
@@ -245,7 +241,17 @@ public class LoginScreen implements ThinletUiEventHandler {
 				.loadComponentFromFile(XML_NEW_PASSWORD, this);
 		Object notice = ui.find(passwordScreen, "noticeTextArea");
 		String text = getI18NString("password.new.notice");
-		text = text.replaceAll("<X>", "" + MIN_PASSWORD_LENGTH);
+		text += "\n -" + settings.getPasswordLength() + " "
+				+ getI18NString("admin.security.pass.length");
+		if (settings.isCaseRequired()) {
+			text += "\n -" + getI18NString("admin.security.pass.letters");
+		}
+		if (settings.isNumberRequired()) {
+			text += "\n -" + getI18NString("admin.security.pass.numbers");
+		}
+		if (settings.isSymbolRequired()) {
+			text += "\n -" + getI18NString("admin.security.pass.symbols");
+		}
 		ui.setText(notice, text);
 		Object passwordBox = ui.find(passwordScreen, "passwordBox1");
 		ui.removeAll(mainPanel);
@@ -271,7 +277,7 @@ public class LoginScreen implements ThinletUiEventHandler {
 			text = getI18NString(QUESTIONS_ON_FILE);
 			text = text.replaceFirst("<X>", "" + num);
 		}
-		int required = REQUIRED_QUESTIONS - num;
+		int required = settings.getRequiredQuestionsRange().value() - num;
 		text = text.replaceFirst("<Y>", "" + required);
 		ui.setText(multiLabel, text);
 
@@ -308,18 +314,18 @@ public class LoginScreen implements ThinletUiEventHandler {
 	protected void changeModeRecoverPassword() {
 		List<SecurityQuestion> userQuestions = questionDao
 				.getSecurityQuestionsForUser(user);
+		if (userQuestions.size() < settings.getRequiredAnswersRange().value()) {
+			displayWarningMessage("password.new.no.questions");
+			return;
+		}
 		Object recoverPanel = ui.loadComponentFromFile(XML_RECOVER_PASSWORD,
 				this);
-		if (userQuestions.size() < REQUIRED_ANSWERS) {
-			
-		}
-
 		Object questionsPanel = ui.find(recoverPanel, "questionsPanel");
 		Object multiLabel = ui.find(questionsPanel, MULTI_LABEL);
 		ui.removeAll(questionsPanel);
 		ui.add(questionsPanel, multiLabel);
-		questions = new Object[REQUIRED_QUESTIONS];
-		answers = new Object[REQUIRED_QUESTIONS];
+		questions = new Object[settings.getRequiredQuestionsRange().value()];
+		answers = new Object[settings.getRequiredQuestionsRange().value()];
 		for (int i = 0; i < questions.length; i++) {
 			SecurityQuestion sq = userQuestions.get(i);
 			questions[i] = ui.createLabel(sq.getQuestion());
@@ -347,12 +353,17 @@ public class LoginScreen implements ThinletUiEventHandler {
 	}
 
 	/**
-	 * Displays an incorrect login message in the label above the username box.
+	 * Displays a warning message in red text in the label above the username
+	 * box.
+	 * 
+	 * @param key
+	 *            the i18n key of the message to be displayed
 	 */
-	protected void displayIncorrectLoginMessage() {
+	protected void displayWarningMessage(String key) {
 		Object label = ui.find(mainPanel, MULTI_LABEL);
 		ui.setColor(label, Thinlet.FOREGROUND, Color.RED);
-		ui.setText(label, getI18NString(INCORRECT_LOGIN_MESSAGE));
+		ui.setText(label, getI18NString(key));
+		ui.setFocus(ui.find(mainPanel, "usernameField"));
 	}
 
 	/**
@@ -372,6 +383,7 @@ public class LoginScreen implements ThinletUiEventHandler {
 	/** Resets the login screen back to its initial state. */
 	public void reset() {
 		UserSessionManager.getUserSessionManager().logout();
+		user = null;
 		Object landingScreen = ui.loadComponentFromFile(XML_LOGIN, this);
 		Object usernameField = ui.find(landingScreen, "usernameField");
 		ui.removeAll(mainPanel);
