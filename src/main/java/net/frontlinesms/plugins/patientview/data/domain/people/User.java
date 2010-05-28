@@ -125,7 +125,6 @@ public class User extends Person {
 		} else {
 			assignTempPassword();
 		}
-		//securityQuestions = new HashSet<SecurityQuestion>();
 		securityQuestions = new ArrayList<SecurityQuestion>();
 	}
 

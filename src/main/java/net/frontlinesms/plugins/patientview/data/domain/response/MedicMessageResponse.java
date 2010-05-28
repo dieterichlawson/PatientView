@@ -1,16 +1,11 @@
 package net.frontlinesms.plugins.patientview.data.domain.response;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 import net.frontlinesms.data.domain.Message;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
@@ -49,7 +44,18 @@ public class MedicMessageResponse extends Response{
 	public void setMessageContent(String messageContent) {
 		this.messageContent = messageContent;
 	}
+	
+	public String getSenderMsisdn(){
+		return message.getSenderMsisdn();
+	}
+	
+	public String getRecipientMsisdn(){
+		return message.getRecipientMsisdn();
+	}
 
+	public String getStatus(){
+		return message.getStatus().toString().toLowerCase();
+	}
 	private String messageContent;
 	
 }

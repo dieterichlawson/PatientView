@@ -11,15 +11,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.OrderBy;
-
-import net.frontlinesms.FrontlineSMS;
 import net.frontlinesms.Utils;
 import net.frontlinesms.plugins.forms.data.domain.FormResponse;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.OrderBy;
 
 @Entity
 @DiscriminatorValue(value="form")
