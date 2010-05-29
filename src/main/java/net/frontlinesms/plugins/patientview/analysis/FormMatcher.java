@@ -1,11 +1,13 @@
 package net.frontlinesms.plugins.patientview.analysis;
 
-import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.frontlinesms.data.events.DidSaveNotification;
+import net.frontlinesms.FrontlineSMSConstants;
+import net.frontlinesms.Utils;
+import net.frontlinesms.data.events.EntitySavedNotification;
 import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEventNotification;
@@ -26,15 +28,18 @@ import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldRespon
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
 import net.frontlinesms.ui.ExtendedThinlet;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
+import org.apache.log4j.Logger;
+import org.jfree.util.Log;
 import org.springframework.context.ApplicationContext;
 
-import thinlet.FrameLauncher;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.JaroWinkler;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.Levenshtein;
 
 public class FormMatcher implements EventObserver{
 
+	private static Logger LOG = Utils.getLogger(MedicFormResponse.class);
 	
 	private Levenshtein levenshtein;
 	private JaroWinkler jaroWinkler;
@@ -62,8 +67,8 @@ public class FormMatcher implements EventObserver{
 		thinlet.setAction(button, "testHandler", null, this);
 		thinlet.add(panel,button);
 		thinlet.add(panel);
-		FrameLauncher f = new FrameLauncher("Test form handling",thinlet,200,100,null)
-		{ public void windowClosing(WindowEvent e){  dispose(); }};
+	//	FrameLauncher f = new FrameLauncher("Test form handling",thinlet,200,100,null)
+		//{ public void windowClosing(WindowEvent e){  dispose(); }};
 	}
 	
 	public void testHandler(){
@@ -131,6 +136,7 @@ public class FormMatcher implements EventObserver{
 	}
 	
 	public List<Candidate> getCandidatesForResponse(MedicFormResponse response){
+		Log.info("Attempting to map response");
 		//get the CHW that submitted the form
 		CommunityHealthWorker chw = (CommunityHealthWorker) response.getSubmitter();
 		//get the list of patients that the CHW cares for
@@ -152,7 +158,7 @@ public class FormMatcher implements EventObserver{
 			//if it is mapped to a namefield, score it as a name
 			if(fieldResponse.getField().getMapping() == PatientFieldMapping.NAMEFIELD){
 				for(Candidate c: candidates){
-					c.setNameScore(getNameDistance(c.getName(),fieldResponse.getValue()));
+					c.setNameScore(getNameDistance(c.getName().toLowerCase(),fieldResponse.getValue().toLowerCase()));
 				}
 			//if it is mapped to an id field, score it as an ID
 			}else if(fieldResponse.getField().getMapping() == PatientFieldMapping.IDFIELD){
@@ -161,8 +167,13 @@ public class FormMatcher implements EventObserver{
 				}
 			//if it is mapped as a bday field, score it as a bday
 			}else if(fieldResponse.getField().getMapping() == PatientFieldMapping.BIRTHDATEFIELD){
+				String dateString = InternationalisationUtils.getI18NString(FrontlineSMSConstants.DATEFORMAT_YMD);
+				dateString = dateString.toLowerCase();
+				dateString = dateString.replace("mm", "MM");
+				dateString = dateString.replace("yyyy", "yy");
+				SimpleDateFormat f = new SimpleDateFormat(dateString);
 				for(Candidate c: candidates){
-					c.setBirthdateScore(getEditDistance(c.getStringBirthdate(),fieldResponse.getValue()));
+					c.setBirthdateScore(getEditDistance(f.format(c.getPatient().getBirthdate()),fieldResponse.getValue()));
 				}
 			}
 		}
@@ -215,8 +226,8 @@ public class FormMatcher implements EventObserver{
 	}
 
 	public void notify(FrontlineEventNotification notification) {
-		if(notification instanceof DidSaveNotification<?>){
-			DidSaveNotification<?> sNotification = (DidSaveNotification<?>) notification;
+		if(notification instanceof EntitySavedNotification<?>){
+			EntitySavedNotification<?> sNotification = (EntitySavedNotification<?>) notification;
 			if(sNotification.getDatabaseEntity() instanceof FormResponse){
 				handleFormResponse((FormResponse) sNotification.getDatabaseEntity());
 			}
