@@ -4,9 +4,9 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
 import java.util.Collection;
 
-import net.frontlinesms.data.events.DidDeleteNotification;
-import net.frontlinesms.data.events.DidSaveNotification;
-import net.frontlinesms.data.events.DidUpdateNotification;
+import net.frontlinesms.data.events.EntityDeletedNotification;
+import net.frontlinesms.data.events.EntitySavedNotification;
+import net.frontlinesms.data.events.EntityUpdatedNotification;
 import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEventNotification;
@@ -197,18 +197,18 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 	}
 
 	public void notify(FrontlineEventNotification event) {
-		if(event instanceof DidSaveNotification){
-			DidSaveNotification castEvent = (DidSaveNotification) event;
+		if(event instanceof EntitySavedNotification){
+			EntitySavedNotification castEvent = (EntitySavedNotification) event;
 			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
 				populatePatientViewFormList();
 			}
-		}else if(event instanceof DidUpdateNotification){
-			DidUpdateNotification castEvent = (DidUpdateNotification) event;
+		}else if(event instanceof EntityUpdatedNotification){
+			EntityUpdatedNotification castEvent = (EntityUpdatedNotification) event;
 			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
 				populatePatientViewFormList();
 			}
-		}else if(event instanceof DidDeleteNotification){
-			DidDeleteNotification castEvent = (DidDeleteNotification) event;
+		}else if(event instanceof EntityDeletedNotification){
+			EntityDeletedNotification castEvent = (EntityDeletedNotification) event;
 			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
 				populatePatientViewFormList();
 			}

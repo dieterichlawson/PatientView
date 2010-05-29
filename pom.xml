@@ -61,12 +61,12 @@
 		<dependency>
 			<groupId>net.frontlinesms.core</groupId>
 			<artifactId>frontlinesms</artifactId>
-			<version>1.6.08-RC9-SNAPSHOT</version>
+			<version>1.6.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.frontlinesms.plugins</groupId>
 			<artifactId>frontlinesms-plugin-forms</artifactId>
-			<version>0.02.07-SNAPSHOT</version>
+			<version>0.02.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>jfree</groupId>

@@ -16,7 +16,7 @@ import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.CheckBo
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.NumericTextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextArea;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextBox;
+import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TimeField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PasswordTextField;
@@ -103,36 +103,18 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 		for(MedicFormField ff: currentForm.getFields()){
 			ThinletFormField tff = null;
 			String label = ff.getLabel() +":";
-			if(ff.getDatatype() == DataType.CHECK_BOX){ 
-				tff = new CheckBox(uiController,label);
-			}else if(ff.getDatatype() == DataType.DATE_FIELD){
-				tff = new DateField(uiController,label);
-			}else if(ff.getDatatype() == DataType.NUMERIC_TEXT_FIELD){
-				tff = new NumericTextField(uiController,label);
-			}else if(ff.getDatatype() == DataType.PASSWORD_FIELD){
-				tff = new PasswordTextField(uiController,label);
-			}else if(ff.getDatatype() == DataType.PHONE_NUMBER_FIELD){
-				tff = new PhoneNumberField(uiController,label);
-			}else if(ff.getDatatype() == DataType.TIME_FIELD){
-				tff = new TimeField(uiController,label);
-			}else if(ff.getDatatype() == DataType.TEXT_AREA){
-				tff = new TextArea(uiController,label);
-			}else if(ff.getDatatype() == DataType.TEXT_FIELD){
-				tff = new TextBox(uiController,label);
-			}else if(ff.getDatatype() == DataType.TRUNCATED_TEXT ||
-					ff.getDatatype() == DataType.WRAPPED_TEXT){
+			if(ff.getDatatype() == DataType.TRUNCATED_TEXT || ff.getDatatype() == DataType.WRAPPED_TEXT){
 				Object field = uiController.createLabel(label);
 				uiController.add(formPanel,field);
 				uiController.setChoice(field, "halign", "center");
 				uiController.setInteger(field, "weightx", 1);
-			}
-
-			if(tff != null){
+			}else{
+				tff = ThinletFormField.getThinletFormFieldForDataType(ff.getDatatype(), uiController, label, null);
 				tff.setField(ff);
 				fields.add(tff);
 				uiController.add(formPanel,tff.getThinletPanel());
-				uiController.setInteger(tff.getThinletPanel(), "weightx", 1);
-				uiController.setChoice(tff.getThinletPanel(), "halign", "fill");
+				uiController.setWeight(tff.getThinletPanel(), 1,0);
+				uiController.setHAlign(tff.getThinletPanel(), "fill");
 			}
 		}
 		autoFillPatient();
@@ -146,11 +128,11 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 				nonRespondable++;
 			}
 			if(mff.getMapping()== PatientFieldMapping.NAMEFIELD){
-				fields.get(i-nonRespondable).setResponse(currentPatient.getName());
+				fields.get(i-nonRespondable).setStringResponse(currentPatient.getName());
 			}else if(mff.getMapping()== PatientFieldMapping.BIRTHDATEFIELD){
 				((DateField) fields.get(i-nonRespondable)).setRawResponse(currentPatient.getBirthdate());
 			}else if(mff.getMapping()== PatientFieldMapping.IDFIELD){
-				fields.get(i-nonRespondable).setResponse(String.valueOf(currentPatient.getPid()));
+				fields.get(i-nonRespondable).setStringResponse(String.valueOf(currentPatient.getPid()));
 			}
 			if(mff.getMapping() !=null){
 				fields.get(i-nonRespondable).setEnabled(false);
@@ -177,7 +159,7 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 				return;
 			}else{	
 				//create the field response
-				rv = new MedicFormFieldResponse(f.getResponse(), (MedicFormField) f.getField(),response,currentPatient,UserSessionManager.getUserSessionManager().getCurrentUser());
+				rv = new MedicFormFieldResponse(f.getStringResponse(), (MedicFormField) f.getField(),response,currentPatient,UserSessionManager.getUserSessionManager().getCurrentUser());
 				//and add it to the form response
 				response.addFieldResponse(rv);
 			}

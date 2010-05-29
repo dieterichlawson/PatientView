@@ -93,11 +93,11 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	
 	public Object getDateFieldEntry(){
 		if(dateFieldAfter == null){
-			dateFieldAfter = new DateField(uiController,InternationalisationUtils.getI18NString(AFTER));
-			dateFieldBefore = new DateField(uiController,InternationalisationUtils.getI18NString(BEFORE));
+			dateFieldAfter = new DateField(uiController,InternationalisationUtils.getI18NString(AFTER),null);
+			dateFieldBefore = new DateField(uiController,InternationalisationUtils.getI18NString(BEFORE),null);
 		}
-		dateFieldAfter.setResponse("");
-		dateFieldBefore.setResponse("");
+		dateFieldAfter.setStringResponse("");
+		dateFieldBefore.setStringResponse("");
 		Object spanel = uiController.create("panel");
 		uiController.add(spanel,dateFieldAfter.getThinletPanel());
 		uiController.add(spanel,dateFieldBefore.getThinletPanel());
@@ -157,7 +157,7 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	
 	public Date getBeforeDate(){
 		if (currentField.getDataType().equals(SimpleSearchDataType.DATE)){
-			return dateFieldBefore.getDateResponse();
+			return dateFieldBefore.getRawResponse();
 		}else{
 			return null;
 		}
@@ -165,7 +165,7 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	
 	public Date getAfterDate(){
 		if (currentField.getDataType().equals(SimpleSearchDataType.DATE)){
-			return dateFieldAfter.getDateResponse();
+			return dateFieldAfter.getRawResponse();
 		}else{
 			return null;
 		}

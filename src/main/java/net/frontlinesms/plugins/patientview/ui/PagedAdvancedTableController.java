@@ -66,7 +66,7 @@ public class PagedAdvancedTableController extends AdvancedTableController implem
 		//set the paging buttons
 		uiController.setEnabled(uiController.find(pagingControls, "leftPageButton"),resultSet.hasPreviousPage());
 		uiController.setEnabled(uiController.find(pagingControls, "rightPageButton"),resultSet.hasNextPage());
-		String pagingLabel = getI18NString("pagingcontrols.results")+" " + getResultsManager().getFirstResultOnPage() + " "+getI18NString("pagingcontrols.to")+" " +
+		String pagingLabel = getI18NString("pagingcontrols.results")+" " + getResultsSet().getFirstResultOnPage() + " "+getI18NString("pagingcontrols.to")+" " +
 					resultSet.getLastResultOnPage() + " "+getI18NString("pagingcontrols.of")+" " + resultSet.getTotalResults();
 		uiController.setText(uiController.find(pagingControls, "resultsLabel"),pagingLabel);
 	}
