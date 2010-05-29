@@ -6,7 +6,12 @@
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.people.Patient" /> 
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.people.User" />
+<<<<<<< HEAD
+        <mapping class="net.frontlinesms.plugins.patientview.data.domain.people.SecurityQuestion" />
+=======
         <mapping class="net.frontlinesms.plugins.patientview.data.domain.security.SecurityQuestion" />
+		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.HistoryEntry" />
+>>>>>>> bf0e98dfb0e1f5138396db527816f74e3ee23289
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.PersonAttribute" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField" />
@@ -18,4 +23,5 @@
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.graph.BooleanGraphSettings" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.graph.NumericGraphSettings" />
 	</session-factory>
+	
 </hibernate-configuration>

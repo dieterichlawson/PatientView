@@ -9,68 +9,68 @@ import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateU
 import org.springframework.context.ApplicationContext;
 
 public class UserSessionManager {
-	
+
 	private User currentUser;
-	
+
 	private long currentSessionStartTime;
-	
+
 	private boolean isLoggedIn;
-	
+
 	private HibernateUserDao userDao;
-	
+
 	private static UserSessionManager sessionManager;
-	
-	public static enum AuthenticationResult{NOSUCHUSER(),WRONGPASSWORD(), SUCCESS();}
-	
-	private UserSessionManager(){
+
+	public static enum AuthenticationResult {
+		NOSUCHUSER(), WRONGPASSWORD(), SUCCESS();
+	}
+
+	private UserSessionManager() {
 		isLoggedIn = false;
 	}
-	
-	public static UserSessionManager getUserSessionManager(){
-		if(sessionManager == null){
+
+	public static UserSessionManager getUserSessionManager() {
+		if (sessionManager == null) {
 			sessionManager = new UserSessionManager();
 		}
 		return sessionManager;
 	}
-	
-	public User getCurrentUser(){
+
+	public User getCurrentUser() {
 		return currentUser;
 	}
-	
-	public Role getCurrentUserRole(){
+
+	public Role getCurrentUserRole() {
 		return currentUser.getRole();
 	}
-	
-	public AuthenticationResult login(String username, String password){
-		//User user = userDao.getUserByUsername(username);
-		//User user = new User("Josh Nesbit",'m', new Date(),"jnesbit","medic",Role.ADMIN);
-		for(User user: userDao.getUsersByUsername(username)){
-			if(user.verifyPassword(password)){
-				currentUser = user;
-				isLoggedIn = true;
-				currentSessionStartTime = new Date().getTime();
-				return AuthenticationResult.SUCCESS;
-			}
+
+	public AuthenticationResult login(String username, String password) {
+		User user = userDao.getUserByUsername(username);
+		if (user.verifyPassword(password)) {
+			currentUser = user;
+			isLoggedIn = true;
+			currentSessionStartTime = new Date().getTime();
+			return AuthenticationResult.SUCCESS;
+		} else {
+			return AuthenticationResult.WRONGPASSWORD;
 		}
-		return AuthenticationResult.WRONGPASSWORD;
-		
+
 	}
 
-	public void init(ApplicationContext appcon){
+	public void init(ApplicationContext appcon) {
 		userDao = (HibernateUserDao) appcon.getBean("UserDao");
 	}
-	
-	public void logout(){
+
+	public void logout() {
 		currentUser = null;
-		isLoggedIn = false;		
+		isLoggedIn = false;
 	}
-	
-	public Date getCurrentSessionStartTime(){
+
+	public Date getCurrentSessionStartTime() {
 		return new Date(currentSessionStartTime);
 	}
-	
-	public boolean isLoggedIn(){
+
+	public boolean isLoggedIn() {
 		return isLoggedIn;
 	}
-	
+
 }

@@ -37,7 +37,7 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	 */
 	@Override
 	protected void addAdditionalEditableFields() {
-		PhoneNumberField phoneNumber = new PhoneNumberField(uiController,isNewPersonPanel?"":person.getPhoneNumber(),null);
+		PhoneNumberField phoneNumber = new PhoneNumberField(uiController,isNewPersonPanel?"":getPerson().getPhoneNumber(),null);
 		uiController.add(getLabelPanel(),phoneNumber.getThinletPanel());
 	}
 
@@ -46,7 +46,7 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	 */
 	@Override
 	protected void addAdditionalFields() {
-		addLabelToLabelPanel(InternationalisationUtils.getI18NString(PHONE_NUMBER_FIELD)+": " + person.getContactInfo().getPhoneNumber());
+		addLabelToLabelPanel(InternationalisationUtils.getI18NString(PHONE_NUMBER_FIELD)+": " + getPerson().getContactInfo().getPhoneNumber());
 	}
 
 	/* (non-Javadoc)
@@ -78,7 +78,7 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	 */
 	@Override
 	protected void savePerson() {
-		chwDao.saveCommunityHealthWorker(person);
+		chwDao.saveCommunityHealthWorker(getPerson());
 	}
 
 	/* (non-Javadoc)
@@ -86,7 +86,7 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	 */
 	@Override
 	protected void updatePerson() {
-		chwDao.updateCommunityHealthWorker(person);
+		chwDao.updateCommunityHealthWorker(getPerson());
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 import java.util.List;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
-import net.frontlinesms.plugins.patientview.data.domain.people.SecurityQuestion;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
+import net.frontlinesms.plugins.patientview.data.domain.security.SecurityQuestion;
 import net.frontlinesms.plugins.patientview.data.repository.SecurityQuestionDao;
 
 import org.hibernate.criterion.DetachedCriteria;

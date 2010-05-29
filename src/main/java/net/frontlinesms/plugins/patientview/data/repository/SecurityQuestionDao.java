@@ -2,8 +2,8 @@ package net.frontlinesms.plugins.patientview.data.repository;
 
 import java.util.List;
 
-import net.frontlinesms.plugins.patientview.data.domain.people.SecurityQuestion;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
+import net.frontlinesms.plugins.patientview.data.domain.security.SecurityQuestion;
 
 public interface SecurityQuestionDao {
 

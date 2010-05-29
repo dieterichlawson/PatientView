@@ -1,8 +1,8 @@
-package net.frontlinesms.plugins.patientview.data.domain.people;
+package net.frontlinesms.plugins.patientview.data.domain.security;
 
-import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.cryptoHash;
-import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.fillRandomBytes;
-import static net.frontlinesms.plugins.patientview.data.domain.people.PasswordUtils.verify;
+import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.cryptoHash;
+import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.fillRandomBytes;
+import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.verify;
 
 import java.security.GeneralSecurityException;
 
@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import net.frontlinesms.plugins.patientview.data.domain.people.User;
 
 @Entity
 @Table(name="medic_security_questions")

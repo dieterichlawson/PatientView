@@ -65,7 +65,7 @@ public class PatientPanel extends PersonPanel<Patient> {
 	 */
 	@Override
 	protected void addAdditionalEditableFields() {
-		CHWComboBox chwCombo = new CHWComboBox(uiController,appCon,isNewPersonPanel?null:person.getChw(),null);
+		CHWComboBox chwCombo = new CHWComboBox(uiController,appCon,isNewPersonPanel?null:getPerson().getChw(),null);
 		uiController.add(getLabelPanel(),chwCombo.getThinletPanel());
 	}
 
@@ -74,7 +74,7 @@ public class PatientPanel extends PersonPanel<Patient> {
 	 */
 	@Override
 	protected void addAdditionalFields() {
-		addLabelToLabelPanel(getI18NString(CHW_FIELD) + ": " + person.getChw().getName());
+		addLabelToLabelPanel(getI18NString(CHW_FIELD) + ": " + getPerson().getChw().getName());
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class PatientPanel extends PersonPanel<Patient> {
 	 */
 	@Override
 	protected void savePerson() {
-		patientDao.savePatient(person);
+		patientDao.savePatient(getPerson());
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public class PatientPanel extends PersonPanel<Patient> {
 	 */
 	@Override
 	protected void updatePerson() {
-		patientDao.updatePatient(person);
+		patientDao.updatePatient(getPerson());
 	}
 
 	@Override

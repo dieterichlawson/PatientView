@@ -143,9 +143,14 @@ admin.tab.title=Administration
 admin.tasks=Tasks
 admin.actionlist.manage.patients=Manage Patients
 admin.actionlist.manage.chws=Manage CHWs
+<<<<<<< HEAD
 admin.actionlist.manage.users= Manage Users
 admin.actionlist.map.form.responses=Map Form Responses
 admin.actionlist.manage.security=Security Settings
+=======
+admin.actionlist.manage.users=Manage Users
+admin.actionlist.manage.security=Security Options
+>>>>>>> bf0e98dfb0e1f5138396db527816f74e3ee23289
 ###attribute management panel###
 admin.attributes.panel.title=Manage Attributes
 admin.attributes.responses.already.present.dialog=You cannot delete attributes that have been responded to

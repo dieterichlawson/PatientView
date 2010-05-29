@@ -117,7 +117,7 @@ public class FormResponseDataImporter implements CsvDataImporter{
 						if(chws.size() != 1){
 							List<User> users = userDao.getUsersByName(currLine[0], -1);
 							if(users.size() != 1){
-								List<User> usernames = userDao.getUsersByUsername(currLine[0]);
+								List<User> usernames = userDao.findUsersByUsername(currLine[0]);
 								if(usernames.size() != 1){
 									try{
 										long id=Long.parseLong(currLine[0]);

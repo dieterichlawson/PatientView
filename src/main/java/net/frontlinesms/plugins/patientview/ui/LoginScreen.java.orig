@@ -85,9 +85,13 @@ public class LoginScreen implements ThinletUiEventHandler {
 		this.tabController = tabController;
 		this.ui = uiController;
 		userDao = (UserDao) appCon.getBean("UserDao");
+<<<<<<< HEAD
+		questionDao = (SecurityQuestionDao) appCon.getBean("SecurityQuestionDao");
+=======
 		questionDao = (SecurityQuestionDao) appCon
 				.getBean("SecurityQuestionDao");
 		settings = SecurityOptions.getInstance();
+>>>>>>> bf0e98dfb0e1f5138396db527816f74e3ee23289
 		mainPanel = ui.createPanel("");
 		ui.setWeight(mainPanel, 1, 1);
 		reset();
