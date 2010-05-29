@@ -81,12 +81,28 @@ public class PagedAdvancedTableController extends AdvancedTableController implem
 		return mainPanel;
 	}
 
-	public void setResultsManager(PagedResultSet resultsManager) {
+	public void setResultsSet(PagedResultSet resultsManager) {
 		this.resultSet = resultsManager;
 	}
 
-	public PagedResultSet getResultsManager() {
+	public PagedResultSet getResultsSet() {
 		return resultSet;
 	}
 
+	public void setPagingControlBorder(boolean hasBorder){
+		Object panel = uiController.find(pagingControls,"bottomButtonPanel");
+		uiController.setBorder(panel, hasBorder);
+		if(hasBorder){
+			uiController.setInteger(panel, "top", 5);
+			uiController.setInteger(panel, "left", 5);
+			uiController.setInteger(panel, "right", 5);
+			uiController.setInteger(panel, "bottom", 5);
+		}else{
+			uiController.setInteger(panel, "top", 0);
+			uiController.setInteger(panel, "left", 0);
+			uiController.setInteger(panel, "right", 0);
+			uiController.setInteger(panel, "bottom", 0);
+
+		}
+	}
 }
