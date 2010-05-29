@@ -18,6 +18,10 @@ public class TabController {
 		this.tab = uiController.create("tab");
 		this.mainPanel = uiController.create("panel");
 		uiController.setWeight(mainPanel, 1, 1);
+		uiController.setInteger(mainPanel, "top", 5);
+		uiController.setInteger(mainPanel, "left", 5);
+		uiController.setInteger(mainPanel, "right", 5);
+		uiController.setInteger(mainPanel, "bottom", 5);
 		uiController.add(tab,mainPanel);
 	}
 
@@ -32,6 +36,7 @@ public class TabController {
 	protected void setTitle(String title){
 		uiController.setText(tab, title);
 	}
+	
 	protected void setIconPath(String iconPath){
 		uiController.setIcon(tab,iconPath);
 	}
