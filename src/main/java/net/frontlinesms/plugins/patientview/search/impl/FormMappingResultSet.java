@@ -12,9 +12,7 @@ import org.springframework.context.ApplicationContext;
 public class FormMappingResultSet extends PagedResultSet {
 
 	private List<MedicFormResponse> results;
-	
-	//private MedicFormResponseDao responseDao;
-	
+		
 	private SessionFactory sessionFactory;
 	
 	private static final String QUERY = "from MedicFormResponse fr where fr.subject is";
@@ -22,15 +20,20 @@ public class FormMappingResultSet extends PagedResultSet {
 	private boolean searchingMapped;
 	
 	public FormMappingResultSet(ApplicationContext appCon){
-		//this.responseDao = (MedicFormResponseDao) appCon.getBean("MedicFormResponseDao");
 		this.sessionFactory = (SessionFactory) appCon.getBean("sessionFactory");
 		super.pageSize=30;
 		setSearchingMapped(false);
 	}
+	
 	@Override
 	public List getResultsPage() {
 		int startIndex = currentPage * pageSize;
-		Session session = sessionFactory.openSession();
+		Session session = null;
+		try{
+			session = sessionFactory.getCurrentSession();
+		}catch(Throwable t){			
+			session = sessionFactory.openSession();
+		}
 		String query;
 		if(isSearchingMapped()){
 			query = QUERY + " not null and fr.submitter.class = 'chw'"; 

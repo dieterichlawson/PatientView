@@ -58,7 +58,7 @@ public class FormResponseMappingPanelController implements AdministrationTabPane
 		tableController.setNoResultsMessage(getI18NString("medic.form.response.mapping.panel.no.responses.yet"));
 		resultSet = new FormMappingResultSet(appCon);
 		resultSet.setSearchingMapped(false);
-		tableController.setResultsManager(resultSet);
+		tableController.setResultsSet(resultSet);
 		bottomPanel=uiController.find(mainPanel,"bottomPanel");
 		tableController.updateTable();
 	}
