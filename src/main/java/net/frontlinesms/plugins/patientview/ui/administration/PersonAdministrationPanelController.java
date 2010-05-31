@@ -8,8 +8,8 @@ import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEventNotification;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
@@ -113,7 +113,7 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 
 	/** 
 	 * Called when the selection of the results table is changed
-	 * @see net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate#selectionChanged(java.lang.Object)
+	 * @see net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate#selectionChanged(java.lang.Object)
 	 */
 	public void selectionChanged(Object selectedObject) {
 		currentPersonPanel = getPersonPanelForPerson((Person) selectedObject);
@@ -132,10 +132,10 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 		advancedTableController.setSelected(0);
 	}
 	
-	/** @see net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate#doubleClickAction(java.lang.Object)*/
+	/** @see net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate#doubleClickAction(java.lang.Object)*/
 	public void doubleClickAction(Object selectedObject) {/*Do nothing*/}
 	
-	/** @see net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate#resultsChanged() */
+	/** @see net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate#resultsChanged() */
 	public void resultsChanged() {/*do nothing*/}
 	
 	/**

@@ -6,7 +6,7 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.patientview.search.FieldDescriptor;
 import net.frontlinesms.plugins.patientview.search.QueryGenerator;
 import net.frontlinesms.plugins.patientview.search.SearchController;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;

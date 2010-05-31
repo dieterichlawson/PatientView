@@ -17,6 +17,8 @@ import net.frontlinesms.plugins.patientview.data.domain.response.PersonAttribute
 import net.frontlinesms.plugins.patientview.search.QueryGenerator;
 import net.frontlinesms.plugins.patientview.search.simplesearch.SimpleSearchController;
 import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabController;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewController;
 import net.frontlinesms.plugins.patientview.ui.registrar.RegistrationScreenController;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;

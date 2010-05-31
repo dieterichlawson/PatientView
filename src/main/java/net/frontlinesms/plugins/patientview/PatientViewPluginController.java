@@ -64,5 +64,6 @@ public class PatientViewPluginController extends BasePluginController{
 		DummyDataGenerator ddg = new DummyDataGenerator(applicationContext);
 		formMatcher = new FormMatcher(applicationContext);
 		PatientViewMessageListener listener = new PatientViewMessageListener(applicationContext);
+		PatientViewFormListener formListener = new PatientViewFormListener(applicationContext);
 	}
 }

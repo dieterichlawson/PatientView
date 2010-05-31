@@ -13,8 +13,8 @@ import net.frontlinesms.plugins.patientview.data.domain.framework.PersonAttribut
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeDao;
 import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeResponseDao;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;

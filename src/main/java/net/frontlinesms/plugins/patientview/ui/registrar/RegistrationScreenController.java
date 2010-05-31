@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableActionDelegate;
-import net.frontlinesms.plugins.patientview.ui.AdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.PatientViewThinletTabController;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanelDelegate;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;

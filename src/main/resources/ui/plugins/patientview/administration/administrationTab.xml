@@ -7,7 +7,7 @@
             </panel>
         </panel>
         <panel columns="1" bottom="9" gap="9" left="5" right="9" top="9" weightx="1" weighty="1">
-            <panel name="actionPanel" border="true" columns="1" gap="6" bottom="4" left="4" right="4" top="4" weightx="1" weighty="1"/>
+            <panel name="actionPanel" columns="1" gap="6" bottom="4" left="4" right="4" top="4" weightx="1" weighty="1"/>
         </panel>
     </splitpane>
 </tab>

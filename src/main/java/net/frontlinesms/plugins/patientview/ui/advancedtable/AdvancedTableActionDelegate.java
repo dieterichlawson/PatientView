@@ -1,4 +1,4 @@
-package net.frontlinesms.plugins.patientview.ui;
+package net.frontlinesms.plugins.patientview.ui.advancedtable;
 
 
 public interface AdvancedTableActionDelegate {

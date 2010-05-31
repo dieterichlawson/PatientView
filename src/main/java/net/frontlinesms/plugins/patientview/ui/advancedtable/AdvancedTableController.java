@@ -1,4 +1,4 @@
-package net.frontlinesms.plugins.patientview.ui;
+package net.frontlinesms.plugins.patientview.ui.advancedtable;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
