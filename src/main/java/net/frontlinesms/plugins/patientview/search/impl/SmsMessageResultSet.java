@@ -29,7 +29,7 @@ public class SmsMessageResultSet extends PagedResultSet{
 	}
 	
 	@Override
-	public List<MedicMessageResponse> getResultsPage() {
+	public List<MedicMessageResponse> getFreshResultsPage() {
 		Session session = null;
 		try{
 			session = sessionFactory.getCurrentSession();
@@ -61,7 +61,7 @@ public class SmsMessageResultSet extends PagedResultSet{
 
 	@Override
 	public void refresh() {
-		getResultsPage();
+		getFreshResultsPage();
 	}
 	
 	public void setContentSearchString(String contentSearchString) {
@@ -86,5 +86,9 @@ public class SmsMessageResultSet extends PagedResultSet{
 	
 	public void setSearchingTo(boolean searchingTo) {
 		this.searchingTo = searchingTo;
+	}
+	
+	public List getResultsPage(){
+		return results;
 	}
 }

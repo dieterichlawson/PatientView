@@ -56,6 +56,7 @@ public class FormResponseMappingPanelController implements AdministrationTabPane
 				 																		 new String[]{"/icons/form.png","/icons/date_sent.png","/icons/user_sender.png"},
 				 																		 new String[]{"getFormName","getStringDateSubmitted","getSubmitterName"}));
 		tableController.setNoResultsMessage(getI18NString("medic.form.response.mapping.panel.no.responses.yet"));
+		tableController.enableRefreshButton(appCon);
 		//set up the results set
 		resultSet = new FormMappingResultSet(appCon);
 		resultSet.setSearchingMapped(false);

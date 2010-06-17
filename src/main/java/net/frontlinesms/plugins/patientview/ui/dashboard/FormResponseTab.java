@@ -5,10 +5,6 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import java.util.Date;
 import java.util.List;
 
-import net.frontlinesms.data.events.DatabaseEntityNotification;
-import net.frontlinesms.events.EventBus;
-import net.frontlinesms.events.EventObserver;
-import net.frontlinesms.events.FrontlineEventNotification;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
@@ -25,7 +21,7 @@ import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.Thinlet
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
-public class FormResponseTab<P extends Person> extends TabController implements AdvancedTableActionDelegate, EventObserver, FormFieldDelegate {
+public class FormResponseTab<P extends Person> extends TabController implements AdvancedTableActionDelegate, FormFieldDelegate {
 
 	protected PagedAdvancedTableController formResponseTable;
 	protected FormResponseDetailViewPanelController formResponsePanel;
@@ -54,8 +50,6 @@ public class FormResponseTab<P extends Person> extends TabController implements 
 	protected void init() {
 		super.setTitle(getI18NString(TAB_TITLE));
 		super.setIconPath("/icons/big_form.png");
-		//register this object as an event observer
-		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
 		//set up skeleton
 		uiController.add(super.getMainPanel(),uiController.loadComponentFromFile(UI_FILE));
 		//set up right panel, the form response panel
@@ -78,6 +72,8 @@ public class FormResponseTab<P extends Person> extends TabController implements 
 		}
 		formResponseTable.setResultsSet(resultSet);
 		formResponseTable.updateTable();
+		formResponseTable.setNoResultsMessage(getI18NString("medic.form.responses.tab.no.search.results"));
+		formResponseTable.enableRefreshButton(appCon);
 		//set up controls
 		//create the date controls
 		DateField dateField = new DateField(uiController,getI18NString(DATE_SUBMITTED_COLUMN),this);
@@ -101,6 +97,7 @@ public class FormResponseTab<P extends Person> extends TabController implements 
 		Object spacer = uiController.createLabel("");
 		uiController.setWeight(spacer, 1, 0);
 		uiController.add(uiController.find(getMainPanel(),"controlPanel"),spacer);
+		formResponseTable.setSelected(0);
 	}
 	
 
@@ -112,14 +109,6 @@ public class FormResponseTab<P extends Person> extends TabController implements 
 
 	public void selectionChanged(Object selectedObject) {
 			formResponsePanel.viewWillAppear((MedicFormResponse) selectedObject);
-	}
-
-	public void notify(FrontlineEventNotification event) {
-		if(event instanceof DatabaseEntityNotification<?>){
-			if(((DatabaseEntityNotification<?>) event).getDatabaseEntity() instanceof MedicFormResponse){
-				formResponseTable.updateTable();
-			}
-		}
 	}
 
 	public void doubleClickAction(Object selectedObject) {}

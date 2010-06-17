@@ -14,12 +14,11 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldR
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.PersonAttributeResponse;
-import net.frontlinesms.plugins.patientview.search.QueryGenerator;
 import net.frontlinesms.plugins.patientview.search.simplesearch.SimpleSearchController;
 import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabController;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
-import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.HeaderColumn;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.PagedAdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewController;
 import net.frontlinesms.plugins.patientview.ui.registrar.RegistrationScreenController;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
@@ -60,7 +59,7 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	// other sub-controllers
 	/** controller for the detailed view **/
 	private DetailViewController detailViewController;
-	private AdvancedTableController tableController;
+	private PagedAdvancedTableController tableController;
 
 	// Search Controllers
 	private SimpleSearchController simpleSearch;
@@ -89,13 +88,10 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	 * @param pluginController
 	 * @param uiController
 	 */
-	public PatientViewThinletTabController(
-			PatientViewPluginController pluginController,
-			UiGeneratorController uiController) {
+	public PatientViewThinletTabController(PatientViewPluginController pluginController, UiGeneratorController uiController) {
 		this.pluginController = pluginController;
 		this.uiController = uiController;
-		loginScreen = new LoginScreen(uiController, this, pluginController
-				.getApplicationContext());
+		loginScreen = new LoginScreen(uiController, this, pluginController.getApplicationContext());
 		initialInit();
 	}
 
@@ -145,7 +141,7 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 				uiController.add(mainPanel,rsc.getMainPanel());
 			}else{
 			//initialize the results table
-			tableController = new AdvancedTableController(this, uiController, uiController.find(mainTab, "resultTable"));
+			tableController = new PagedAdvancedTableController(this, uiController, uiController.find(mainTab, "resultTable"));
 			//create all the column labels
 			String nameLabel = getI18NString(NAME_COLUMN);
 			String bdayLabel = getI18NString(BDAY_COLUMN);
@@ -185,95 +181,26 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 					 												new String[]{"/icons/tag_purple.png", "/icons/user_sender.png","", "/icons/date_sent.png","/icons/description.png"},
 					 												new String[]{"getFieldLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"}));
 			
+			tableController.enableRefreshButton(pluginController.getApplicationContext());
+			Object label = uiController.createLabel(getI18NString(LOGGED_IN_MESSAGE) + " " + UserSessionManager.getUserSessionManager().getCurrentUser().getName());
+			Object logoutButton = uiController.createButton(getI18NString("buttons.logout"));
+			uiController.setAction(logoutButton, "logout()", null, this);
+			uiController.setIcon(logoutButton, "/icons/exit.png");
+			uiController.add(uiController.find(tableController.getMainPanel(),"bottomButtonPanel"),logoutButton,0);
+			uiController.add(uiController.find(tableController.getMainPanel(),"bottomButtonPanel"),label,0);
 			// intialize the search controllers
 			simpleSearch = new SimpleSearchController(uiController, pluginController.getApplicationContext(), tableController);
 			uiController.add(uiController.find(mainTab, "searchContainer"), simpleSearch.getMainPanel());
-			// set the login label
-			uiController.setText(uiController.find(mainTab, "userStatusLabel"), getI18NString(LOGGED_IN_MESSAGE) + " " + UserSessionManager.getUserSessionManager().getCurrentUser().getName()); 
-			updatePagingControls();
 		}
 	}
 
 	// TableActionDelegate methods
 
-	public void doubleClickAction(Object selectedObject) {
-	}
+	public void doubleClickAction(Object selectedObject) {}
+	public void resultsChanged() {}
 
 	public void selectionChanged(Object selectedObject) {
 		detailViewController.selectionChanged(selectedObject);
 	}
 
-	public QueryGenerator getQueryGenerator() {
-		if (simpleSearch != null) {
-			return simpleSearch.getQueryGenerator();
-		} else {
-			return null;
-		}
-	}
-
-	public void refresh() {
-		simpleSearch.searchButtonPressed();
-	}
-
-	/**
-	 * action method for left page button
-	 */
-	public void pageLeft() {
-		this.getQueryGenerator().previousPage();
-		updatePagingControls();
-		simpleSearch.refresh();
-	}
-
-	/**
-	 * action method for right page button
-	 */
-	public void pageRight() {
-		this.getQueryGenerator().nextPage();
-		updatePagingControls();
-		simpleSearch.refresh();
-	}
-
-	private void updatePagingControls() {
-		// update the paging buttons
-		if (this.getQueryGenerator() == null) {
-			return;
-		}
-		System.out.println(this.getQueryGenerator().getTotalResults());
-		if (this.getQueryGenerator().getTotalResults() == 0) {
-			uiController.setEnabled(uiController.find(mainTab,
-					"rightPageButton"), false);
-			uiController.setEnabled(uiController
-					.find(mainTab, "leftPageButton"), false);
-			uiController.setText(uiController.find(mainTab, "resultsLabel"),
-					getI18NString("pagingcontrols.no.results"));
-			return;
-		}
-		if (this.getQueryGenerator().hasPreviousPage()) {
-			uiController.setEnabled(uiController
-					.find(mainTab, "leftPageButton"), true);
-		} else {
-			uiController.setEnabled(uiController
-					.find(mainTab, "leftPageButton"), false);
-		}
-
-		if (this.getQueryGenerator().hasNextPage()) {
-			uiController.setEnabled(uiController.find(mainTab,
-					"rightPageButton"), true);
-		} else {
-			uiController.setEnabled(uiController.find(mainTab,
-					"rightPageButton"), false);
-		}
-		String pagingLabel = getI18NString("pagingcontrols.results") + " "
-				+ getQueryGenerator().getFirstResultOnPage() + " "
-				+ getI18NString("pagingcontrols.to") + " "
-				+ getQueryGenerator().getLastResultOnPage() + " "
-				+ getI18NString("pagingcontrols.of") + " "
-				+ getQueryGenerator().getTotalResults();
-		uiController.setText(uiController.find(mainTab, "resultsLabel"),
-				pagingLabel);
-	}
-
-	public void resultsChanged() {
-		updatePagingControls();
-	}
 }

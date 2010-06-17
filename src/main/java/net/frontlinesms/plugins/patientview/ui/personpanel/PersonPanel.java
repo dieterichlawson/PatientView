@@ -300,7 +300,6 @@ public abstract class PersonPanel<E extends Person> implements
 	private Object getSaveCancelButtons() {
 		Object saveCancelPanel = Thinlet.create("panel");
 		uiController.setName(saveCancelPanel, BUTTON_PANEL);
-//		uiController.setInteger(saveCancelPanel, "columns", 2);
 		uiController.setInteger(saveCancelPanel, "gap", 10);
 		uiController.setInteger(saveCancelPanel, "right", 10);
 		uiController.setChoice(saveCancelPanel, "halign", "fill");

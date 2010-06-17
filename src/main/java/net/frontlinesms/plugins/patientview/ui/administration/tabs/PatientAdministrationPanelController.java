@@ -3,6 +3,7 @@ package net.frontlinesms.plugins.patientview.ui.administration.tabs;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.frontlinesms.events.FrontlineEventNotification;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
@@ -66,6 +67,11 @@ public class PatientAdministrationPanelController extends PersonAdministrationPa
 		icons[EDIT_INDEX] = EDIT_ICON;
 		icons[REMOVE_INDEX] = DELETE_ICON;
 		return icons;
+	}
+
+	@Override
+	protected Class<Patient> getPersonClass() {
+		return Patient.class;
 	}
 
 }

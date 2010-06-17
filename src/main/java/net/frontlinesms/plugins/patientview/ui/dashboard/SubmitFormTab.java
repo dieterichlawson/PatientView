@@ -111,6 +111,7 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 			}
 		}
 		autoFillPatient();
+		clearWarningLabel();
 	}
 	
 	private void autoFillPatient(){
@@ -158,16 +159,28 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 			}
 		}
 		responseDao.saveMedicFormResponse(response);
-		setWarningLabel(InternationalisationUtils.getI18NString(SUCCESSFUL_SUBMIT_MESSAGE));
 		updateFormPanel();
+		setSuccessLabel(InternationalisationUtils.getI18NString(SUCCESSFUL_SUBMIT_MESSAGE));
+	}
+	
+	public void setSuccessLabel(String s){
+		uiController.setIcon(warningLabel, "/icons/thumb_up.png");
+		setLabel(s);
 	}
 	
 	public void setWarningLabel(String s){
+		uiController.setIcon(warningLabel, "/icons/cross.png");
+		setLabel(s);
+	}
+	
+	public void setLabel(String s){
 		uiController.setText(warningLabel, s);
+		uiController.setVisible(warningLabel, true);
 	}
 	
 	public void clearWarningLabel(){
 		uiController.setText(warningLabel, "");
+		uiController.setVisible(warningLabel, false);
 	}
 
 	public void selectionChanged(MedicForm selectedObject) {

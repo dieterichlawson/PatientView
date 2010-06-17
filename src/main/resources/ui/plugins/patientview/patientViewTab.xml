@@ -8,20 +8,8 @@
       <splitpane weightx="1" weighty="1" name="splitPanel">
         <panel gap="5" columns="1" weightx="4" right="5">
         	<panel border="false" columns="1" name="searchContainer" weightx="1"/>
-            <table colspan="1" name="resultTable" weightx="1" weighty="1">
-            	<header>
-            		<column text="Results:"/>
-            	</header>
-            </table>
-            <panel colspan="1" border="true" name="bottomButtonPanel" weightx="1" gap="10" left="5" right="5" top="5" bottom="5">
-            	<label name="userStatusLabel"/>
-            	<button action="logout()" text="i18n.buttons.logout" icon="/icons/exit.png"/>
-            	<label weightx="1"/>
-            	<label name="resultsLabel" text="Results 1-30 of 3000"/>
-            	<button name="leftPageButton" icon="/icons/left.png" action="pageLeft()"/>
-            	<button name="rightPageButton" icon="/icons/right.png" action="pageRight()"/>
-            </panel> 
-        </panel>
+            <panel colspan="1" name="resultTable" weightx="1" weighty="1"/>
+         </panel>
         <panel border="true" name="detailViewPanel" weightx="1" weighty="1" halign="fill" columns="1" gap="5" left ="5" right="5" bottom="5" top="5" scrollable="true">
         	<label halign="center" text="i18n.detailview.null.selection.message" valign="center" weightx="1" weighty="1"/>
         </panel>

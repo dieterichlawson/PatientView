@@ -65,6 +65,7 @@ public class SmsMessagesTab extends TabController implements AdvancedTableAction
 				new String[]{"getStatus","getStringDateSubmitted","getSenderMsisdn","getRecipientMsisdn","getMessageContent"}));
 		tableController.setNoResultsMessage(getI18NString("medic.sms.messages.tab.no.search.results") +" "+ chw.getName());
 		tableController.setPagingControlBorder(false);
+		tableController.enableRefreshButton(appCon);
 		uiController.add(uiController.find(getMainPanel(),"tablePanel"),tableController.getMainPanel());
 		//set up the result set
 		resultSet = new SmsMessageResultSet(appCon);

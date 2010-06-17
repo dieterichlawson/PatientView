@@ -2,8 +2,6 @@ package net.frontlinesms.plugins.patientview.search;
 
 import java.util.List;
 
-import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.context.ApplicationContext;
@@ -64,7 +62,12 @@ public abstract class QueryGenerator extends PagedResultSet{
 	}
 	
 	@Override
-	public List getResultsPage() {
+	public List getFreshResultsPage() {
+		refresh();
+		return results;
+	}
+	
+	public List getResultsPage(){
 		return results;
 	}
 	

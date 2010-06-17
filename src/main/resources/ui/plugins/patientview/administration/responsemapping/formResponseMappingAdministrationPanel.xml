@@ -8,7 +8,7 @@
 	    <checkbox icon="/icons/form.png" action="toggleChanged(this)" group="1" halign="center" name="unmappedToggle" selected="true" text="i18n.medic.form.response.mapping.panel.unmapped.responses"/>
     </panel>
     <separator weightx="1"/>
-	    <splitpane weightx="1" weighty="4">
+	    <panel weightx="1" weighty="4" columns="2">
 	        <panel weightx="2" columns="1" gap="5" right="4">	            	
 	            <panel gap="5" weightx="1" name="controlPanel" weightx="2" top="3"/>	         
 	            <panel name="tablePanel" weightx="1" weighty="1" columns="1"/>
@@ -16,5 +16,5 @@
 	        <panel name="actionPanel" columns="1" weightx="1" weighty="1" top="5" left="4" gap="5" scrollable="true">
 	        	<label halign="center" text="i18n.medic.form.response.mapping.panel.empty.selection.message" valign="center" weightx="1" weighty="1"/>
 	        </panel>
-	    </splitpane>
+	    </panel>
 </panel>

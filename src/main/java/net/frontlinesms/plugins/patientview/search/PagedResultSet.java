@@ -104,5 +104,7 @@ public abstract class PagedResultSet {
 	
 	public abstract void refresh();
 	
+	public abstract List getFreshResultsPage();
+	
 	public abstract List getResultsPage();
 }

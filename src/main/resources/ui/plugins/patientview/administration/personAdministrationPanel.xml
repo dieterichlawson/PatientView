@@ -11,7 +11,7 @@
             <button name="removebutton" text="" icon="/icons/big_user_delete.png"/>
             <button name="editbutton" text="" icon="/icons/big_user_edit.png"/>
         </panel>
-        <table colspan="2" name="resultstable" weightx="1" weighty="1"/>
+        <panel colspan="2" name="resultstable" weightx="1" weighty="1"/>
     </panel>
     <panel gap="6" left="6" name="fieldspanel" top="6" weightx="1" weighty="1" columns="1"/>
 </panel>

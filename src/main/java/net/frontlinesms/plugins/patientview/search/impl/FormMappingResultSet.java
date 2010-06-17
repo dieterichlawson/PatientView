@@ -35,7 +35,7 @@ public class FormMappingResultSet extends PagedResultSet {
 	}
 	
 	@Override
-	public List getResultsPage() {
+	public List getFreshResultsPage() {
 		int startIndex = currentPage * pageSize;
 		Session session = null;
 		try{
@@ -78,8 +78,13 @@ public class FormMappingResultSet extends PagedResultSet {
 
 	@Override
 	public void refresh() {
-		getResultsPage();
+		getFreshResultsPage();
 	}
+	
+	public List getResultsPage(){
+		return results;
+	}
+	
 	public void setSearchingMapped(boolean searchingMapped) {
 		this.searchingMapped = searchingMapped;
 	}

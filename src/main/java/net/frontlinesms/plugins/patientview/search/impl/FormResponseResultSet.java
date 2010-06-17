@@ -61,7 +61,7 @@ public class FormResponseResultSet extends PagedResultSet {
 	}
 	
 	@Override
-	public List<MedicFormResponse> getResultsPage() {
+	public List<MedicFormResponse> getFreshResultsPage() {
 		Session session = null;
 		try{
 			session = sessionFactory.getCurrentSession();
@@ -98,7 +98,7 @@ public class FormResponseResultSet extends PagedResultSet {
 
 	@Override
 	public void refresh() {
-		getResultsPage();
+		getFreshResultsPage();
 	}
 	
 	public List<MedicFormResponse> getResults() {
@@ -119,6 +119,10 @@ public class FormResponseResultSet extends PagedResultSet {
 
 	public void setForm(MedicForm form) {
 		this.form = form;
+	}
+	
+	public List getResultsPage(){
+		return results;
 	}
 
 

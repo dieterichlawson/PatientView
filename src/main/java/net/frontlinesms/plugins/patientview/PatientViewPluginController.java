@@ -5,7 +5,6 @@ import net.frontlinesms.plugins.BasePluginController;
 import net.frontlinesms.plugins.PluginControllerProperties;
 import net.frontlinesms.plugins.PluginInitialisationException;
 import net.frontlinesms.plugins.patientview.listener.FormMatcher;
-import net.frontlinesms.plugins.patientview.listener.PatientFlagListener;
 import net.frontlinesms.plugins.patientview.listener.PatientViewFormListener;
 import net.frontlinesms.plugins.patientview.listener.PatientViewMessageListener;
 import net.frontlinesms.plugins.patientview.ui.PatientViewThinletTabController;

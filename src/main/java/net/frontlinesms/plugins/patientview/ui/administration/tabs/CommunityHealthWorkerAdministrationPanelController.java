@@ -5,6 +5,7 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.frontlinesms.events.FrontlineEventNotification;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
@@ -66,6 +67,11 @@ public class CommunityHealthWorkerAdministrationPanelController extends PersonAd
 		icons[EDIT_INDEX] = EDIT_ICON;
 		icons[REMOVE_INDEX] = DELETE_ICON;
 		return icons;
+	}
+
+	@Override
+	protected Class<CommunityHealthWorker> getPersonClass() {
+		return CommunityHealthWorker.class;
 	}
 
 }

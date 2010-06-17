@@ -6,7 +6,7 @@ import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.patientview.search.FieldDescriptor;
 import net.frontlinesms.plugins.patientview.search.QueryGenerator;
 import net.frontlinesms.plugins.patientview.search.SearchController;
-import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.PagedAdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
@@ -32,7 +32,7 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	private Object fieldComboBox;
 	private Object entityComboBox;
 	private Object descriptorPanel;
-	private AdvancedTableController tableController;
+	private PagedAdvancedTableController tableController;
 	
 	//entry controls
 	private Object textField;
@@ -45,10 +45,11 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	private static final String BEFORE = "simplesearch.labels.before";
 	private static final String AFTER = "simplesearch.labels.after";
 	
-	public SimpleSearchController(UiGeneratorController uiController, ApplicationContext appCon, AdvancedTableController resultsTable){
+	public SimpleSearchController(UiGeneratorController uiController, ApplicationContext appCon, PagedAdvancedTableController resultsTable){
 		this.uiController = uiController;
 		this.tableController = resultsTable;
 		queryGenerator = new SimpleSearchQueryGenerator(this,appCon);
+		tableController.setResultsSet(queryGenerator);
 		mainPanel = uiController.loadComponentFromFile(UI_FILE, this);
 		entityComboBox = uiController.find(mainPanel, "entityComboBox");
 		fieldComboBox = uiController.find(mainPanel, "fieldComboBox");
@@ -197,7 +198,7 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	}
 	
 	public void textEntryChanged(){
-		if(getTextInput().length() > 3){
+		if(getTextInput().length() > 3 || getTextInput().equalsIgnoreCase("")){
 			searchButtonPressed();
 		}
 	}
@@ -215,7 +216,7 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	}
 	
 	public void refresh(){
-		tableController.setResults(queryGenerator.getResultsPage());
+		tableController.setResults(queryGenerator.getFreshResultsPage());
 	}
 	
 		
