@@ -1,7 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
-import net.frontlinesms.Utils;
+import net.frontlinesms.FrontlineUtils;
 import net.frontlinesms.plugins.PluginController;
 import net.frontlinesms.plugins.patientview.PatientViewPluginController;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
@@ -19,6 +19,7 @@ import net.frontlinesms.plugins.patientview.search.simplesearch.SimpleSearchCont
 import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabController;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.HeaderColumn;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewController;
 import net.frontlinesms.plugins.patientview.ui.registrar.RegistrationScreenController;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
 public class PatientViewThinletTabController implements ThinletUiEventHandler, AdvancedTableActionDelegate {
 
 	/** Logging object */
-	private final Logger LOG = Utils.getLogger(this.getClass());
+	private final Logger LOG = FrontlineUtils.getLogger(this.getClass());
 
 	/** The {@link PluginController} that owns this class. */
 	private final PatientViewPluginController pluginController;
@@ -64,23 +65,16 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	// Search Controllers
 	private SimpleSearchController simpleSearch;
 
-	// private DrillDownSearchController drillDownSearch;
-
-	// current search controls
-	private static enum SearchState {
-		SIMPLESEARCH(), DRILLDOWNSEARCH();
-	}
-
 	// i18n strings
 	private static final String NAME_COLUMN = "medic.common.labels.name";
 	private static final String BDAY_COLUMN = "thinletformfields.birthdate";
-	private static final String GENDER_COLUMN = "medic.common.labels.gender";
+	private static final String ID_COLUMN = "medic.common.labels.id";
 	private static final String PHONE_NUMBER_COLUMN = "medic.common.labels.phone.number";
 	private static final String SENDER_COLUMN = "medic.common.labels.sender";
 	private static final String SUBJECT_COLUMN = "medic.common.labels.subject";
 	private static final String DATE_SENT_COLUMN = "medic.common.labels.date.sent";
 	private static final String DATE_SUBMITTED_COLUMN = "medic.common.labels.date.submitted";
-	private static final String MESSAGE_CONTENT_COLUMN = "medic.common.labels.message.content";
+	private static final String MESSAGE_CONTENT_COLUMN = "medic.common.labels.message";
 	private static final String LABEL_COLUMN = "medic.common.labels.label";
 	private static final String PARENT_FORM_COLUMN = "medic.common.labels.parent.form";
 	private static final String FORM_NAME_COLUMN = "medic.common.labels.form.name";
@@ -88,8 +82,6 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	private static final String RESPONSE_COLUMN = "medic.common.labels.response";
 	private static final String CHW_COLUMN = "medic.common.chw";
 	private static final String LOGGED_IN_MESSAGE = "login.logged.in.as";
-
-	private SearchState currentSearchState;
 
 	/**
 	 * Create a new instance of this class.
@@ -154,9 +146,10 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 			}else{
 			//initialize the results table
 			tableController = new AdvancedTableController(this, uiController, uiController.find(mainTab, "resultTable"));
-			String nameLabel= getI18NString(NAME_COLUMN);
-			String bdayLabel=getI18NString(BDAY_COLUMN);
-			String genderLabel=getI18NString(GENDER_COLUMN);
+			//create all the column labels
+			String nameLabel = getI18NString(NAME_COLUMN);
+			String bdayLabel = getI18NString(BDAY_COLUMN);
+			String idLabel = getI18NString(ID_COLUMN);
 			String phoneNumberLabel=getI18NString(PHONE_NUMBER_COLUMN);
 			String chwLabel=getI18NString(CHW_COLUMN);
 			String senderLabel = getI18NString(SENDER_COLUMN);
@@ -169,32 +162,34 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 			String formNameLabel = getI18NString(FORM_NAME_COLUMN);
 			String fieldLabelLabel =getI18NString(FIELD_LABEL_COLUMN);
 			String responseLabel =getI18NString(RESPONSE_COLUMN);
-			tableController.putHeader(CommunityHealthWorker.class, new String[]{nameLabel,bdayLabel,genderLabel, phoneNumberLabel}, new String[]{"getName", "getStringBirthdate","getStringGender","getPhoneNumber"});
-			tableController.putHeader(Patient.class, new String[]{nameLabel,bdayLabel,genderLabel, chwLabel}, new String[]{"getName", "getStringBirthdate","getStringGender","getCHWName"});
-			tableController.putHeader(MedicForm.class, new String[]{nameLabel}, new String[]{"getName"});
-			tableController.putHeader(PersonAttribute.class, new String[]{labelLabel}, new String[]{"getLabel"});
-			tableController.putHeader(PersonAttributeResponse.class, new String[]{labelLabel, senderLabel,subjectLabel, dateSubmittedLabel,responseLabel}, new String[]{"getAttributeLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"});
-			tableController.putHeader(MedicFormField.class, new String[]{labelLabel, parentFormLabel}, new String[]{"getLabel","getParentFormName"});
-			tableController.putHeader(MedicMessageResponse.class, new String[]{senderLabel,dateSentLabel, messageContentLabel}, new String[]{"getSubmitterName","getStringDateSubmitted","getMessageContent"});
-			tableController.putHeader(MedicFormResponse.class, new String[]{formNameLabel, senderLabel,subjectLabel, dateSubmittedLabel}, new String[]{"getFormName","getSubmitterName","getSubjectName","getStringDateSubmitted"});
-			tableController.putHeader(MedicFormFieldResponse.class, new String[]{fieldLabelLabel, senderLabel,subjectLabel, dateSubmittedLabel,responseLabel}, new String[]{"getFieldLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"});
+			//create all the table headers
+			tableController.putHeader(CommunityHealthWorker.class, HeaderColumn.createColumnList(new String[]{nameLabel, bdayLabel, idLabel,phoneNumberLabel},
+																								 new String[]{"/icons/user.png", "/icons/cake.png", "/icons/key.png","/icons/phone_number.png"},
+																								 new String[]{"getName", "getStringBirthdate", "getStringID","getPhoneNumber"}));
+			tableController.putHeader(Patient.class, HeaderColumn.createColumnList(new String[]{nameLabel, bdayLabel, idLabel,chwLabel},
+					 																			 new String[]{"/icons/user.png", "/icons/cake.png", "/icons/key.png","/icons/user_phone.png"},
+					 																			 new String[]{"getName", "getStringBirthdate", "getStringID","getCHWName"}));
+			tableController.putHeader(MedicForm.class,  HeaderColumn.createColumnList(new String[]{nameLabel}, new String[]{"/icons/form.png"}, new String[]{"getName"}));
+			tableController.putHeader(PersonAttribute.class, HeaderColumn.createColumnList(new String[]{labelLabel}, new String[]{"/icons.textfield.png"},new String[]{"getLabel"}));
+			tableController.putHeader(PersonAttributeResponse.class, HeaderColumn.createColumnList(new String[]{labelLabel, senderLabel,subjectLabel, dateSubmittedLabel,responseLabel},
+																								   new String[]{"/icons/tag_purple.png", "/icons/user_sender.png","", "/icons/date_sent.png","/icons/description.png"},
+																								   new String[]{"getAttributeLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"}));
+			tableController.putHeader(MedicFormField.class, HeaderColumn.createColumnList(new String[]{labelLabel, parentFormLabel},new String[]{"/icons/tag_purple.png", "/icons/form.png"}, new String[]{"getLabel","getParentFormName"}));
+			tableController.putHeader(MedicMessageResponse.class,HeaderColumn.createColumnList(new String[]{senderLabel,dateSentLabel, messageContentLabel},
+																  							   new String[]{"/icons/user_sender.png", "/icons/date_sent.png","/icons/description.png"},
+																  							   new String[]{"getSubmitterName","getStringDateSubmitted","getMessageContent"}));
+			tableController.putHeader(MedicFormResponse.class, HeaderColumn.createColumnList(new String[]{formNameLabel, senderLabel,subjectLabel, dateSubmittedLabel}, 
+															 								 new String[]{"/icons/form.png","/icons/user_sender.png","", "/icons/date_sent.png"},
+															 								 new String[]{"getFormName","getSubmitterName","getSubjectName","getStringDateSubmitted"}));
+			tableController.putHeader(MedicFormFieldResponse.class, HeaderColumn.createColumnList(new String[]{fieldLabelLabel, senderLabel,subjectLabel, dateSubmittedLabel,responseLabel}, 
+					 												new String[]{"/icons/tag_purple.png", "/icons/user_sender.png","", "/icons/date_sent.png","/icons/description.png"},
+					 												new String[]{"getFieldLabel","getSubmitterName","getSubjectName","getStringDateSubmitted","getValue"}));
 			
-			currentSearchState = SearchState.SIMPLESEARCH;
 			// intialize the search controllers
-			simpleSearch = new SimpleSearchController(uiController,
-					pluginController.getApplicationContext(), tableController);
-			// drillDownSearch = new
-			// DrillDownSearchController(uiController,pluginController.getApplicationContext(),tableController);
-			// add the simple search controller
-			uiController.add(uiController.find(mainTab, "searchContainer"),
-					simpleSearch.getMainPanel());
-			currentSearchState = SearchState.SIMPLESEARCH;
+			simpleSearch = new SimpleSearchController(uiController, pluginController.getApplicationContext(), tableController);
+			uiController.add(uiController.find(mainTab, "searchContainer"), simpleSearch.getMainPanel());
 			// set the login label
-			uiController.setText(uiController.find(mainTab, "userStatusLabel"),
-					getI18NString(LOGGED_IN_MESSAGE)
-							+ " "
-							+ UserSessionManager.getUserSessionManager()
-									.getCurrentUser().getName());
+			uiController.setText(uiController.find(mainTab, "userStatusLabel"), getI18NString(LOGGED_IN_MESSAGE) + " " + UserSessionManager.getUserSessionManager().getCurrentUser().getName()); 
 			updatePagingControls();
 		}
 	}
@@ -202,9 +197,6 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	// TableActionDelegate methods
 
 	public void doubleClickAction(Object selectedObject) {
-		if (currentSearchState == SearchState.DRILLDOWNSEARCH) {
-			// drillDownSearch.drillDown(selectedObject);
-		}
 	}
 
 	public void selectionChanged(Object selectedObject) {
@@ -221,38 +213,6 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 
 	public void refresh() {
 		simpleSearch.searchButtonPressed();
-	}
-
-	/**
-	 * Switches from Drill-Down Search to Simple search or vice-versa when one
-	 * of the selection buttons is clicked
-	 * 
-	 * @param sender
-	 *            the button that was clicked
-	 */
-	public void switchSearchControls(Object sender) {
-		if (uiController.getName(sender).equalsIgnoreCase("simpleSearchButton")) {
-			if (currentSearchState == SearchState.SIMPLESEARCH) {
-				return;
-			} else {
-				// uiController.remove(drillDownSearch.getMainPanel());
-				uiController.add(uiController.find(mainTab, "searchContainer"),
-						simpleSearch.getMainPanel());
-				simpleSearch.controllerWillAppear();
-				currentSearchState = SearchState.SIMPLESEARCH;
-			}
-		} else if (uiController.getName(sender).equalsIgnoreCase(
-				"drillDownSearchButton")) {
-			if (currentSearchState == SearchState.DRILLDOWNSEARCH) {
-				return;
-			} else {
-				uiController.remove(simpleSearch.getMainPanel());
-				// uiController.add(uiController.find(mainTab,"searchContainer"),
-				// drillDownSearch.getMainPanel());
-				// drillDownSearch.controllerWillAppear();
-				currentSearchState = SearchState.DRILLDOWNSEARCH;
-			}
-		}
 	}
 
 	/**

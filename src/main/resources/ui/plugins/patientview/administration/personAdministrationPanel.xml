@@ -4,7 +4,7 @@
     <label colspan="2" font="17 bold" halign="left" name="titleLabel" text="" weightx="1"/>
     <separator colspan="2" weightx="1"/>
     <panel columns="2" gap="6" right="6" top="6" weightx="1" weighty="1">
-        <label text="i18n.medic.common.labels.search"/>
+        <label icon="/icons/search.png" text="i18n.medic.common.labels.search"/>
         <textfield action="search(searchbox.text)" name="searchbox" weightx="1"/>
         <panel colspan="3" gap="31" halign="center" weightx="1">
             <button name="addbutton" text="" icon="/icons/big_user_add.png"/>
@@ -13,5 +13,5 @@
         </panel>
         <table colspan="2" name="resultstable" weightx="1" weighty="1"/>
     </panel>
-    <panel gap="6" left="6" name="fieldspanel" top="6" weightx="1" weighty="1"/>
+    <panel gap="6" left="6" name="fieldspanel" top="6" weightx="1" weighty="1" columns="1"/>
 </panel>

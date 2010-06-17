@@ -1,6 +1,8 @@
 package net.frontlinesms.plugins.patientview.data.domain.response;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -11,9 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import net.frontlinesms.Utils;
+import net.frontlinesms.FrontlineUtils;
 import net.frontlinesms.plugins.forms.data.domain.FormResponse;
+import net.frontlinesms.plugins.forms.data.domain.ResponseValue;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
@@ -24,7 +28,7 @@ import org.hibernate.annotations.OrderBy;
 @DiscriminatorValue(value="form")
 public class MedicFormResponse extends Response{
 
-	private static Logger LOG = Utils.getLogger(MedicFormResponse.class);
+	private static Logger LOG = FrontlineUtils.getLogger(MedicFormResponse.class);
 	
 	@ManyToOne(fetch=FetchType.EAGER,cascade={})
 	@JoinColumn(name="form" )
@@ -41,15 +45,20 @@ public class MedicFormResponse extends Response{
 		this.form = mForm;
 		this.subject = subject;
 		this.submitter = submitter;
+		this.dateSubmitted = new Date().getTime();
 		responses = new ArrayList<MedicFormFieldResponse>();
-		LOG.info("Beginning conversion from FSMS form response to PV form fesponse");
+		LOG.info("Beginning conversion from FSMS form response to PV form response");
 		LOG.info("Form: " + mForm.getName());
-		for(int i = 0; i < mForm.getFields().size(); i++){
-			LOG.info("Creating field #"+i+" . Label: "+ mForm.getFields().get(i).getLabel()+ " Value: "+fr.getResults().get(i).toString());
-			MedicFormFieldResponse mffr = new MedicFormFieldResponse(fr.getResults().get(i).toString(),mForm.getFields().get(i),subject,submitter);
-			mffr.setFormResponse(this);
-			mffr.setPosition(responses.size());
-			responses.add(mffr);
+		Iterator<ResponseValue> responseValues = fr.getResults().iterator();
+		for(MedicFormField mff: mForm.getFields()){
+			if(mff.isRespondable()){
+				String response = responseValues.next().toString();
+				LOG.info("Creating response for field \"" + mff.getLabel()+ "\" Value: " + response);
+				MedicFormFieldResponse mffr = new MedicFormFieldResponse(response, mff, subject, submitter);
+				mffr.setFormResponse(this);
+				mffr.setPosition(responses.size());
+				responses.add(mffr);
+			}
 		}
 		LOG.info("Done creating PV form response");
 	}
@@ -67,6 +76,7 @@ public class MedicFormResponse extends Response{
 	public MedicFormResponse(MedicForm form, Person submitter, Person subject) {
 		super(submitter, subject);
 		this.form = form;
+		this.dateSubmitted = new Date().getTime();
 		responses = new ArrayList<MedicFormFieldResponse>();
 	}
 	

@@ -107,18 +107,16 @@ public class ImageUtils {
     }
     
     public static BufferedImage getThumbnailImage(BufferedImage img){
-    	int height = 115;
-    	int width = (int) ((115.0 / (double) img.getHeight()) * (double) img.getWidth());
-    	return scale(img, width , height,RenderingHints.VALUE_INTERPOLATION_BILINEAR,true);
+    	int height = img.getHeight() < 115? img.getHeight():115;
+    	int width = (int) ((height / (double) img.getHeight()) * (double) img.getWidth());
+    	boolean highQuality = img.getHeight() > 115*3;
+    	return scale(img, width , height,RenderingHints.VALUE_INTERPOLATION_BILINEAR,highQuality);
     }
     
     public static BufferedImage getLargeImage(BufferedImage img){
-    	int height = 650;
-    	int width = (int) ((650.0 / (double) img.getHeight()) * (double) img.getWidth());
-    	return scale(img, width , height,RenderingHints.VALUE_INTERPOLATION_BILINEAR,true);
-    }
-    
-    public static BufferedImage getScaledImage(BufferedImage img,int width, int height){
-    	return scale(img,width,height,RenderingHints.VALUE_INTERPOLATION_BILINEAR,true);
+    	int height = img.getHeight() < 650? img.getHeight():650;
+    	int width = (int) ((height / (double) img.getHeight()) * (double) img.getWidth());
+    	boolean highQuality = img.getHeight() > 650*2;
+    	return scale(img, width , height,RenderingHints.VALUE_INTERPOLATION_BILINEAR,highQuality);
     }
 }

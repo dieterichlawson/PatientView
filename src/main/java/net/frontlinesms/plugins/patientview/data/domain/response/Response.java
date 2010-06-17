@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,10 +21,10 @@ import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 
 @Entity
-@DiscriminatorColumn(name="response_type",discriminatorType=DiscriminatorType.STRING)
-@DiscriminatorValue(value="response")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(name="medic_responses")
+@DiscriminatorValue("response")
+@DiscriminatorColumn(name="response_type")
 public abstract class Response { 
 
 	/** Unique id for this entity.  This is for hibernate usage. */

@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.registrar;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.util.ArrayList;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
@@ -7,6 +9,7 @@ import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
 import net.frontlinesms.plugins.patientview.ui.PatientViewThinletTabController;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableController;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.HeaderColumn;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanelDelegate;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
@@ -16,7 +19,6 @@ import net.frontlinesms.ui.UiGeneratorController;
 import org.springframework.context.ApplicationContext;
 
 import thinlet.Thinlet;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 public class RegistrationScreenController implements ThinletUiEventHandler, AdvancedTableActionDelegate, PersonPanelDelegate {
 
 	private UiGeneratorController uiController;
@@ -43,7 +45,9 @@ public class RegistrationScreenController implements ThinletUiEventHandler, Adva
 		mainPanel = uiController.loadComponentFromFile(UI_FILE_XML, this);
 		patientDao = (PatientDao) appCon.getBean("PatientDao");
 		patientTable = new AdvancedTableController(this,uiController,uiController.find(mainPanel,"resultsTable"));
-		patientTable.putHeader(Patient.class, new String[]{getI18NString("medic.common.labels.name"),getI18NString("medic.common.labels.age"), getI18NString("medic.common.labels.gender"), getI18NString("medic.common.chw")}, new String[]{"getName","getStringAge","getStringGender", "getCHWName"});
+		patientTable.putHeader(Patient.class, HeaderColumn.createColumnList(new String[]{getI18NString("medic.common.labels.name"), getI18NString("thinletformfields.birthdate"), getI18NString("medic.common.labels.id"),getI18NString("medic.common.chw")},
+				 new String[]{"/icons/user.png", "/icons/cake.png", "/icons/key.png",""},
+				 new String[]{"getName", "getStringBirthdate", "getStringID","getCHWName"}));
 		PatientPanel panel = new PatientPanel(uiController,appCon,this);
 		uiController.add(uiController.find(mainPanel,"bottomPanel"),panel.getMainPanel());
 		searchKeyPressed();

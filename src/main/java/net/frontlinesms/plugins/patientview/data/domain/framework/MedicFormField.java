@@ -3,21 +3,17 @@ package net.frontlinesms.plugins.patientview.data.domain.framework;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 
 /**
@@ -44,7 +40,7 @@ public class MedicFormField extends Field{
 	@JoinColumn(name="parentForm")
 	private MedicForm parentForm;
 	
-	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY, mappedBy="field")
+	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY, mappedBy="field",targetEntity=MedicFormFieldResponse.class)
 	private Set<MedicFormFieldResponse> responses;
 	 
 	
@@ -61,17 +57,25 @@ public class MedicFormField extends Field{
 	private PatientFieldMapping mapping;
 	
 	public enum PatientFieldMapping{
-		IDFIELD("Patient Id"), 
-		NAMEFIELD("Patient Name"),
-		BIRTHDATEFIELD("Patient Birthdate");
+		IDFIELD("medic.field.mapping.id","/icons/id_card.png"), 
+		NAMEFIELD("medic.field.mapping.name","/icons/user.png"),
+		BIRTHDATEFIELD("medic.field.mapping.birthdate","/icons/cake.png");
+		
 		private String displayName;
 		
-		private PatientFieldMapping(String displayName){
+		private String iconPath;
+		
+		private PatientFieldMapping(String displayName, String iconPath){
 			this.displayName = displayName;
+			this.iconPath = (iconPath);
 		}
 		
 		public String toString(){
-			return displayName;
+			return InternationalisationUtils.getI18NString(displayName);
+		}
+
+		public String getIconPath() {
+			return iconPath;
 		}
 	}
 	
@@ -164,6 +168,10 @@ public class MedicFormField extends Field{
 	 */
 	public Set<MedicFormFieldResponse> getResponses(){
 		return responses;
+	}
+	
+	public boolean isRespondable(){
+		return this.datatype != DataType.WRAPPED_TEXT && this.datatype != DataType.TRUNCATED_TEXT;
 	}
 	
 	

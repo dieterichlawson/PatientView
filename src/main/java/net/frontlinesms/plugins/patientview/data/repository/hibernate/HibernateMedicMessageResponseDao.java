@@ -2,7 +2,7 @@ package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 
 import java.util.Collection;
 
-import net.frontlinesms.data.domain.Message;
+import net.frontlinesms.data.domain.FrontlineMessage;
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
 import net.frontlinesms.plugins.patientview.data.repository.MedicMessageResponseDao;
@@ -37,7 +37,7 @@ public class HibernateMedicMessageResponseDao extends BaseHibernateDao<MedicMess
 		super.updateWithoutDuplicateHandling(message);
 	}
 
-	public MedicMessageResponse getMessageForVanillaMessage(Message m) {
+	public MedicMessageResponse getMessageForVanillaMessage(FrontlineMessage m) {
 		DetachedCriteria dc = super.getCriterion();
 		dc.add(Restrictions.eq("message",m));
 		return super.getUnique(dc);

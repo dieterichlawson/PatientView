@@ -1,39 +1,37 @@
 package net.frontlinesms.plugins.patientview.data.domain.response;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import net.frontlinesms.data.domain.Message;
+import net.frontlinesms.data.domain.FrontlineMessage;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
-
 
 
 
 @Entity
 @DiscriminatorValue(value="mess")
 public class MedicMessageResponse extends Response{
-
-	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinColumn(name="message")
-	private Message message;
+	
+	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY,targetEntity=FrontlineMessage.class)
+	private FrontlineMessage message;
 	
 	public MedicMessageResponse(){}
 	
-	public MedicMessageResponse(Message message, String messageContent,Person submitter, Person subject) {
+	public MedicMessageResponse(FrontlineMessage message, String messageContent,Person submitter, Person subject) {
 		super(submitter,subject);
 		this.message = message;
 		this.messageContent = messageContent;
 	}
 
-	public Message getMessage() {
+	public FrontlineMessage getMessage() {
 		return message;
 	}
 
-	public void setMessage(Message message) {
+	public void setMessage(FrontlineMessage message) {
 		this.message = message;
 	}
 
@@ -56,6 +54,8 @@ public class MedicMessageResponse extends Response{
 	public String getStatus(){
 		return message.getStatus().toString().toLowerCase();
 	}
+	
+	@Column(length=FrontlineMessage.SMS_MAX_CHARACTERS)
 	private String messageContent;
 	
 }

@@ -4,9 +4,10 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
+import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeDao;
 import net.frontlinesms.plugins.patientview.ui.dashboard.PatientDashboard;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
-import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonAttributePanel;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
@@ -33,7 +34,6 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	private boolean inEditingMode;
 	
 	private PatientPanel currentPatientPanel;
-	private CommunityHealthWorkerPanel currentCHWPanel;
 	private PersonAttributePanel currentAttributePanel;
 	
 	public PatientDetailViewPanelController(UiGeneratorController uiController,ApplicationContext appCon){
@@ -56,10 +56,8 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 		uiController.setWeight(mainPanel, 1, 1);
 		uiController.setColumns(mainPanel, 1);
 		currentPatientPanel = new PatientPanel(uiController,appCon,p);
-		currentCHWPanel = new CommunityHealthWorkerPanel(uiController,appCon,p.getChw());
 		currentAttributePanel = new PersonAttributePanel(uiController,appCon,p);
 		uiController.add(mainPanel, currentPatientPanel.getMainPanel());
-		uiController.add(mainPanel, currentCHWPanel.getMainPanel());
 		uiController.add(mainPanel, currentAttributePanel.getMainPanel());
 		uiController.add(mainPanel,getBottomButtons());
 	}
@@ -80,6 +78,9 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 			uiController.setAction(leftButton, "editButtonClicked", null, this);
 			uiController.setAction(rightButton, "showPatientDashboard", null, this);
 			uiController.setIcon(leftButton, EDIT_ATTRIBUTE_ICON + (currentPatient.getGender() == Gender.MALE?"male.png":"female.png"));
+			if(((PersonAttributeDao) appCon.getBean("PersonAttributeDao")).getAllAttributesForPerson(currentPatient).size() == 0 && ((MedicFormFieldDao) appCon.getBean("MedicFormFieldDao")).getAttributePanelFields().size() == 0 ){
+				uiController.setEnabled(leftButton,false);
+			}
 			uiController.setIcon(rightButton, EXPAND_DETAIL_VIEW_ICON);
 		}
 		uiController.setHAlign(leftButton, Thinlet.LEFT);
@@ -107,10 +108,11 @@ public class PatientDetailViewPanelController implements DetailViewPanelControll
 	}
 	
 	public void saveButtonClicked(){
-		inEditingMode=false;
-		currentAttributePanel.stopEditingWithSave();
-		uiController.remove(uiController.find(mainPanel,"buttonPanel"));
-		uiController.add(mainPanel,getBottomButtons());
+		if(currentAttributePanel.stopEditingWithSave()){
+			inEditingMode=false;
+			uiController.remove(uiController.find(mainPanel,"buttonPanel"));
+			uiController.add(mainPanel,getBottomButtons());
+		}
 	}
 	
 	public void cancelButtonClicked(){

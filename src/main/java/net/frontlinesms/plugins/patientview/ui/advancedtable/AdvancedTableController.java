@@ -45,6 +45,10 @@ public class AdvancedTableController{
 	/** Objects for determining text width**/
 	protected static FontMetrics metrics;
 	
+	/**
+	 *  an array containing methods and handlers,
+	 * allowing for non-default method calls
+	 */
 	protected Object[][] methods;
 	
 	protected static final int SELECTION_CHANGED_INDEX = 0;
@@ -101,15 +105,16 @@ public class AdvancedTableController{
 	}
 	
 	/** creates a new header option for the specified class
-	 * @param headerClass
-	 * @param columnNames an arraylist of the desired titles of the columns
-	 * @param columnMethods an arraylist of the methods that should be called to get the content of the rows
-	 */
+	 * @param headerClass the class for this header
+	 * @param columns the list of column headings
+	*/
 	@SuppressWarnings("static-access")
-	public void putHeader(Class headerClass, String[] columnNames, String[] columnMethods){
+	public void putHeader(Class headerClass, List<HeaderColumn> columns){
 		Object header = uiController.create("header");
-		for(int i = 0; i < columnNames.length; i++){
-			uiController.add(header, uiController.createColumn(columnNames[i], columnMethods[i]));
+		for(HeaderColumn column: columns){
+			Object c = uiController.createColumn(column.getLabel(), column.getMethod());
+			uiController.setIcon(c, column.getIcon());
+			uiController.add(header, c);
 		}
 		uiController.setAction(header,"headerClicked()",null,this);
 		headers.put(getRealClass(headerClass), header);
@@ -223,7 +228,7 @@ public class AdvancedTableController{
 	}
 	
 	private int getColumnWidth(Object column, List results, Class c){
-		int result = getStringWidth(uiController.getText(column));
+		int result = getStringWidth(uiController.getText(column))+20;
 		Method m=null;
 		try {
 			m = c.getMethod((String) uiController.getAttachedObject(column), null);
@@ -233,7 +238,8 @@ public class AdvancedTableController{
 			e.printStackTrace();
 		}
 		m.setAccessible(true);
-		for(Object r :results){
+		for(
+				Object r :results){
 			int tempWidth = 0;
 			String s;
 			try {

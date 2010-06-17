@@ -12,8 +12,8 @@ import java.util.Random;
 
 import net.frontlinesms.FrontlineSMSConstants;
 import net.frontlinesms.data.DuplicateKeyException;
+import net.frontlinesms.data.domain.FrontlineMessage;
 import net.frontlinesms.data.domain.Group;
-import net.frontlinesms.data.domain.Message;
 import net.frontlinesms.data.repository.GroupDao;
 import net.frontlinesms.data.repository.GroupMembershipDao;
 import net.frontlinesms.data.repository.MessageDao;
@@ -348,14 +348,29 @@ public class DummyDataGenerator {
 			f0.addField(new MedicFormField(f0, DataType.TEXT_FIELD, "Patient Name", PatientFieldMapping.NAMEFIELD));
 			f0.addField(new MedicFormField(f0, DataType.DATE_FIELD, "Patient Birthdate", PatientFieldMapping.BIRTHDATEFIELD));
 			f0.addField(new MedicFormField(f0, DataType.TEXT_FIELD, "Field 1"));
+			f0.addField(new MedicFormField(f0, DataType.WRAPPED_TEXT, "Labelling"));
 			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 2"));
 			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 1"));
 			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 2"));
+			f0.addField(new MedicFormField(f0, DataType.TRUNCATED_TEXT, "More Labelling"));
 			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 3"));
 			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 4"));
 			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 5"));
 			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 6"));
 			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 7"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 8"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 9"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 10"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 11"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 12"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 13"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 14"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 15"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 16"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 17"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 18"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 19"));
+			f0.addField(new MedicFormField(f0, DataType.CHECK_BOX, "Field 20"));
 			log("Long Checkbox Form created.");
 			
 			MedicForm f11 = new MedicForm("Side Effects");
@@ -459,13 +474,13 @@ public class DummyDataGenerator {
 		}
 		
 		ArrayList<MedicMessageResponse> mresponse = new ArrayList<MedicMessageResponse>();
-		ArrayList<Message> messages = new ArrayList<Message>();
+		ArrayList<FrontlineMessage> messages = new ArrayList<FrontlineMessage>();
 		for(int g = 0; g< smsMessagesNum; g++){
 			Patient subject = ps.get(rand.nextInt(ps.size()));
 			CommunityHealthWorker submitter = subject.getChw();
 			String mess ="This is a freeform text message from " + submitter.getName() + " about " + subject.getName();
 			Date newDate = getRandomDate();
-			Message m = Message.createIncomingMessage(newDate.getTime(), submitter.getPhoneNumber(), "8004329", mess);
+			FrontlineMessage m = FrontlineMessage.createIncomingMessage(newDate.getTime(), submitter.getPhoneNumber(), "8004329", mess);
 			MedicMessageResponse message = new MedicMessageResponse(m, mess,submitter,subject);
 			message.setDateSubmitted(newDate);
 			messages.add(m);
@@ -505,7 +520,7 @@ public class DummyDataGenerator {
 		count = 0;
 		if(messages.size() > 0){
 		log("Saving messages...");
-			for(Message m: messages){
+			for(FrontlineMessage m: messages){
 				try{
 					messageDao.saveMessage(m);
 					}catch(Throwable t){

@@ -16,13 +16,13 @@ public class SecurityOptions {
 
 	// Settings
 	protected Range passwordLength = new Range(6, 12, 7);
-	protected Range requiredQuestions = new Range(1, 4, 3);
-	protected Range requiredAnswers = new Range(1, 4, 2);
+	protected Range requiredQuestions = new Range(1, 4, 1);
+	protected Range requiredAnswers = new Range(1, 4, 1);
 	protected Range loginAttempts = new Range(1, 10, 3);
 	protected Range questionAttempts = new Range(1, 10, 3);
 	protected Range lockoutDuration = new Range(1, Integer.MAX_VALUE, 5);
-	protected boolean lettersRequired = true;
-	protected boolean numbersRequired = true;
+	protected boolean lettersRequired = false;
+	protected boolean numbersRequired = false;
 	protected boolean symbolsRequired = false;
 
 	public Range getLockoutDurationRange() {

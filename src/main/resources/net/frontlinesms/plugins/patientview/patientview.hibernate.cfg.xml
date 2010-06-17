@@ -15,7 +15,7 @@
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse" />
 		<mapping class="net.frontlinesms.plugins.patientview.data.domain.response.Response" />
-		<mapping class="net.frontlinesms.plugins.patientview.data.domain.graph.BooleanGraphSettings" />
-		<mapping class="net.frontlinesms.plugins.patientview.data.domain.graph.NumericGraphSettings" />
+		<mapping class="net.frontlinesms.plugins.patientview.data.domain.flag.FlagDefinition" />
+		<mapping class="net.frontlinesms.plugins.patientview.data.domain.flag.PatientFlag" />
 	</session-factory>
 </hibernate-configuration>

@@ -20,12 +20,10 @@ public class FlexibleFormResponsePanel implements ThinletUiEventHandler{
 	
 	private Object mainPanel;
 	private Object formPanel;
-	private Object hideButton;
 	private Object showAllButton;
 	private Object showIdButton;
 	
 	public enum State{
-		HIDDEN,
 		ALL_VISIBLE,
 		ID_FIELDS_VISIBLE;
 	}
@@ -45,7 +43,6 @@ public class FlexibleFormResponsePanel implements ThinletUiEventHandler{
 	
 	private void init(){
 		mainPanel = uiController.loadComponentFromFile(UI_FILE,this);
-		hideButton = uiController.find(mainPanel,"hideButton");
 		showAllButton = uiController.find(mainPanel,"showAllButton");
 		showIdButton = uiController.find(mainPanel,"showIdButton");
 		formPanel = uiController.find(mainPanel,"formPanel");
@@ -53,29 +50,13 @@ public class FlexibleFormResponsePanel implements ThinletUiEventHandler{
 		showId();
 	}
 	
-	public void hide(){
-		uiController.setVisible(hideButton,false);
-		uiController.setVisible(showAllButton,true);
-		uiController.setVisible(showIdButton,true);
-		uiController.remove(formPanel);
-		state= State.HIDDEN;
-	}
-	
 	public void showAll(){
-		if(state == State.HIDDEN){
-			uiController.add(mainPanel,formPanel);
-		}
-		uiController.setVisible(hideButton,true);
 		uiController.setVisible(showAllButton,false);
 		uiController.setVisible(showIdButton,true);
 		state = State.ALL_VISIBLE;
 		showForm();
 	}
 	public void showId(){
-		if(state == State.HIDDEN){
-			uiController.add(mainPanel,formPanel);
-		}
-		uiController.setVisible(hideButton,true);
 		uiController.setVisible(showAllButton,true);
 		uiController.setVisible(showIdButton,false);
 		state = State.ID_FIELDS_VISIBLE;

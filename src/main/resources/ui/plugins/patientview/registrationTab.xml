@@ -5,7 +5,7 @@
     <separator/>
     <splitpane divider="527" weightx="1" weighty="1">
         <panel bottom="4" columns="2" gap="6" right="4" top="4" weightx="1" weighty="1">
-            <label text="i18n.registration.search.for.existing.patients" colspan="1"/>
+            <label icon="/icons/search.png" text="i18n.medic.common.labels.search" colspan="1"/>
             <textfield action="searchKeyPressed" name="searchBox" weightx="1" colspan="1"/>
             <panel name="topPanel" weightx="1" colspan="2"/>
             <table colspan="2" name="resultsTable" weightx="1" weighty="1"/>
@@ -14,8 +14,8 @@
             <panel border="true" name="bottomPanel" weightx="1" weighty="1" top="5" left="5" right="5" bottom="5" gap="5" columns="1"/>
         </panel>
     </splitpane>
-    <panel gap="23" bottom="5" left="5" top="5" weightx="1" border="true">
+    <panel gap="12" bottom="5" left="5" top="5" weightx="1" border="true">
         <label name="loginLabel" text=""/>
-        <button action="logout()" text="i18n.buttons.logout"/>
+        <button icon="/icons/exit.png" action="logout()" text="i18n.buttons.logout"/>
     </panel>
 </panel>

@@ -4,32 +4,32 @@
     <panel gap="7" weightx="1">
         <label font="17 bold" i18n="true" text="i18n.editdetailview.title"/>
         <label weightx="2"/>
-        <togglebutton action="patientToggleButtonClicked()" group="toggleGroup" halign="center" name="patientToggle" selected="true" text="i18n.editdetailview.patient.attributes"/>
-        <togglebutton action="chwToggleButtonClicked()" group="toggleGroup" halign="center" name="chwToggle" text="i18n.editdetailview.chw.attributes"/>
+        <checkbox icon="/icons/user.png" action="patientToggleButtonClicked()" group="toggleGroup" halign="center" name="patientToggle" selected="true" text="i18n.editdetailview.patient.attributes"/>
+        <checkbox icon="/icons/user_phone.png" action="chwToggleButtonClicked()" group="toggleGroup" halign="center" name="chwToggle" text="i18n.editdetailview.chw.attributes"/>
     </panel>
     <separator/>
     <panel columns="2" gap="10" weightx="1" weighty="1" top="5">
         <panel columns="1" gap="6" weightx="1" weighty="1">
             <label halign="center" text="i18n.editdetailview.labels.create.attribute" weightx="1"/>
             <panel border="true" bottom="5" columns="2" gap="5" left="5" right="6" top="5" weightx="1">
-                <label text="i18n.medic.common.labels.label"/>
+                <label icon="/icons/tag_purple.png" text="i18n.medic.common.labels.label"/>
                 <textfield name="labelTextField" weightx="1"/>
-                <label text="i18n.medic.common.labels.type"/>
+                <label icon="/icons/page_white_star.png" text="i18n.medic.common.labels.type"/>
                 <combobox name="dataTypeComboBox"/>
             </panel>
             <label name="fieldSearchLabel" text="i18n.editdetailview.labels.add.existing.field"/>
             <textfield action="fieldSearchBarKeyPress(this.text)" name="fieldSearchBar"/>
             <table action="fieldSearchTableSelectionChanged()" name="fieldSearchTable" weightx="1" weighty="1"/>
-            <button action="addItemButtonPressed()" halign="center" text="i18n.editdetailview.buttons.add.item"/>
+            <button icon="/icons/add.png" action="addItemButtonPressed()" halign="center" text="i18n.editdetailview.buttons.add.item"/>
         </panel>
         <panel columns="1" gap="6" weightx="2" weighty="1">
             <panel bottom="5" columns="1" gap="6" left="5" right="5" top="5" weightx="2" weighty="1">
                 <label halign="center" text="i18n.editdetailview.labels.current.aag.items" weightx="1"/>
                 <table name="currentItemList" weightx="1" weighty="1"/>
-                <button action="removeItemButtonPressed()" halign="center" text="i18n.editdetailview.buttons.remove.item" weightx="1"/>
+                <button icon="/icons/delete.png" action="removeItemButtonPressed()" halign="center" text="i18n.editdetailview.buttons.remove.item" weightx="1"/>
             </panel>
             <separator weightx="1"/>
-            <label font="bold" halign="center" text="i18n.editdetailview.about.attributes.title" weightx="1"/>
+            <label icon="/icons/help.png" font="bold" halign="center" text="i18n.editdetailview.about.attributes.title" weightx="1"/>
             <textarea border="false" editable="false" rows="7" text="i18n.editdetailview.about.attributes.content" weightx="1" wrap="true"/>
             <label text="   " weightx="1"/>
         </panel>

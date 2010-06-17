@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageChooser;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.BirthdateField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.GenderComboBox;
@@ -38,10 +39,6 @@ public abstract class PersonPanel<E extends Person> implements
 	// i18n constants
 	private static final String BDAY_LABEL = "thinletformfields.birthdate";
 	private static final String ID_LABEL = "medic.common.labels.id";
-	private static final String DEMO_NAME = "editdetailview.demo.name";
-	private static final String DEMO_ID = "editdetailview.demo.id";
-	private static final String DEMO_GENDER = "medic.common.male";
-	private static final String DEMO_AGE = "editdetailview.demo.age";
 	
 	public static final String BUTTON_PANEL = "personpanelbuttons";
 
@@ -52,11 +49,11 @@ public abstract class PersonPanel<E extends Person> implements
 	 * @param uiController
 	 * @param p
 	 */
-	public PersonPanel(UiGeneratorController uiController,
-			ApplicationContext appCon, E p) {
+	public PersonPanel(UiGeneratorController uiController, ApplicationContext appCon, E p) {
 		this.uiController = uiController;
 		this.appCon = appCon;
 		this.mainPanelContainer = Thinlet.create("panel");
+		uiController.setColumns(mainPanelContainer, 1);
 		uiController.setInteger(mainPanelContainer, "weightx", 1);
 		if (p != null) {
 			isNewPersonPanel = false;
@@ -77,8 +74,7 @@ public abstract class PersonPanel<E extends Person> implements
 	 * @param uiController
 	 *            the UI controller
 	 */
-	public PersonPanel(UiGeneratorController uiController,
-			ApplicationContext appCon, PersonPanelDelegate delegate) {
+	public PersonPanel(UiGeneratorController uiController, ApplicationContext appCon, PersonPanelDelegate delegate) {
 		this.uiController = uiController;
 		this.appCon = appCon;
 		this.mainPanelContainer = Thinlet.create("panel");
@@ -96,8 +92,7 @@ public abstract class PersonPanel<E extends Person> implements
 	 * @param uiController
 	 *            the UI controller
 	 */
-	public PersonPanel(UiGeneratorController uiController,
-			ApplicationContext appCon) {
+	public PersonPanel(UiGeneratorController uiController, ApplicationContext appCon) {
 		this.uiController = uiController;
 		this.appCon = appCon;
 		this.mainPanelContainer = Thinlet.create("panel");
@@ -105,35 +100,6 @@ public abstract class PersonPanel<E extends Person> implements
 		inEditingMode = true;
 		uiController.setInteger(mainPanelContainer, "weightx", 1);
 		addEditableFields();
-	}
-
-	/**
-	 * Constructor for creating demo person panes
-	 * 
-	 * @param uiController
-	 */
-	public PersonPanel(UiGeneratorController uiController) {
-		this.uiController = uiController;
-		initDemoPanel();
-	}
-
-	private void initDemoPanel() {
-		mainPanelContainer = uiController.create("panel");
-		uiController.setInteger(mainPanelContainer, "weightx", 1);
-		uiController.removeAll(mainPanelContainer);
-		inEditingMode = false;
-		mainPanel = uiController.loadComponentFromFile(PERSON_PANEL_XML, this);
-		// add the core fields
-		addLabelToLabelPanel(getI18NString(DEMO_NAME));
-		addLabelToLabelPanel(getI18NString(ID_LABEL) + ": "
-				+ getI18NString(DEMO_ID));
-		addLabelToLabelPanel(getI18NString(DEMO_GENDER));
-		addLabelToLabelPanel(getI18NString(BDAY_LABEL) + ": "
-				+ getI18NString(DEMO_AGE));
-		// let the subclasses add additional fields
-		addAdditionalDemoFields();
-		uiController.add(mainPanelContainer, mainPanel);
-		uiController.setText(mainPanel, getDefaultTitle());
 	}
 
 	protected abstract void addAdditionalDemoFields();
@@ -199,9 +165,7 @@ public abstract class PersonPanel<E extends Person> implements
 					createPerson();
 				}
 				getPerson().setImage(chooser.getImage(), chooser.getExtension());
-				uiController.setIcon(
-						uiController.find(mainPanel, "imagePanel"), getPerson()
-								.getResizedImage());
+				uiController.setIcon(uiController.find(mainPanel, "imagePanel"), getPerson().getResizedImage());
 			}
 		} else if (getPerson().hasImage()) {
 			Thinlet thinlet = new Thinlet();
@@ -237,6 +201,9 @@ public abstract class PersonPanel<E extends Person> implements
 		if (getPerson().hasImage()) {
 			uiController.setIcon(uiController.find(mainPanel, "imagePanel"),
 					getPerson().getResizedImage());
+		}else{
+			uiController.setIcon(uiController.find(mainPanel, "imagePanel"), person.getGender() == Gender.MALE? "/icons/male_outline.png":"/icons/female_outline.png");
+			uiController.setEnabled(uiController.find(mainPanel, "imagePanel"), false);
 		}
 		// add the core fields
 		addLabelToLabelPanel(getPerson().getName());
@@ -256,11 +223,14 @@ public abstract class PersonPanel<E extends Person> implements
 	private void addEditableFields() {
 		uiController.removeAll(mainPanelContainer);
 		mainPanel = uiController.loadComponentFromFile(PERSON_PANEL_XML, this);
-		uiController.setAction(uiController.find(mainPanel, "imagePanel"),
-				"imageClicked()", null, this);
+		uiController.setAction(uiController.find(mainPanel, "imagePanel"),"imageClicked()", null, this);
 		// set the edit image button
-		uiController.setIcon(uiController.find(mainPanel, "imagePanel"),
-				"/icons/patientview/blank_person_edit.png");
+		if(person != null){
+			uiController.setIcon(uiController.find(mainPanel, "imagePanel"), person.getGender() == Gender.MALE? "/icons/male_outline_add.png":"/icons/female_outline_add.png");
+		}else{
+			uiController.setIcon(uiController.find(mainPanel, "imagePanel"), "/icons/female_outline_add.png");
+		}
+		uiController.setEnabled(uiController.find(mainPanel,"imagePanel"), true);
 		// get the panel with all the labels in it and remove everything
 		Object labelPanel = getLabelPanel();
 		uiController.removeAll(labelPanel);
@@ -303,12 +273,7 @@ public abstract class PersonPanel<E extends Person> implements
 			if (pff.isValid() && ((!isNewPersonPanel && pff.hasChanged()) || isNewPersonPanel)) {
 				pff.setFieldForPerson(getPerson());
 			} else if (!pff.isValid()) {
-				uiController.alert(getI18NString("personpanel.edit.details.error.prefix")
-								+ " \""
-								+ pff.getLabel()
-								+ "\" "
-								+ getI18NString("personpanel.edit.details.error.suffix"));
-
+				uiController.alert(getI18NString("personpanel.edit.details.error.prefix") + " \"" + pff.getLabel()+ "\" " + getI18NString("personpanel.edit.details.error.suffix"));
 				isValid = false;
 				break;
 			}
@@ -341,6 +306,7 @@ public abstract class PersonPanel<E extends Person> implements
 		uiController.setChoice(saveCancelPanel, "halign", "fill");
 		uiController.setWeight(saveCancelPanel, 1, 1);
 		Object saveButton = uiController.createButton(getI18NString("detailview.buttons.save"));
+		uiController.setName(saveButton,"savebutton");
 		uiController.setAction(saveButton, "stopEditingWithSave()", null, this);
 		uiController.setChoice(saveButton, "halign", "left");
 		uiController.setIcon(saveButton, "/icons/tick.png");

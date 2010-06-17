@@ -197,7 +197,9 @@ public class SimpleSearchController implements ThinletUiEventHandler, SearchCont
 	}
 	
 	public void textEntryChanged(){
-		searchButtonPressed();
+		if(getTextInput().length() > 3){
+			searchButtonPressed();
+		}
 	}
 	
 	public void comboSelectionChanged(){

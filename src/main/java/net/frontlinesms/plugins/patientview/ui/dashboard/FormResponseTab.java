@@ -16,6 +16,7 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormRespon
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
 import net.frontlinesms.plugins.patientview.search.impl.FormResponseResultSet;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
+import net.frontlinesms.plugins.patientview.ui.advancedtable.HeaderColumn;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.PagedAdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.detailview.panels.FormResponseDetailViewPanelController;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
@@ -40,6 +41,7 @@ public class FormResponseTab<P extends Person> extends TabController implements 
 	private static final String DATE_SUBMITTED_COLUMN = "medic.common.labels.date.submitted";
 	private static final String TAB_TITLE = "medic.common.form.responses";
 	private static final String FORM_COMBOBOX_LABEL = "medic.common.form";
+	private static final String ALL_FORMS = "medic.common.all.forms";
 	
 	private static final String UI_FILE ="/ui/plugins/patientview/dashboard/tabs/formResponseTab.xml";
 
@@ -70,9 +72,9 @@ public class FormResponseTab<P extends Person> extends TabController implements 
 		// add the form response table
 		formResponseTable = new PagedAdvancedTableController(this, uiController,uiController.find(getMainPanel(),"tablePanel"));
 		if(isCHW()){
-			formResponseTable.putHeader(MedicFormResponse.class, new String[] { getI18NString(FORM_NAME_COLUMN), getI18NString(FORM_SUBJECT_COLUMN), getI18NString(DATE_SUBMITTED_COLUMN) }, new String[] { "getFormName", "getSubjectName", "getStringDateSubmitted" });
+			formResponseTable.putHeader(MedicFormResponse.class, HeaderColumn.createColumnList(new String[] { getI18NString(FORM_NAME_COLUMN), getI18NString(FORM_SUBJECT_COLUMN), getI18NString(DATE_SUBMITTED_COLUMN) },new String[]{"/icons/form.png","", "/icons/date_sent.png"}, new String[] { "getFormName", "getSubjectName", "getStringDateSubmitted" }));
 		}else{
-			formResponseTable.putHeader(MedicFormResponse.class, new String[] { getI18NString(FORM_NAME_COLUMN), getI18NString(FORM_SENDER_COLUMN), getI18NString(DATE_SUBMITTED_COLUMN) }, new String[] { "getFormName", "getSubmitterName", "getStringDateSubmitted" });
+			formResponseTable.putHeader(MedicFormResponse.class, HeaderColumn.createColumnList(new String[] { getI18NString(FORM_NAME_COLUMN), getI18NString(FORM_SENDER_COLUMN), getI18NString(DATE_SUBMITTED_COLUMN) },new String[]{"/icons/form.png","/icons/user_sender.png", "/icons/date_sent.png"}, new String[] { "getFormName", "getSubmitterName", "getStringDateSubmitted" }));
 		}
 		formResponseTable.setResultsSet(resultSet);
 		formResponseTable.updateTable();
@@ -85,7 +87,7 @@ public class FormResponseTab<P extends Person> extends TabController implements 
 		//create the form combo box
 		List<MedicForm> forms = ((MedicFormDao) appCon.getBean("MedicFormDao")).getAllMedicForms();
 		comboBox = uiController.create("combobox");
-		uiController.add(comboBox,uiController.createComboboxChoice("All Forms", null));
+		uiController.add(comboBox,uiController.createComboboxChoice(getI18NString(ALL_FORMS), null));
 		for(MedicForm mf: forms){
 			uiController.add(comboBox,uiController.createComboboxChoice(mf.getName(), mf));
 		}

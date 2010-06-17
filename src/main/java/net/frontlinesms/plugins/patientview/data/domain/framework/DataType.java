@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.data.domain.framework;
 
+import net.frontlinesms.ui.i18n.InternationalisationUtils;
+
 /**
  * Enumerates the different data types in the medic system.
  * These are used for normal form fields as well as attribute fields
@@ -9,22 +11,21 @@ package net.frontlinesms.plugins.patientview.data.domain.framework;
  *
  */
 public enum DataType { 
-	
-		TRUNCATED_TEXT("Truncated Text", false, null,null),
-		WRAPPED_TEXT("Wrapped Text", false, null, null),
-		CURRENCY_FIELD("Currency", true, null, null),
-		EMAIL_FIELD("Email",true, null,null),
-		CHECK_BOX("Check Box", true,"Yes","No"),
-		DATE_FIELD("Date",true,null,null),
-		PASSWORD_FIELD("Password",true,null,null),
-		PHONE_NUMBER_FIELD("Phone Number",true,null,null),
-		TIME_FIELD("Time",true,null,null),
-		NUMERIC_TEXT_FIELD("Number",true,null,null),
-		TEXT_FIELD("Plain Text",true,null,null), 
-		TEXT_AREA("Text Area",true,null,null), 
-		TRUEFALSE("True/False",true,"True","False"),
-		POSITIVENEGATIVE("Positive/Negative",true,"Positive","Negative"),
-		YESNO("Yes/No",true,"Yes","No");
+		TRUNCATED_TEXT("plugins.forms.field.truncatedtext", false, null,null,"/icons/components/small/truncatedtext.png"),
+		WRAPPED_TEXT("plugins.forms.field.wrappedtext", false, null, null,"/icons/components/small/wrappedtext.png"),
+		CURRENCY_FIELD("plugins.forms.field.currency", true, null, null,"/icons/components/small/currencyfield.png"),
+		EMAIL_FIELD("common.email",true, null,null,"/icons/components/small/emailfield.png"),
+		CHECK_BOX("plugins.forms.field.checkbox", true,"action.yes","action.no","/icons/components/small/checkbox.png"),
+		DATE_FIELD("common.date",true,null,null,"/icons/components/small/datefield.png"),
+		PASSWORD_FIELD("plugins.forms.field.password",true,null,null,"/icons/components/small/passwordfield.png"),
+		PHONE_NUMBER_FIELD("plugins.forms.field.phonenumber",true,null,null,"/icons/components/small/phonenumberfield.png"),
+		TIME_FIELD("common.time",true,null,null,"/icons/components/small/timefield.png"),
+		NUMERIC_TEXT_FIELD("plugins.forms.field.number",true,null,null,"/icons/components/small/numerictextfield.png"),
+		TEXT_FIELD("plugins.forms.field.textfield",true,null,null,"/icons/components/small/textfield.png"), 
+		TEXT_AREA("plugins.forms.field.textarea",true,null,null,"/icons/components/small/textarea.png"), 
+		TRUEFALSE("datatype.true.false",true,"datatype.true","datatype.false","/icons/components/small/checkbox.png"),
+		POSITIVENEGATIVE("datatype.positive.negative",true,"datatype.positive","datatype.negative","/icons/components/small/checkbox.png"),
+		YESNO("datatype.yes.no",true,"action.yes","action.no","/icons/components/small/checkbox.png");
 		
 		private String description;
 		private boolean isBoolean;
@@ -32,9 +33,12 @@ public enum DataType {
 		private String trueLabel;
 		private String falseLabel;
 		
-		DataType(String desc, boolean respondable,String trueLabel,String falseLabel){
+		private String iconPath;
+		
+		DataType(String desc, boolean respondable,String trueLabel,String falseLabel, String iconPath){
 			this.description = desc;
 			this.respondable = respondable;
+			this.iconPath = iconPath;
 			if(trueLabel != null){
 				this.isBoolean = true;
 				this.trueLabel = trueLabel;
@@ -45,7 +49,7 @@ public enum DataType {
 		}
 		
 		public String toString(){
-			return description;
+			return InternationalisationUtils.getI18NString(description);
 		}
 		
 		public boolean isBoolean(){
@@ -53,11 +57,11 @@ public enum DataType {
 		}
 		
 		public String getTrueLabel(){
-			return trueLabel;
+			return InternationalisationUtils.getI18NString(trueLabel);
 		}
 		
 		public String getFalseLabel(){
-			return falseLabel;
+			return InternationalisationUtils.getI18NString(falseLabel);
 		}
 		
 		/**
@@ -80,6 +84,10 @@ public enum DataType {
 		 */
 		public boolean isRespondable() {
 			return respondable;
+		}
+
+		public String getIconPath() {
+			return iconPath;
 		}
 
 	}

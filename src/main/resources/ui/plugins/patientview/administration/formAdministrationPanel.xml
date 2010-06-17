@@ -4,9 +4,9 @@
     <label font="17 bold" text="i18n.admin.tabs.form.panel.title"/>
     <separator />
     <panel gap="5" columns="3" weightx="1" weighty="1" top="5">
-    <label halign="center" name="patientViewFormListTitle" text="i18n.admin.forms.patientview.forms"/>
-    <label halign="center" name="fieldListTitle"/>
-    <label halign="center" name="fieldInfoPanelTitle" text="i18n.admin.forms.field.mapping"/>
+    <label icon="/icons/form.png" halign="center" name="patientViewFormListTitle" text="i18n.admin.forms.patientview.forms"/>
+    <label icon="/icons/textfield.png" halign="center" name="fieldListTitle"/>
+    <label icon="/icons/link.png" halign="center" name="fieldInfoPanelTitle" text="i18n.admin.forms.field.mapping"/>
     <list action="patientViewFormListSelectionChanged()" name="patientViewFormList" weightx="1" weighty="1"/>
     <list action="fieldListSelectionChanged()" name="fieldList" rowspan="2" weightx="1" weighty="1"/>
     <panel border="true" columns="1" rowspan="2" weightx="1" weighty="1">
@@ -15,10 +15,10 @@
         </panel>
         <panel columns="1" gap="4" left="6" right="6">
             <separator/>
-            <label font="bold" halign="center" text="i18n.admin.forms.blurb.title"/>
-            <textarea border="false" end="22" rows="11" start="22" text="i18n.admin.forms.blurb" weightx="1" wrap="true"/>
+            <label icon="/icons/help.png" font="bold" halign="center" text="i18n.admin.forms.blurb.title"/>
+            <textarea editable="false" border="false" end="22" rows="11" start="22" text="i18n.admin.forms.blurb" weightx="1" wrap="true"/>
         </panel>
     </panel>
-    <button action="removeButtonClicked()" halign="center" name="removePatientViewFormButton" text="i18n.admin.forms.remove.patientview.form"/>
+    <button icon="/icons/delete.png" action="removeButtonClicked()" halign="center" name="removePatientViewFormButton" text="i18n.admin.forms.remove.patientview.form"/>
     </panel>
 </panel>

@@ -3,6 +3,14 @@ package net.frontlinesms.plugins.patientview.ui.administration;
 import java.util.ArrayList;
 
 import net.frontlinesms.plugins.patientview.importer.CsvImporterPanelController;
+import net.frontlinesms.plugins.patientview.ui.administration.tabs.AttributeAdministrationPanelController;
+import net.frontlinesms.plugins.patientview.ui.administration.tabs.CommunityHealthWorkerAdministrationPanelController;
+import net.frontlinesms.plugins.patientview.ui.administration.tabs.FlagAdministrationPanelController;
+import net.frontlinesms.plugins.patientview.ui.administration.tabs.FormAdministrationPanelController;
+import net.frontlinesms.plugins.patientview.ui.administration.tabs.FormResponseMappingPanelController;
+import net.frontlinesms.plugins.patientview.ui.administration.tabs.PatientAdministrationPanelController;
+import net.frontlinesms.plugins.patientview.ui.administration.tabs.SecurityPanelController;
+import net.frontlinesms.plugins.patientview.ui.administration.tabs.UserAdministrationPanelController;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
@@ -47,10 +55,11 @@ public class AdministrationTabController implements ThinletUiEventHandler{
 		panels.add(new CommunityHealthWorkerAdministrationPanelController(uiController,appCon));
 		panels.add(new UserAdministrationPanelController(uiController,appCon));
 		panels.add(new FormAdministrationPanelController(uiController,appCon));
-		panels.add(new SecurityPanelController(uiController));
+		//panels.add(new SecurityPanelController(uiController));
 		panels.add(new AttributeAdministrationPanelController(uiController,appCon));
 		panels.add(new FormResponseMappingPanelController(uiController,appCon));
 		panels.add(new CsvImporterPanelController(uiController,appCon));
+		//panels.add(new FlagAdministrationPanelController(uiController, appCon));
 		//create all the list items
 		for(AdministrationTabPanel panel: panels){
 			Object listItem = uiController.createListItem(panel.getListItemTitle(), panel.getPanel());

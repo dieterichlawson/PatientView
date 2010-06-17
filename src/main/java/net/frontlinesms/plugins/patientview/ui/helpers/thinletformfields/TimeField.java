@@ -2,6 +2,7 @@ package net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.frontlinesms.ui.ExtendedThinlet;
@@ -71,17 +72,28 @@ public class TimeField extends TextBox<Date> {
 //			}
 //			return true;
 		try {
-			DateFormat.getTimeInstance().parse(getStringResponse());
+			DateFormat f = new SimpleDateFormat("hh:mm:ss");
+			f.setLenient(true);
+			f.parse(getStringResponse());
 			return true;
 		} catch (ParseException e) {
-			return false;
+			try{
+				DateFormat f = new SimpleDateFormat("hh:mm");
+				f.setLenient(true);
+				f.parse(getStringResponse());
+				return true;
+			}catch(ParseException f){
+				return false;
+			}
 		}
 	}
 
 	@Override
 	public Date getRawResponse() {
 		try {
-			return DateFormat.getTimeInstance().parse(getStringResponse());
+			DateFormat f = new SimpleDateFormat("hh:mm:ss");
+			f.setLenient(true);
+			return f.parse(getStringResponse());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

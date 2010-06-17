@@ -3,9 +3,9 @@ package net.frontlinesms.plugins.patientview.ui.personpanel;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PasswordTextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.RoleComboBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.UsernameField;
+import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
@@ -33,27 +33,14 @@ public class UserPanel extends PersonPanel<User> {
 	}
 
 	/**
-	 * Used to create a demo panel
-	 * 
-	 * @param uiController
-	 */
-	public UserPanel(UiGeneratorController uiController) {
-		super(uiController);
-	}
-
-	/**
 	 * @see net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel#addAdditionalEditableFields()
 	 */
 	@Override
 	protected void addAdditionalEditableFields() {
-		if (isNewPersonPanel) {
+		if(UserSessionManager.getUserSessionManager().getCurrentUser().equals(this.getPerson()) || isNewPersonPanel){
 			UsernameField usernameField = new UsernameField(uiController, appCon, true, isNewPersonPanel ? "" : getPerson().getUsername(),null);
 			uiController.add(getLabelPanel(), usernameField.getThinletPanel());
-		} else {
-			addLabelToLabelPanel(getI18NString(USERNAME_LABEL) + ": " + getPerson().getUsername());
 		}
-		PasswordTextField pwordField = new PasswordTextField(uiController,"",null);
-		uiController.add(getLabelPanel(),pwordField.getThinletPanel());
 		RoleComboBox roleCombo = new RoleComboBox(uiController, isNewPersonPanel ? null : getPerson().getRole(),null);
 		uiController.add(getLabelPanel(), roleCombo.getThinletPanel());
 	}

@@ -12,15 +12,8 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormRespon
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.ui.components.FormSearchArea;
 import net.frontlinesms.plugins.patientview.ui.dialogs.searchareas.SearchAreaDelegate;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.CheckBox;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.DateField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.NumericTextField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextArea;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TextField;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.TimeField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PasswordTextField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PhoneNumberField;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;

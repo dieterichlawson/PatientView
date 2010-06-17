@@ -1,5 +1,8 @@
 package net.frontlinesms.plugins.patientview.ui.personpanel;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
 import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PhoneNumberField;
@@ -27,10 +30,6 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 		super(uiController,appCon);
 		chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
 	}
-	
-	public CommunityHealthWorkerPanel(UiGeneratorController uiController){
-		super(uiController);
-	}
 
 	/**
 	 * @see net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel#addAdditionalEditableFields()
@@ -46,7 +45,14 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	 */
 	@Override
 	protected void addAdditionalFields() {
-		addLabelToLabelPanel(InternationalisationUtils.getI18NString(PHONE_NUMBER_FIELD)+": " + getPerson().getContactInfo().getPhoneNumber());
+		Object panel = uiController.createPanel("");
+		uiController.setGap(panel, 5);
+		uiController.add(panel,uiController.createLabel(InternationalisationUtils.getI18NString("medic.common.labels.phone.number")+":"));
+		Object button = uiController.createButton(getPerson().getPhoneNumber());
+		uiController.setChoice(button, "type", "link");
+		uiController.setAction(button, "showSendMessageDialog", null, this);
+		uiController.add(panel,button);
+		uiController.add(super.getLabelPanel(),panel);
 	}
 
 	/* (non-Javadoc)
@@ -99,4 +105,9 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 		addLabelToLabelPanel(InternationalisationUtils.getI18NString(PHONE_NUMBER_FIELD)+": " + InternationalisationUtils.getI18NString(DEMO_PHONE_NUMBER));
 	}
 
+	public void showSendMessageDialog(){
+		Set<Object> number= new HashSet<Object>();
+		number.add(getPerson().getPhoneNumber());
+		uiController.show_composeMessageForm(number);
+	}
 }

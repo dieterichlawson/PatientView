@@ -3,6 +3,7 @@ package net.frontlinesms.plugins.patientview.ui.detailview.panels;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
+import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeDao;
 import net.frontlinesms.plugins.patientview.ui.dashboard.CommunityHealthWorkerDashboard;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewPanelController;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
@@ -84,6 +85,9 @@ public class CommunityHealthWorkerDetailViewPanelController implements DetailVie
 		}else{
 			uiController.setAction(leftButton, "editButtonClicked", null, this);
 			uiController.setIcon(leftButton, EDIT_ATTRIBUTE_ICON);
+			if(((PersonAttributeDao) appCon.getBean("PersonAttributeDao")).getAllAttributesForPerson(currentCHW).size() == 0){
+				uiController.setEnabled(leftButton,false);
+			}
 			uiController.setAction(rightButton, "showCHWDashboard", null, this);
 			uiController.setIcon(rightButton, EXPAND_DETAIL_VIEW_ICON);
 		}
@@ -118,10 +122,11 @@ public class CommunityHealthWorkerDetailViewPanelController implements DetailVie
 	 * Action method for the save button
 	 */
 	public void saveButtonClicked(){
-		inEditingMode=false;
-		currentAttributePanel.stopEditingWithSave();
-		uiController.remove(uiController.find(mainPanel,"buttonPanel"));
-		uiController.add(mainPanel,getBottomButtons());
+		if(currentAttributePanel.stopEditingWithSave()){
+			inEditingMode=false;
+			uiController.remove(uiController.find(mainPanel,"buttonPanel"));
+			uiController.add(mainPanel,getBottomButtons());
+		}
 	}
 	
 	/**

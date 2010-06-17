@@ -1,7 +1,9 @@
 package net.frontlinesms.plugins.patientview.search.impl;
 
+import java.util.Date;
 import java.util.List;
 
+import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.search.PagedResultSet;
 
@@ -15,9 +17,13 @@ public class FormMappingResultSet extends PagedResultSet {
 		
 	private SessionFactory sessionFactory;
 	
-	private static final String QUERY = "from MedicFormResponse fr where fr.subject is";
+	private static final String QUERY = "from MedicFormResponse mfr where mfr.subject is";
 	
 	private boolean searchingMapped;
+	
+	private Date aroundDate;
+	
+	private MedicForm form;
 	
 	public FormMappingResultSet(ApplicationContext appCon){
 		this.sessionFactory = (SessionFactory) appCon.getBean("sessionFactory");
@@ -36,9 +42,17 @@ public class FormMappingResultSet extends PagedResultSet {
 		}
 		String query;
 		if(isSearchingMapped()){
-			query = QUERY + " not null and fr.submitter.class = 'chw'"; 
+			query = QUERY + " not null and mfr.submitter.class = 'chw'"; 
 		}else{
-			query = QUERY + " null order by dateSubmitted desc";
+			query = QUERY + " null";
+		}
+		if(form != null){
+			query += " and mfr.form.fid = "+ form.getFid();
+		}
+		if(aroundDate != null){
+			query += " order by abs(mfr.dateSubmitted - " + aroundDate.getTime() + ") asc";
+		}else{
+			query += " order by mfr.dateSubmitted desc";
 		}
 		results = session.createQuery(query).setFirstResult(startIndex).setMaxResults(pageSize).list();
 		super.setTotalResults(((Long) session.createQuery("select count(*) " + query).uniqueResult()).intValue());
@@ -58,5 +72,13 @@ public class FormMappingResultSet extends PagedResultSet {
 	}
 	public boolean isSearchingMapped() {
 		return searchingMapped;
+	}
+
+	public void setAroundDate(Date aroundDate) {
+		this.aroundDate = aroundDate;
+	}
+
+	public void setForm(MedicForm form) {
+		this.form = form;
 	}
 }

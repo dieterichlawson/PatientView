@@ -41,8 +41,7 @@ public class HibernatePersonAttributeDao extends BaseHibernateDao<PersonAttribut
 	 * @see net.frontlinesms.plugins.patientview.data.repository.PersonAttributeDao#getAnsweredAttributesForPerson(net.frontlinesms.plugins.patientview.data.domain.people.Person)
 	 */
 	public List<PersonAttribute> getAnsweredAttributesForPerson(Person p) {
-		DetachedCriteria c = super.getCriterion()
-		.createCriteria("responses")
+		DetachedCriteria c = super.getCriterion().createCriteria("responses")
 		.add(Restrictions.eq("subject", p));	
 		return super.getList(c);
 	}

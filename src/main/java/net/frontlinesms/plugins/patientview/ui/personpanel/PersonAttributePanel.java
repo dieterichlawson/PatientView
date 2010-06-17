@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.personpanel;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.util.ArrayList;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
@@ -162,34 +164,40 @@ public class PersonAttributePanel {
 	 * Checks to see if all the thinlet form fields are valid, have responses, and have changed,
 	 * and then creates new response objects and saves them to the database
 	 */
-	public void validateAndSaveResponses(){
+	public boolean validateAndSaveResponses(){
 		if(!inEditingMode)
-			return;
+			return false;
 		Object [] items = uiController.getItems(mainPanel);
 		for(Object panel : items){
-			
 			ThinletFormField tff = (ThinletFormField) uiController.getAttachedObject(panel);
-			if(tff !=null && tff.hasResponse() && tff.isValid() && tff.hasChanged()){
-				if(tff.getField() instanceof PersonAttribute){
-					PersonAttributeResponse response = new PersonAttributeResponse(tff.getStringResponse(), (PersonAttribute) tff.getField(),
-							person, UserSessionManager.getUserSessionManager().getCurrentUser());
-					attributeResponseDao.saveAttributeResponse(response);
-				}else if(tff.getField() instanceof MedicFormField){
-					MedicFormFieldResponse mffr = new MedicFormFieldResponse(tff.getStringResponse(),(MedicFormField) tff.getField(),
-							person,UserSessionManager.getUserSessionManager().getCurrentUser());
-					fieldResponseDao.saveFieldResponse(mffr);
+			if(tff !=null && tff.hasResponse() && tff.hasChanged()){
+				if(!tff.isValid()){
+					uiController.alert(getI18NString("personpanel.edit.details.error.prefix") + " \"" + tff.getLabel()+ "\" " + getI18NString("personpanel.edit.details.error.suffix"));
+					return false;
+				}else{
+					if(tff.getField() instanceof PersonAttribute){
+						PersonAttributeResponse response = new PersonAttributeResponse(tff.getStringResponse(), (PersonAttribute) tff.getField(), person, UserSessionManager.getUserSessionManager().getCurrentUser());
+						attributeResponseDao.saveAttributeResponse(response);
+					}else if(tff.getField() instanceof MedicFormField){
+						MedicFormFieldResponse mffr = new MedicFormFieldResponse(tff.getStringResponse(),(MedicFormField) tff.getField(), person,UserSessionManager.getUserSessionManager().getCurrentUser());
+						fieldResponseDao.saveFieldResponse(mffr);
+					}
 				}
 			}
 		}
+		return true;
 	}
 	
 	public void stopEditingWithoutSave(){
 		initPanel();
 	}
 	
-	public void stopEditingWithSave(){
-		validateAndSaveResponses();
-		initPanel();
+	public boolean stopEditingWithSave(){
+		if(validateAndSaveResponses()){
+			initPanel();
+			return true;
+		}
+		return false;
 	}
 	
 	public Object getMainPanel(){

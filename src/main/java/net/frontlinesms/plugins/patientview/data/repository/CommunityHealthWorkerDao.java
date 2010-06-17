@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
-import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 
 public interface CommunityHealthWorkerDao {
 	

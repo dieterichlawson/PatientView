@@ -23,6 +23,7 @@
             <label text="i18n.admin.security.quest.recover"/>
         </panel>
     </panel>
+    <!-- 
     <panel border="true" bottom="6" columns="1" gap="6" left="6" right="6" text="i18n.admin.security.lockout" top="6">
         <panel gap="5">
             <spinbox action="boxChangedLoginAttempts()" columns="2" minimum="2" name="loginattemptsbox" start="1" text="3"/>
@@ -38,4 +39,5 @@
             <label name="durationlabel2" text="part 2."/>
         </panel>
     </panel>
+     -->
 </panel>

@@ -4,16 +4,19 @@ import net.frontlinesms.FrontlineSMS;
 import net.frontlinesms.plugins.BasePluginController;
 import net.frontlinesms.plugins.PluginControllerProperties;
 import net.frontlinesms.plugins.PluginInitialisationException;
-import net.frontlinesms.plugins.patientview.analysis.FormMatcher;
+import net.frontlinesms.plugins.patientview.listener.FormMatcher;
+import net.frontlinesms.plugins.patientview.listener.PatientFlagListener;
+import net.frontlinesms.plugins.patientview.listener.PatientViewFormListener;
+import net.frontlinesms.plugins.patientview.listener.PatientViewMessageListener;
 import net.frontlinesms.plugins.patientview.ui.PatientViewThinletTabController;
 import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
 
-@PluginControllerProperties(name="Patient View", iconPath="/icons/big_medic.png",
+@PluginControllerProperties(name="PatientView", iconPath="/icons/big_medic.png",
 		springConfigLocation="classpath:net/frontlinesms/plugins/patientview/patientview-spring-hibernate.xml",
-		hibernateConfigPath="classpath:net/frontlinesms/plugins/patientview/patientview.hibernate.cfg.xml")
+		hibernateConfigPath ="classpath:net/frontlinesms/plugins/patientview/patientview.hibernate.cfg.xml")
 public class PatientViewPluginController extends BasePluginController{
 
 	/** the {@link FrontlineSMS} instance that this plugin is attached to */
@@ -29,6 +32,7 @@ public class PatientViewPluginController extends BasePluginController{
 	 */
 	@Override
 	protected Object initThinletTab(UiGeneratorController uiController) {
+		//PatientFlagListener flagListener = new PatientFlagListener(applicationContext, uiController);
 		PatientViewThinletTabController controller= new PatientViewThinletTabController(this,uiController);
 		return controller.getTab();
 	}

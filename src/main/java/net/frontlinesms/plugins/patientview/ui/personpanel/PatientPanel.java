@@ -18,6 +18,9 @@ public class PatientPanel extends PersonPanel<Patient> {
 	private static final String DEMO_CHW = "editdetailview.demo.chw";
 	private PatientDao patientDao;
 	
+	private boolean showingCHWPanel;
+	private CommunityHealthWorkerPanel chwPanel;
+	
 	private String defaultTitle;
 	/**
 	 * Creates a PatientPanel used for creating new Patients.
@@ -50,14 +53,6 @@ public class PatientPanel extends PersonPanel<Patient> {
 		super(uiController, appCon,p);
 		patientDao = (PatientDao) appCon.getBean("PatientDao");
 	}
-	
-	/**
-	 * Used for creating a demo panel
-	 * @param uiController
-	 */
-	public PatientPanel(UiGeneratorController uiController){
-		super(uiController);
-	}
 
 	/**
 	 * Adds a Community Health Worker combo box to the editable person fields
@@ -74,7 +69,14 @@ public class PatientPanel extends PersonPanel<Patient> {
 	 */
 	@Override
 	protected void addAdditionalFields() {
-		addLabelToLabelPanel(getI18NString(CHW_FIELD) + ": " + getPerson().getChw().getName());
+		Object panel = uiController.createPanel("");
+		uiController.setGap(panel, 5);
+		uiController.add(panel,uiController.createLabel(InternationalisationUtils.getI18NString("medic.common.chw")+":"));
+		Object button = uiController.createButton(getPerson().getCHWName());
+		uiController.setChoice(button, "type", "link");
+		uiController.setAction(button, "showCHWPanel", null, this);
+		uiController.add(panel,button);
+		uiController.add(super.getLabelPanel(),panel);
 	}
 
 	/**
@@ -129,5 +131,16 @@ public class PatientPanel extends PersonPanel<Patient> {
 
 	public void setTitle(String title){
 		defaultTitle=title;
+	}
+	
+	public void showCHWPanel(){
+		if(!showingCHWPanel){
+			chwPanel= new CommunityHealthWorkerPanel(uiController, appCon, getPerson().getChw()); 
+			uiController.add(super.getMainPanel(),chwPanel.getMainPanel());
+			showingCHWPanel =true;
+		}else{
+			uiController.remove(chwPanel.getMainPanel());
+			showingCHWPanel=false;
+		}
 	}
 }

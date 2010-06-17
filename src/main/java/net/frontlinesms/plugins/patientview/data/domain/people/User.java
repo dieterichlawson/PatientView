@@ -351,5 +351,19 @@ public class User extends Person {
 	public boolean verifyPassword(String guess) {
 		return verify(guess, hash, salt);
 	}
+	
+	public boolean equals(Object o){
+		if(super.equals(o)){
+			if(!(o instanceof User)){
+				return false;
+			}else{
+				User other = (User) o;
+				return other.getUsername().equals(this.getUsername()) &&
+				  	   other.getPassword().equals(this.getPassword());
+			}
+		}else{
+			return false;
+		}
+	}
 
 }

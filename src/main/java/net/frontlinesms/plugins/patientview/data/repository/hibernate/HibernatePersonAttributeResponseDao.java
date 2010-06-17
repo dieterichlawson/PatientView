@@ -10,7 +10,6 @@ import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeRespo
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 public class HibernatePersonAttributeResponseDao extends BaseHibernateDao<PersonAttributeResponse> implements PersonAttributeResponseDao {

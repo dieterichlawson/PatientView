@@ -45,8 +45,7 @@ public class LoginScreen implements ThinletUiEventHandler {
 	private static final String XML_LOGIN = PATH + "landing.xml";
 	private static final String XML_QUESTIONS = PATH + "new_questions.xml";
 	private static final String XML_NEW_PASSWORD = PATH + "new_password.xml";
-	private static final String XML_RECOVER_PASSWORD = PATH
-			+ "recover_password.xml";
+	private static final String XML_RECOVER_PASSWORD = PATH + "recover_password.xml";
 
 	// UI elements
 	private static final String MULTI_LABEL = "multiLabel";
@@ -121,16 +120,14 @@ public class LoginScreen implements ThinletUiEventHandler {
 		String password = ui.getText(passwordField);
 		UserSessionManager manager = UserSessionManager.getUserSessionManager();
 		AuthenticationResult result = manager.login(username, password);
-		if (result == AuthenticationResult.NOSUCHUSER
-				|| result == AuthenticationResult.WRONGPASSWORD) {
+		if (result == AuthenticationResult.NOSUCHUSER || result == AuthenticationResult.WRONGPASSWORD) {
 			displayWarningMessage(INCORRECT_LOGIN_MESSAGE);
 		}
 		if (result == AuthenticationResult.SUCCESS) {
 			user = manager.getCurrentUser();
 			if (user.needsNewPassword()) {
 				changeModeNewPassword();
-			} else if (numberOfSecurityQuestions(user) < settings
-					.getRequiredQuestionsRange().value()) {
+			} else if (numberOfSecurityQuestions(user) < settings.getRequiredQuestionsRange().value()) {
 				changeModeNewQuestions();
 			} else {
 				changeModePatientView();
@@ -183,9 +180,13 @@ public class LoginScreen implements ThinletUiEventHandler {
 			if (PasswordUtils.passwordMeetsRequirements(pass1)) {
 				user.setPassword(pass1);
 				userDao.updateUser(user);
-				resetSoft();
-				Object label = ui.find(mainPanel, "multiLabel");
-				ui.setText(label, getI18NString("password.new.use"));
+				if (numberOfSecurityQuestions(user) < settings.getRequiredQuestionsRange().value()) {
+					changeModeNewQuestions();
+				}else{
+					resetSoft();
+					Object label = ui.find(mainPanel, "multiLabel");
+					ui.setText(label, getI18NString("password.new.use"));
+				}
 			} else {
 				displayWarningMessage("password.new.warning.criteria");
 			}
@@ -237,8 +238,7 @@ public class LoginScreen implements ThinletUiEventHandler {
 
 	/** Transforms the login screen into a dialog for inputting a new password. */
 	protected void changeModeNewPassword() {
-		Object passwordScreen = ui
-				.loadComponentFromFile(XML_NEW_PASSWORD, this);
+		Object passwordScreen = ui.loadComponentFromFile(XML_NEW_PASSWORD, this);
 		Object notice = ui.find(passwordScreen, "noticeTextArea");
 		String text = getI18NString("password.new.notice");
 		text += "\n -" + settings.getPasswordLength() + " "
@@ -412,8 +412,7 @@ public class LoginScreen implements ThinletUiEventHandler {
 	 * @throws GeneralSecurityException
 	 *             if the crypto library cannot be found
 	 */
-	private boolean saveQuestion(String question, String answer, User user)
-			throws GeneralSecurityException {
+	private boolean saveQuestion(String question, String answer, User user) throws GeneralSecurityException {
 		List<SecurityQuestion> userQuestions = questionDao
 				.getSecurityQuestionsForUser(user);
 		boolean found = false;

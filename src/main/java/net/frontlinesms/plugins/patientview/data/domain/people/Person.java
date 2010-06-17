@@ -185,4 +185,15 @@ public abstract class Person{
 	
 	public abstract String getPersonType();
 	
+	public boolean equals(Object o){
+		if(!(o instanceof Person)){
+			return false;
+		}else{
+			Person other = (Person) o;
+			return other.getName().equals(this.getName()) &&
+			       other.getGender() == this.getGender() &&
+			       other.getBirthdate().equals(this.getBirthdate()) &&
+			       other.getPid() == this.getPid();
+		}
+	}
 }
