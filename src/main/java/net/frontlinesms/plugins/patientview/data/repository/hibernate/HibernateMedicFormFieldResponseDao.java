@@ -69,7 +69,7 @@ public class HibernateMedicFormFieldResponseDao extends BaseHibernateDao<MedicFo
 	public List<MedicFormFieldResponse> getResponsesForForm(MedicFormResponse mfr) {	
 		DetachedCriteria c = super.getCriterion();
 		c.add(Restrictions.eq("formResponse", mfr));
-		c.addOrder(Order.asc("position"));
+		c.addOrder(Order.asc("responsePosition"));
 		return super.getList(c);
 	}
 

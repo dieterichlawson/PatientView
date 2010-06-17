@@ -6,10 +6,15 @@ import java.util.List;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
+import net.frontlinesms.plugins.patientview.search.OrderBySQL;
 import net.frontlinesms.plugins.patientview.search.PagedResultSet;
 
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
 
@@ -63,38 +68,31 @@ public class FormResponseResultSet extends PagedResultSet {
 		}catch(Throwable t){			
 			session = sessionFactory.openSession();
 		}
-		String query = "from MedicFormResponse mfr";
-		boolean previousStatement = false;
+		Criteria c = session.createCriteria(MedicFormResponse.class);
+		c.setFetchMode("form.fields", FetchMode.SELECT);
 		//create the criteria
 		if(submitter != null){
-			query += " where mfr.submitter.pid = "+ submitter.getPid();
-			previousStatement=true;
+			c.add(Restrictions.eq("submitter", submitter));
 		}
 		//search by subject
 		if(subject != null){
-			if(previousStatement){
-				query += " and";
-			}else{
-				query+=" where";
-			}
-			query += " mfr.subject.pid = "+ subject.getPid();
-			previousStatement=true;
+			c.add(Restrictions.eq("subject", subject));
 		}
 		if(form != null){
-			if(previousStatement){
-				query += " and";
-			}else{
-				query+=" where";
-			}
-			query += " mfr.form.fid = "+ form.getFid();
+			c.add(Restrictions.eq("form", form));
 		}
+		//count before we order
+		c.setProjection(Projections.rowCount());
+		super.setTotalResults(((Integer)c.uniqueResult()).intValue()); 
+		//clean up after counting
+		c.setProjection(null);
+		c.setResultTransformer(Criteria.ROOT_ENTITY);
+		//order
 		if(aroundDate != null){
-			query += " order by abs(mfr.dateSubmitted - " + aroundDate.getTime() + ") asc";
+			c.addOrder(OrderBySQL.sqlFormula("abs(dateSubmitted - " + aroundDate.getTime() + ") asc"));
 		}
 		//get the results
-		results = session.createQuery(query).setFirstResult(super.getFirstResultOnPage()-1).setMaxResults(pageSize).list();
-		//count the results
-		super.setTotalResults(((Long) session.createQuery("select count(*) " + query).uniqueResult()).intValue()); 
+		results = c.setFirstResult(super.getFirstResultOnPage()-1).setMaxResults(pageSize).list();
 		return results;
 	}
 

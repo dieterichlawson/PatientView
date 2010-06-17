@@ -23,7 +23,7 @@ public class MedicFormFieldResponse extends Response {
 
 	private String value;
 	
-	private int position;
+	private int responsePosition;
 
 	public MedicFormFieldResponse(){}
 	
@@ -68,12 +68,12 @@ public class MedicFormFieldResponse extends Response {
 		this.value = value;
 	}
 
-	public void setPosition(int position) {
-		this.position = position;
+	public void setResponsePosition(int position) {
+		this.responsePosition = position;
 	}
 
-	public int getPosition() {
-		return position;
+	public int getResponsePosition() {
+		return responsePosition;
 	}
 	
 

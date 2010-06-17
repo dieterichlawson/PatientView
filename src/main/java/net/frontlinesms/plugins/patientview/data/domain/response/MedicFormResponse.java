@@ -35,7 +35,7 @@ public class MedicFormResponse extends Response{
 	private MedicForm form;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="formResponse",cascade=CascadeType.ALL)
-	@OrderBy(clause = "position asc")
+	@OrderBy(clause = "responsePosition asc")
 	private List<MedicFormFieldResponse> responses;
 	
 	public MedicFormResponse(){}
@@ -56,7 +56,7 @@ public class MedicFormResponse extends Response{
 				LOG.info("Creating response for field \"" + mff.getLabel()+ "\" Value: " + response);
 				MedicFormFieldResponse mffr = new MedicFormFieldResponse(response, mff, subject, submitter);
 				mffr.setFormResponse(this);
-				mffr.setPosition(responses.size());
+				mffr.setResponsePosition(responses.size());
 				responses.add(mffr);
 			}
 		}
@@ -107,7 +107,7 @@ public class MedicFormResponse extends Response{
 	public void addFieldResponse(MedicFormFieldResponse response){
 		responses.add(response);
 		response.setFormResponse(this);
-		response.setPosition(responses.size());
+		response.setResponsePosition(responses.size());
 	}
 	
 	public void removeFieldResponse(MedicFormFieldResponse response){
@@ -141,7 +141,7 @@ public class MedicFormResponse extends Response{
 	
 	private void updateFieldPositions(){
 		for(int i = 0; i < responses.size();i++){
-			responses.get(i).setPosition(i);
+			responses.get(i).setResponsePosition(i);
 		}
 	}
 	
