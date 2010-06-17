@@ -7,6 +7,7 @@ import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEventNotification;
 import net.frontlinesms.plugins.forms.data.domain.Form;
+import net.frontlinesms.plugins.patientview.DummyDataGenerator;
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
@@ -20,15 +21,20 @@ public class PatientViewFormListener implements EventObserver{
 	
 	private MedicFormDao formDao;
 	private UserDao userDao;
+	private DummyDataGenerator ddg;
 	private static Logger LOG = FrontlineUtils.getLogger(PatientViewFormListener.class);
 	
-	public PatientViewFormListener(ApplicationContext appCon){
+	public PatientViewFormListener(ApplicationContext appCon, DummyDataGenerator ddg){
 		this.formDao = (MedicFormDao) appCon.getBean("MedicFormDao");
 		this.userDao = (UserDao) appCon.getBean("UserDao");
 		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
+		this.ddg = ddg;
 	}
 
 	public void notify(FrontlineEventNotification notification) {
+		if(ddg.isGenerating()){
+			return;
+		}
 		if(notification instanceof EntityUpdatedNotification){
 			if(((EntityUpdatedNotification) notification).getDatabaseEntity() instanceof Form){
 				Form f =  ((EntityUpdatedNotification<Form>) notification).getDatabaseEntity();

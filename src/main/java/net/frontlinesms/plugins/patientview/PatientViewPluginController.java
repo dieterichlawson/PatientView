@@ -67,7 +67,7 @@ public class PatientViewPluginController extends BasePluginController{
 		UserSessionManager.getUserSessionManager().init(applicationContext);
 		DummyDataGenerator ddg = new DummyDataGenerator(applicationContext);
 		formMatcher = new FormMatcher(applicationContext);
-		PatientViewMessageListener listener = new PatientViewMessageListener(applicationContext);
-		PatientViewFormListener formListener = new PatientViewFormListener(applicationContext);
+		PatientViewMessageListener listener = new PatientViewMessageListener(applicationContext,ddg);
+		PatientViewFormListener formListener = new PatientViewFormListener(applicationContext,ddg);
 	}
 }

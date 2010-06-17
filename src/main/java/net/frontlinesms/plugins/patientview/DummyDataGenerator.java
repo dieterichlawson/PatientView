@@ -53,6 +53,8 @@ public class DummyDataGenerator {
 	
 	private static DateFormat df = InternationalisationUtils.getDateFormat();
 	
+	private boolean isGenerating=false;
+	
 	private ApplicationContext applicationContext;
 	/** Message Response Dao for saving message responses when they come in**/
 	MedicMessageResponseDao messageResponseDao;
@@ -140,6 +142,7 @@ public class DummyDataGenerator {
 	 */
 	@SuppressWarnings("serial")
 	public void createDummyData(boolean skip) {
+		setGenerating(true);
 		boolean createOneUser = thinlet.isSelected(thinlet.find(mainPanel,"rootToorBox"));
 		if(createOneUser){
 			User user0 = null;
@@ -169,6 +172,7 @@ public class DummyDataGenerator {
 		}
 		
 		if(skip){
+			setGenerating(false);
 			return;
 		}
 		
@@ -546,6 +550,7 @@ public class DummyDataGenerator {
 				}
 			}
 		}
+		setGenerating(false);
 	}
 	
 
@@ -594,6 +599,12 @@ public class DummyDataGenerator {
 			result += rand.nextInt(10);
 		}
 		return result;
+	}
+	private void setGenerating(boolean isGenerating) {
+		this.isGenerating = isGenerating;
+	}
+	public boolean isGenerating() {
+		return isGenerating;
 	}
 	
 }

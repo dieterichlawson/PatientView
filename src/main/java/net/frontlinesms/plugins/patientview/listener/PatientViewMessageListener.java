@@ -8,6 +8,7 @@ import net.frontlinesms.data.events.EntityUpdatedNotification;
 import net.frontlinesms.events.EventBus;
 import net.frontlinesms.events.EventObserver;
 import net.frontlinesms.events.FrontlineEventNotification;
+import net.frontlinesms.plugins.patientview.DummyDataGenerator;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
@@ -20,15 +21,20 @@ public class PatientViewMessageListener implements EventObserver {
 
 	private MedicMessageResponseDao messageDao;
 	private CommunityHealthWorkerDao chwDao;
+	private DummyDataGenerator ddg;
 	
 	private static Logger LOG = FrontlineUtils.getLogger(PatientViewMessageListener.class);
 	
-	public PatientViewMessageListener(ApplicationContext appCon){
+	public PatientViewMessageListener(ApplicationContext appCon, DummyDataGenerator ddg){
 		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
 		this.messageDao = (MedicMessageResponseDao) appCon.getBean("MedicMessageResponseDao");
 		this.chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
+		this.ddg = ddg;
 	}
 	public void notify(FrontlineEventNotification notification) {
+		if(ddg.isGenerating()){
+			return;
+		}
 		if((notification instanceof  EntitySavedNotification && 
 		    ((EntitySavedNotification) notification).getDatabaseEntity() instanceof FrontlineMessage) ||
 		    (notification instanceof EntityUpdatedNotification &&
