@@ -21,18 +21,17 @@ public class PatientViewFormListener implements EventObserver{
 	
 	private MedicFormDao formDao;
 	private UserDao userDao;
-	private DummyDataGenerator ddg;
+	private boolean listening = true;
 	private static Logger LOG = FrontlineUtils.getLogger(PatientViewFormListener.class);
 	
-	public PatientViewFormListener(ApplicationContext appCon, DummyDataGenerator ddg){
+	public PatientViewFormListener(ApplicationContext appCon){
 		this.formDao = (MedicFormDao) appCon.getBean("MedicFormDao");
 		this.userDao = (UserDao) appCon.getBean("UserDao");
 		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
-		this.ddg = ddg;
 	}
 
 	public void notify(FrontlineEventNotification notification) {
-		if(ddg.isGenerating()){
+		if(!listening){
 			return;
 		}
 		if(notification instanceof EntityUpdatedNotification){
@@ -61,5 +60,13 @@ public class PatientViewFormListener implements EventObserver{
 				}
 			}
 		}
+	}
+
+	public void setListening(boolean listening) {
+		this.listening = listening;
+	}
+
+	public boolean isListening() {
+		return listening;
 	}
 }

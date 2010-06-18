@@ -3,6 +3,7 @@ package net.frontlinesms.plugins.patientview.ui;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.FrontlineUtils;
 import net.frontlinesms.plugins.PluginController;
+import net.frontlinesms.plugins.patientview.DummyDataGenerator;
 import net.frontlinesms.plugins.patientview.PatientViewPluginController;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
@@ -14,6 +15,7 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldR
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.PersonAttributeResponse;
+import net.frontlinesms.plugins.patientview.data.repository.UserDao;
 import net.frontlinesms.plugins.patientview.search.simplesearch.SimpleSearchController;
 import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabController;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
@@ -103,7 +105,19 @@ public class PatientViewThinletTabController implements ThinletUiEventHandler, A
 	 * performs the initialization required for the login screen
 	 */
 	public void initialInit() {
+		//load the main tab, and then gut it
 		mainTab = uiController.loadComponentFromFile(XML_MEDIC_TAB, this);
+		uiController.removeAll(mainTab);
+		UserDao userDao = (UserDao) pluginController.getApplicationContext().getBean("UserDao");
+		if(userDao.getAllUsers().size() ==0){
+			DummyDataGenerator ddg = new DummyDataGenerator(pluginController, uiController);
+			uiController.add(mainTab, ddg.getMainPanel());
+		}else{
+			uiController.add(mainTab, loginScreen.getMainPanel());
+		}
+	}
+	
+	public void dummyDataDone(){
 		uiController.removeAll(mainTab);
 		uiController.add(mainTab, loginScreen.getMainPanel());
 	}

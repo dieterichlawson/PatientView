@@ -21,18 +21,17 @@ public class PatientViewMessageListener implements EventObserver {
 
 	private MedicMessageResponseDao messageDao;
 	private CommunityHealthWorkerDao chwDao;
-	private DummyDataGenerator ddg;
+	private boolean listening=true;
 	
 	private static Logger LOG = FrontlineUtils.getLogger(PatientViewMessageListener.class);
 	
-	public PatientViewMessageListener(ApplicationContext appCon, DummyDataGenerator ddg){
+	public PatientViewMessageListener(ApplicationContext appCon){
 		((EventBus) appCon.getBean("eventBus")).registerObserver(this);
 		this.messageDao = (MedicMessageResponseDao) appCon.getBean("MedicMessageResponseDao");
 		this.chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
-		this.ddg = ddg;
 	}
 	public void notify(FrontlineEventNotification notification) {
-		if(ddg.isGenerating()){
+		if(!listening){
 			return;
 		}
 		if((notification instanceof  EntitySavedNotification && 
@@ -50,6 +49,12 @@ public class PatientViewMessageListener implements EventObserver {
 					}
 				}
 		}
+	}
+	public void setListening(boolean listening) {
+		this.listening = listening;
+	}
+	public boolean isListening() {
+		return listening;
 	}
 
 }

@@ -25,6 +25,9 @@ public class PatientViewPluginController extends BasePluginController{
 	private ApplicationContext applicationContext;
 	
 	private static FormMatcher formMatcher;
+	private PatientViewMessageListener messageListener;
+	private PatientViewFormListener formListener; 
+	private PatientViewThinletTabController tabController;
 	
 	/** 
 	 * @see net.frontlinesms.plugins.BasePluginController#initThinletTab(net.frontlinesms.ui.UiGeneratorController)
@@ -32,8 +35,8 @@ public class PatientViewPluginController extends BasePluginController{
 	@Override
 	protected Object initThinletTab(UiGeneratorController uiController) {
 		//PatientFlagListener flagListener = new PatientFlagListener(applicationContext, uiController);
-		PatientViewThinletTabController controller= new PatientViewThinletTabController(this,uiController);
-		return controller.getTab();
+		tabController = new PatientViewThinletTabController(this,uiController);
+		return tabController.getTab();
 	}
 
 	/**
@@ -60,13 +63,29 @@ public class PatientViewPluginController extends BasePluginController{
 	 * @see net.frontlinesms.plugins.PluginController#init(net.frontlinesms.FrontlineSMS, org.springframework.context.ApplicationContext)
 	 */
 	public void init(FrontlineSMS frontlineController, ApplicationContext applicationContext) throws PluginInitialisationException {
-		
 		this.frontlineController = frontlineController;
 		this.applicationContext = applicationContext;
 		UserSessionManager.getUserSessionManager().init(applicationContext);
-		DummyDataGenerator ddg = new DummyDataGenerator(applicationContext);
 		formMatcher = new FormMatcher(applicationContext);
-		PatientViewMessageListener listener = new PatientViewMessageListener(applicationContext,ddg);
-		PatientViewFormListener formListener = new PatientViewFormListener(applicationContext,ddg);
+		messageListener = new PatientViewMessageListener(applicationContext);
+		formListener = new PatientViewFormListener(applicationContext);
+	}
+	
+	public void stopListening(){
+		messageListener.setListening(false);
+		formListener.setListening(false);
+	}
+	
+	public void startListening(){
+		messageListener.setListening(true);
+		formListener.setListening(true);
+	}
+
+	public void setTabController(PatientViewThinletTabController tabController) {
+		this.tabController = tabController;
+	}
+
+	public PatientViewThinletTabController getTabController() {
+		return tabController;
 	}
 }
