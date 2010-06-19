@@ -137,7 +137,6 @@ public class PagedAdvancedTableController extends AdvancedTableController implem
 		updateTable();
 	}
 
-	@Override
 	public void notify(FrontlineEventNotification notification) {
 		if(notification instanceof DatabaseEntityNotification){
 			DatabaseEntityNotification dbNotification = (DatabaseEntityNotification) notification;
