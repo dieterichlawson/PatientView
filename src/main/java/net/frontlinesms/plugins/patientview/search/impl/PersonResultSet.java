@@ -40,6 +40,9 @@ public class PersonResultSet<P extends Person> extends PagedResultSet {
 		c.setProjection(null);
 		c.setResultTransformer(Criteria.ROOT_ENTITY);
 		this.results = c.setFirstResult(super.getFirstResultOnPage()-1).setMaxResults(pageSize).list();
+		for(P person: results){
+			session.evict(person);
+		}
 		return results;
 	}
 
