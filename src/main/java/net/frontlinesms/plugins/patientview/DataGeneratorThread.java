@@ -68,15 +68,15 @@ public class DataGeneratorThread extends Thread{
 			String[] firsts = { "Dieterich", "Dolores", "Freddy", "Alex",
 					"Charlie", "Lindsay", "Winnie", "Terrence", "Wilson", "Jenny",
 					"Meghan", "Katherine", "Poe", "Phillip", "Andrew", "Elizabeth",
-					"Whitney", "Frank", "Jared", "Pope", "Wylie","Theodore", "Margot",
+					"Whitney", "Frank", "Jared", "Maximillian", "Wylie","Theodore", "Margot",
 					"Forscythe","Lars","Sarah","Teddy","Fitz","Humphrey","James","Mark","Jesse" };
 			// list of last names
 			String[] lasts = { "Lawson", "Threadbare", "Evermore", "Brown",
-					"Tender", "Taraban", "Polombo", "Pekkerwood", "Trought",
+					"DeWilliams", "Taraban", "Polombo", "Benter", "Trought",
 					"Finkley", "Coriander", "Groesbeck", "Trounce", "Longbottom",
 					"Yip", "Fiars", "Trunch", "Whelp", "Schy", "Munificent",
-					"Coyote","Brown","Black","Ames","Chavez","Richards","Swanson","Ballard"
-					,"Roosevelt","Jackson","Trueblood","Wachowsky","Corleogne" };
+					"Coyote","Brown","Black","Ames","Chavez","Richards","Phillips","Ballard"
+					,"Roosevelt","Jackson","Trueblood","Wachowsky","Corlogne" };
 			
 			ArrayList<CommunityHealthWorker> chws = new ArrayList<CommunityHealthWorker>();
 			ArrayList<Patient> ps = new ArrayList<Patient>();
@@ -311,6 +311,7 @@ public class DataGeneratorThread extends Thread{
 					//randomly select a Patient/CHW pair
 					Patient p = ps.get(rand.nextInt(ps.size()));
 					CommunityHealthWorker  chw = p.getChw();
+					boolean fudge = oneInFifty();
 					//generate response values
 					List<MedicFormFieldResponse> rvs = new ArrayList<MedicFormFieldResponse>();
 					for (MedicFormField ff : f.getFields()) {
@@ -318,18 +319,22 @@ public class DataGeneratorThread extends Thread{
 						if (ff.getDatatype() == DataType.CHECK_BOX) {
 							rvs.add(new MedicFormFieldResponse(new Boolean(rand.nextBoolean()).toString(), ff,p,chw));
 						} else if (ff.getDatatype() == DataType.TEXT_FIELD) {
-							if (ff.getLabel().equals("Patient Name")) {
+							if (ff.getLabel().equals("Patient Name") && !fudge) {
 								rvs.add(new MedicFormFieldResponse(p.getName(), ff,p,chw));
-							} else {
+							} else if(ff.getLabel().equals("Patient Name") && fudge){
+								rvs.add(new MedicFormFieldResponse(fudgeName(p.getName()), ff,p,chw));
+							}else {
 								rvs.add(new MedicFormFieldResponse("response for text field",ff,p,chw));
 							}
 						} else if (ff.getDatatype() == DataType.TEXT_AREA) {
 							rvs.add(new MedicFormFieldResponse(
 									"I'm entering additional notes for a text area", ff,p,chw));
 						} else if (ff.getDatatype() == DataType.DATE_FIELD) {
-							if (ff.getLabel().equals("Patient Birthdate")) {
+							if (ff.getLabel().equals("Patient Birthdate") && !fudge) {
 								rvs.add(new MedicFormFieldResponse(df.format(p.getBirthdate()), ff,p,chw));
-							} else {
+							} else if (ff.getLabel().equals("Patient Birthdate") && !fudge) {
+								rvs.add(new MedicFormFieldResponse(fudgeDate(p), ff,p,chw));
+							}else{
 								rvs.add(new MedicFormFieldResponse(df.format(getRandomDate()), ff,p,chw));
 							}
 						}else if(ff.getDatatype() == DataType.NUMERIC_TEXT_FIELD){
@@ -337,7 +342,7 @@ public class DataGeneratorThread extends Thread{
 						}
 					}
 					
-					MedicFormResponse fr = new MedicFormResponse(f, rvs,chw,p);
+					MedicFormResponse fr = new MedicFormResponse(f, rvs,chw,fudge? null:p);
 					Date dsumbitted= getRandomDate();
 					fr.setDateSubmitted(dsumbitted);
 					for(MedicFormFieldResponse mfr: fr.getResponses()){
@@ -485,7 +490,29 @@ public class DataGeneratorThread extends Thread{
 			return result;
 		}
 		
+		private boolean oneInFifty(){
+			return rand.nextInt(26) == 25;
+		}
+		
 		private void log(String text){
 			parentController.log(text);
 		}
+		
+		private String fudgeName(String name){
+			name = name.replace("v", "b");
+			name = name.replace("d", "t");
+			name = name.replace("th", "f");
+			name = name.replace("m", "n");
+			name = name.replace("ll", "y");
+			name = name.replace("ay", "ey");
+			return name;
+		}
+		
+		private String fudgeDate(Patient p){
+			Date d = p.getBirthdate();
+			Date newDate = new Date(d.getTime() + 86400000L);
+			return df.format(newDate);
+		}
+			
+			
 }

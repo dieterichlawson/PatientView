@@ -127,6 +127,8 @@ public class DummyDataGenerator implements ThinletUiEventHandler {
 		
 		if(skip){
 			setGenerating(false);
+			
+			creationDone();
 			return;
 		}
 		
@@ -163,6 +165,7 @@ public class DummyDataGenerator implements ThinletUiEventHandler {
 	}
 	
 	public void creationDone(){
+		pluginController.startListening();
 		pluginController.getTabController().dummyDataDone();
 	}
 }
