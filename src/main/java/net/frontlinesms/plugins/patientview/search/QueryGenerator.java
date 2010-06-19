@@ -34,7 +34,6 @@ public abstract class QueryGenerator extends PagedResultSet{
 	 * @param query The query to be run
 	 */
 	protected void runQuery(String query){
-		System.out.println(query);
 		//check if session is active
 		Session session = sessionFactory.openSession();
 		//construct the count query
@@ -43,9 +42,7 @@ public abstract class QueryGenerator extends PagedResultSet{
 		//run the count query, obtaining the total number of results
 		long countPrevTime = System.nanoTime();
 		totalResults = ((Long) session.createQuery(countQuery).list().get(0)).intValue();
-		long countElapsedTime = System.nanoTime() - countPrevTime;
-		System.out.println("Count Time: " + countElapsedTime/1000000.0);
-		
+		long countElapsedTime = System.nanoTime() - countPrevTime;		
 		if(totalResults % pageSize == 0){
 			totalPages = totalResults / pageSize;
 		}else{
@@ -57,7 +54,6 @@ public abstract class QueryGenerator extends PagedResultSet{
 		results = session.createQuery(query).setFirstResult(currentPage * pageSize).setMaxResults(pageSize).list();
 		//output time elapsed
 		long elapsedTime = System.nanoTime() - prevTime;
-		System.out.println("Query Time: " + elapsedTime/1000000.0);
 		previousQuery = query;
 	}
 	
