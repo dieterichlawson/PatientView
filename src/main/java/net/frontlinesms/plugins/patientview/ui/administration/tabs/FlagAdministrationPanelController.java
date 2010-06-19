@@ -155,5 +155,7 @@ public class FlagAdministrationPanelController implements AdministrationTabPanel
 	private FlagDefinition getCurrentlySelectedFlagDefinition(){
 		return uiController.getAttachedObject(uiController.getSelectedItem(flagList),FlagDefinition.class);
 	}
+	
+	public void viewWillAppear() {}
 
 }

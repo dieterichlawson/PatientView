@@ -73,5 +73,7 @@ public class PatientAdministrationPanelController extends PersonAdministrationPa
 	protected Class<Patient> getPersonClass() {
 		return Patient.class;
 	}
+	
+	public void viewWillAppear() {}
 
 }

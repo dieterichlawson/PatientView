@@ -151,4 +151,5 @@ public class UserAdministrationPanelController extends PersonAdministrationPanel
 		return User.class;
 	}
 
+	public void viewWillAppear() {}
 }

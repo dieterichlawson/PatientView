@@ -14,4 +14,6 @@ public interface AdministrationTabPanel {
 	public Object getPanel();
 	
 	public String getIconPath();
+	
+	public void viewWillAppear();
 }

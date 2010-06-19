@@ -233,4 +233,6 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 	public String getIconPath() {
 		return "/icons/patient_data_card.png";
 	}
+
+	public void viewWillAppear() {}
 }

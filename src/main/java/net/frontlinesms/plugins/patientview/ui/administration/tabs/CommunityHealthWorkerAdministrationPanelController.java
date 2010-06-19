@@ -73,5 +73,6 @@ public class CommunityHealthWorkerAdministrationPanelController extends PersonAd
 	protected Class<CommunityHealthWorker> getPersonClass() {
 		return CommunityHealthWorker.class;
 	}
+	public void viewWillAppear() {}
 
 }

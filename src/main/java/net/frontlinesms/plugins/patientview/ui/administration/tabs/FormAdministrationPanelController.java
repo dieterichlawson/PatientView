@@ -4,6 +4,7 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
 import java.util.Collection;
 
+import net.frontlinesms.data.events.DatabaseEntityNotification;
 import net.frontlinesms.data.events.EntityDeletedNotification;
 import net.frontlinesms.data.events.EntitySavedNotification;
 import net.frontlinesms.data.events.EntityUpdatedNotification;
@@ -214,18 +215,8 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 	}
 
 	public void notify(FrontlineEventNotification event) {
-		if(event instanceof EntitySavedNotification){
-			EntitySavedNotification castEvent = (EntitySavedNotification) event;
-			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
-				populatePatientViewFormList();
-			}
-		}else if(event instanceof EntityUpdatedNotification){
-			EntityUpdatedNotification castEvent = (EntityUpdatedNotification) event;
-			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
-				populatePatientViewFormList();
-			}
-		}else if(event instanceof EntityDeletedNotification){
-			EntityDeletedNotification castEvent = (EntityDeletedNotification) event;
+		if(event instanceof DatabaseEntityNotification){
+			DatabaseEntityNotification castEvent = (DatabaseEntityNotification) event;
 			if(castEvent.getDatabaseEntity() instanceof Form || castEvent.getDatabaseEntity() instanceof MedicForm){
 				populatePatientViewFormList();
 			}
@@ -235,6 +226,10 @@ public class FormAdministrationPanelController implements AdministrationTabPanel
 
 	public String getIconPath() {
 		return "/icons/big_form.png";
+	}
+	
+	public void viewWillAppear() {
+		populatePatientViewFormList();
 	}
 
 }

@@ -95,5 +95,7 @@ public class CsvImporterPanelController implements AdministrationTabPanel, Thinl
 	public String getIconPath() {
 		return "/icons/import_data.png";
 	}
+	
+	public void viewWillAppear() {}
 
 }

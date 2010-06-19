@@ -164,4 +164,6 @@ public class FormResponseMappingPanelController implements AdministrationTabPane
 		resultSet.setForm(mf);
 		tableController.updateTable();
 	}
+	
+	public void viewWillAppear() {}
 }
