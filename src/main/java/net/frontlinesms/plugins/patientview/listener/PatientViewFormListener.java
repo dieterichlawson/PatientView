@@ -37,7 +37,7 @@ public class PatientViewFormListener implements EventObserver{
 		if(notification instanceof EntityUpdatedNotification){
 			if(((EntityUpdatedNotification) notification).getDatabaseEntity() instanceof Form){
 				Form f =  ((EntityUpdatedNotification<Form>) notification).getDatabaseEntity();
-				if(f.isFinalised() && formDao.getMedicFormForForm(f) == null && userDao.getAllUsers().size() > 0){
+				if(f.isFinalised() && formDao.getMedicFormForForm(f) == null){
 					LOG.trace("Attempting to create Medic Form from FrontlineSMS Form");
 					try{
 						MedicForm newForm = new MedicForm(f);
