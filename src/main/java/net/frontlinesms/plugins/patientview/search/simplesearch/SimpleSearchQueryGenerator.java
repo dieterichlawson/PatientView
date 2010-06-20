@@ -20,8 +20,8 @@ public class SimpleSearchQueryGenerator extends QueryGenerator{
 		FieldDescriptor field = searchController.getCurrentField();
 		String query = "select " + sEntity.getTableAlias() + " from "  + sEntity.getDatabaseName() + " "  + sEntity.getTableAlias() + " where ";
 		if(field.getDataType() == SimpleSearchDataType.STRING){
-			query +=  sEntity.getTableAlias() + "." + field.getDatabaseName();
-			query += " like '%" + searchController.getTextInput() + "%'";
+			query +=  "lower(" +sEntity.getTableAlias() + "." + field.getDatabaseName()+")";
+			query += " like '%" + searchController.getTextInput().toLowerCase() + "%'";
 		}else if(field.getDataType() == SimpleSearchDataType.NUMBER){
 			if(searchController.getNumberInput().equals("") || searchController.getNumberInput() == null){
 				return;

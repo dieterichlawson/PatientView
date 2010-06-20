@@ -8,6 +8,7 @@ import net.frontlinesms.plugins.patientview.search.PagedResultSet;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
@@ -32,7 +33,7 @@ public class PersonResultSet<P extends Person> extends PagedResultSet {
 		}
 		Criteria c = session.createCriteria(personClass);
 		if(nameString != null){
-			c.add(Restrictions.like("name", "%"+nameString+"%"));
+			c.add(Restrictions.ilike("name",nameString,MatchMode.ANYWHERE));
 		}
 		c.setProjection(Projections.rowCount());
 		super.setTotalResults(((Integer)c.uniqueResult()).intValue()); 
