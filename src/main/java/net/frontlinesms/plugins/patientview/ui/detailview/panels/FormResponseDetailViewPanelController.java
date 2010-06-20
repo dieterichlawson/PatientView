@@ -94,7 +94,7 @@ public class FormResponseDetailViewPanelController implements DetailViewPanelCon
 				uiController.setInteger(field, "weightx", 1);
 				uiController.setChoice(field, "halign", "fill");
 				String r = responseIt.next();
-				if(r.equalsIgnoreCase(InternationalisationUtils.getI18NString("datatype.true"))){
+				if(r.equalsIgnoreCase("true")){
 					uiController.setSelected(field, true);
 				}
 			}else if(ff.getDatatype() == DataType.TEXT_AREA){
