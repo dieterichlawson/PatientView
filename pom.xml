@@ -4,7 +4,7 @@
 	<groupId>net.frontlinesms.plugins</groupId>
 	<artifactId>frontlinesms-plugin-patient-view</artifactId>
 	<name>FrontlineSMS:Medic Patient view</name>
-	<version>0.01.01-SNAPSHOT</version>
+	<version>0.9.0</version>
 	<description>PatientView plugin for FrontlineSMS</description>
 	<licenses>
 		<license>
@@ -13,7 +13,7 @@
 			<distribution>manual</distribution>
 			<comments>
 	  		Patient View
-            Created by Dieterich Lawson and FrontlineSMS:Medic
+            Created by FrontlineSMS:Medic
             </comments>
 		</license>
 	</licenses>
