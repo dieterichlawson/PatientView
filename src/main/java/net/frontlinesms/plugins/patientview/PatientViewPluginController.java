@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationContext;
 
 @PluginControllerProperties(name="PatientView", iconPath="/icons/big_medic.png",
 		springConfigLocation="classpath:net/frontlinesms/plugins/patientview/patientview-spring-hibernate.xml",
-		hibernateConfigPath ="classpath:net/frontlinesms/plugins/patientview/patientview.hibernate.cfg.xml")
+		hibernateConfigPath ="classpath:net/frontlinesms/plugins/patientview/patientview.hibernate.cfg.xml",i18nKey="PatientView")
 public class PatientViewPluginController extends BasePluginController{
 
 	/** the {@link FrontlineSMS} instance that this plugin is attached to */
