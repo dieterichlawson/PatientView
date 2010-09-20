@@ -34,9 +34,7 @@ public abstract class PagedResultSet {
 	}
 	
 	public void setCurrentPage(int currentPage) {
-		if(currentPage < totalPages){
-			this.currentPage = currentPage;
-		}
+		this.currentPage = currentPage;
 	}
 	
 	protected void setTotalResults(int totalResults){

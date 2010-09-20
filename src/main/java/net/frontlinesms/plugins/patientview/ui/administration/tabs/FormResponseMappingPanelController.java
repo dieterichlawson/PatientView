@@ -38,6 +38,11 @@ public class FormResponseMappingPanelController implements AdministrationTabPane
 	private FormMappingResultSet resultSet;
 	private MedicFormResponse currentResponse;
 	
+	/** The currently selected page number for mapped responses*/
+	private int mappedPageNumber= 0;
+	/** The currently selected page number for unmapped responses*/
+	private int unmappedPageNumber= 0;
+	
 	private static final String UI_FILE ="/ui/plugins/patientview/administration/responsemapping/formResponseMappingAdministrationPanel.xml";
 		
 	public FormResponseMappingPanelController(UiGeneratorController uiController, ApplicationContext appCon) {
@@ -103,10 +108,22 @@ public class FormResponseMappingPanelController implements AdministrationTabPane
 	}
 	
 	public void toggleChanged(Object button){
+		//save the current page
+		if(resultSet.isSearchingMapped()){
+			mappedPageNumber = resultSet.getCurrentPage();
+		}else{
+			unmappedPageNumber = resultSet.getCurrentPage();
+		}
+		//switch the mapping type
 		if(uiController.getName(button).equals("mappedToggle")){
 			resultSet.setSearchingMapped(true);
 		}else if(uiController.getName(button).equals("unmappedToggle")){
 			resultSet.setSearchingMapped(false);
+		}
+		if(resultSet.isSearchingMapped()){
+			resultSet.setCurrentPage(mappedPageNumber);
+		}else{
+			resultSet.setCurrentPage(unmappedPageNumber);
 		}
 		tableController.updateTable();
 		tableController.updatePagingControls();
