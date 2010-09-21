@@ -2,8 +2,10 @@ package net.frontlinesms.plugins.patientview.ui.dashboard;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
+import net.frontlinesms.plugins.patientview.security.UserSessionManager;
+import net.frontlinesms.plugins.patientview.ui.dashboard.tabs.FormResponseTab;
+import net.frontlinesms.plugins.patientview.ui.dashboard.tabs.SubmitFormTab;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
-import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;

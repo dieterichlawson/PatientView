@@ -3,7 +3,7 @@ package net.frontlinesms.plugins.patientview.ui.personpanel;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.CHWComboBox;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.CHWComboBox;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 

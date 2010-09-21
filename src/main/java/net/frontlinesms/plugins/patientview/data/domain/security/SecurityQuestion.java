@@ -1,8 +1,8 @@
 package net.frontlinesms.plugins.patientview.data.domain.security;
 
-import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.cryptoHash;
-import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.fillRandomBytes;
-import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.verify;
+import static net.frontlinesms.plugins.patientview.security.PasswordUtils.cryptoHash;
+import static net.frontlinesms.plugins.patientview.security.PasswordUtils.fillRandomBytes;
+import static net.frontlinesms.plugins.patientview.security.PasswordUtils.verify;
 
 import java.security.GeneralSecurityException;
 

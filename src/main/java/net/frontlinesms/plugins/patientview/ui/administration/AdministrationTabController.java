@@ -2,14 +2,14 @@ package net.frontlinesms.plugins.patientview.ui.administration;
 
 import java.util.ArrayList;
 
-import net.frontlinesms.plugins.patientview.importer.CsvImporterPanelController;
+import net.frontlinesms.plugins.patientview.flags.ui.FlagAdministrationPanelController;
+import net.frontlinesms.plugins.patientview.importer.ui.CsvImporterPanelController;
+import net.frontlinesms.plugins.patientview.responsemapping.ui.FormResponseMappingPanelController;
+import net.frontlinesms.plugins.patientview.security.ui.SecurityPanelController;
 import net.frontlinesms.plugins.patientview.ui.administration.tabs.AttributeAdministrationPanelController;
 import net.frontlinesms.plugins.patientview.ui.administration.tabs.CommunityHealthWorkerAdministrationPanelController;
-import net.frontlinesms.plugins.patientview.ui.administration.tabs.FlagAdministrationPanelController;
 import net.frontlinesms.plugins.patientview.ui.administration.tabs.FormAdministrationPanelController;
-import net.frontlinesms.plugins.patientview.ui.administration.tabs.FormResponseMappingPanelController;
 import net.frontlinesms.plugins.patientview.ui.administration.tabs.PatientAdministrationPanelController;
-import net.frontlinesms.plugins.patientview.ui.administration.tabs.SecurityPanelController;
 import net.frontlinesms.plugins.patientview.ui.administration.tabs.UserAdministrationPanelController;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;

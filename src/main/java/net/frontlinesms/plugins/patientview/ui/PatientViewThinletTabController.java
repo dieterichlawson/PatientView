@@ -16,14 +16,15 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormRespon
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.PersonAttributeResponse;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
+import net.frontlinesms.plugins.patientview.registration.ui.RegistrationScreenController;
 import net.frontlinesms.plugins.patientview.search.simplesearch.SimpleSearchController;
+import net.frontlinesms.plugins.patientview.security.UserSessionManager;
+import net.frontlinesms.plugins.patientview.security.ui.LoginScreen;
 import net.frontlinesms.plugins.patientview.ui.administration.AdministrationTabController;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.AdvancedTableActionDelegate;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.HeaderColumn;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.PagedAdvancedTableController;
 import net.frontlinesms.plugins.patientview.ui.detailview.DetailViewController;
-import net.frontlinesms.plugins.patientview.ui.registrar.RegistrationScreenController;
-import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 

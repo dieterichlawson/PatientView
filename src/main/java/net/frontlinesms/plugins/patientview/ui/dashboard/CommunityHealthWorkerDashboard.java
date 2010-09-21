@@ -1,6 +1,8 @@
 package net.frontlinesms.plugins.patientview.ui.dashboard;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
+import net.frontlinesms.plugins.patientview.ui.dashboard.tabs.FormResponseTab;
+import net.frontlinesms.plugins.patientview.ui.dashboard.tabs.SmsMessagesTab;
 import net.frontlinesms.plugins.patientview.ui.personpanel.CommunityHealthWorkerPanel;
 import net.frontlinesms.ui.UiGeneratorController;
 

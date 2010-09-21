@@ -22,7 +22,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageUtils;
+import net.frontlinesms.plugins.patientview.ui.imagechooser.ImageUtils;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.hibernate.annotations.IndexColumn;

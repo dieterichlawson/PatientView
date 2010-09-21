@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormDao;
-import net.frontlinesms.plugins.patientview.ui.dialogs.searchareas.SearchAreaDelegate;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 

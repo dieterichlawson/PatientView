@@ -5,7 +5,7 @@ import java.util.Set;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PhoneNumberField;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.PhoneNumberField;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 

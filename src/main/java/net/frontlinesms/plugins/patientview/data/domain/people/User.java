@@ -1,9 +1,9 @@
 package net.frontlinesms.plugins.patientview.data.domain.people;
 
-import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.cryptoHash;
-import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.fillRandomBytes;
-import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.generatePassword;
-import static net.frontlinesms.plugins.patientview.data.domain.security.PasswordUtils.verify;
+import static net.frontlinesms.plugins.patientview.security.PasswordUtils.cryptoHash;
+import static net.frontlinesms.plugins.patientview.security.PasswordUtils.fillRandomBytes;
+import static net.frontlinesms.plugins.patientview.security.PasswordUtils.generatePassword;
+import static net.frontlinesms.plugins.patientview.security.PasswordUtils.verify;
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 
 import java.math.BigInteger;

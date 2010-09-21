@@ -16,8 +16,8 @@ import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeDao;
 import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeResponseDao;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.ThinletFormField;
-import net.frontlinesms.plugins.patientview.userlogin.UserSessionManager;
+import net.frontlinesms.plugins.patientview.security.UserSessionManager;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.ThinletFormField;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 

@@ -9,11 +9,11 @@ import java.util.Date;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
-import net.frontlinesms.plugins.patientview.ui.dialogs.imagechooser.ImageChooser;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.BirthdateField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.GenderComboBox;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.NameField;
-import net.frontlinesms.plugins.patientview.ui.helpers.thinletformfields.personalformfields.PersonalFormField;
+import net.frontlinesms.plugins.patientview.ui.imagechooser.ImageChooser;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.BirthdateField;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.GenderComboBox;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.NameField;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.PersonalFormField;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
