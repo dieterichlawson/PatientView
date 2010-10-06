@@ -53,4 +53,8 @@ public interface MedicFormFieldResponseDao {
 	 */
 	public List<MedicFormFieldResponse> getResponsesForForm(MedicFormResponse mfr);
 	
+	public void updateSubjects(MedicFormResponse formResponse);
+	
+	public void updateSubmitters(MedicFormResponse formResponse);
+	
 }

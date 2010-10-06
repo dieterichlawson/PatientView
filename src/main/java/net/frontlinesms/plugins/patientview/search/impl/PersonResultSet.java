@@ -3,11 +3,11 @@ package net.frontlinesms.plugins.patientview.search.impl;
 import java.util.List;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.data.repository.CriteriaExecutor;
 import net.frontlinesms.plugins.patientview.search.PagedResultSet;
 
 import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -18,32 +18,24 @@ public class PersonResultSet<P extends Person> extends PagedResultSet {
 	private List<P> results;
 	
 	private Class<P> personClass;
-	
-	private SessionFactory sessionFactory;
-	
+		
 	private String nameString;
+	
+	private CriteriaExecutor executor;
 
 	@Override
 	public List getFreshResultsPage() {
-		Session session = null;
-		try{
-			session = sessionFactory.getCurrentSession();
-		}catch(Throwable t){			
-			session = sessionFactory.openSession();
-		}
-		Criteria c = session.createCriteria(personClass);
+		DetachedCriteria c = DetachedCriteria.forClass(personClass);
 		if(nameString != null){
 			c.add(Restrictions.ilike("name",nameString,MatchMode.ANYWHERE));
 		}
+		c.add(Restrictions.eq("isVisible",true));
 		c.setProjection(Projections.rowCount());
-		super.setTotalResults(((Integer)c.uniqueResult()).intValue()); 
+		super.setTotalResults(executor.getUnique(c, Integer.class)); 
 		//clean up after counting
 		c.setProjection(null);
 		c.setResultTransformer(Criteria.ROOT_ENTITY);
-		this.results = c.setFirstResult(super.getFirstResultOnPage()-1).setMaxResults(pageSize).list();
-		for(P person: results){
-			session.evict(person);
-		}
+		this.results = executor.executePagedCriteria(c, super.getFirstResultOnPage()-1, pageSize, personClass);
 		return results;
 	}
 
@@ -58,7 +50,7 @@ public class PersonResultSet<P extends Person> extends PagedResultSet {
 	}
 	
 	public PersonResultSet(ApplicationContext appCon, Class<P> personClass){
-		this.sessionFactory = (SessionFactory) appCon.getBean("sessionFactory");
+		this.executor = ((CriteriaExecutor) appCon.getBean("CriteriaExecutor"));
 		super.pageSize = 28;
 		this.personClass = personClass;
 	}

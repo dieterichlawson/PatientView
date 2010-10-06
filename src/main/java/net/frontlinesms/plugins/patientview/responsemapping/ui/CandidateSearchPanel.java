@@ -9,6 +9,7 @@ import java.util.List;
 import net.frontlinesms.plugins.patientview.PatientViewPluginController;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
 import net.frontlinesms.plugins.patientview.responsemapping.Candidate;
@@ -20,7 +21,6 @@ import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 
-import org.hibernate.Hibernate;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -33,7 +33,8 @@ public class CandidateSearchPanel implements ThinletUiEventHandler, AdvancedTabl
 	private ApplicationContext appCon;
 	
 	private PatientDao patientDao;
-	private MedicFormResponseDao responseDao;
+	private MedicFormResponseDao formResponseDao;
+	private MedicFormFieldResponseDao fieldResponseDao;
 	
 	private boolean searching;
 	private boolean searchingCandidates;
@@ -64,7 +65,8 @@ public class CandidateSearchPanel implements ThinletUiEventHandler, AdvancedTabl
 		this.patientDao = (PatientDao) appCon.getBean("PatientDao");
 		this.response = response;
 		this.appCon = appCon;
-		responseDao = (MedicFormResponseDao) appCon.getBean("MedicFormResponseDao");
+		formResponseDao = (MedicFormResponseDao) appCon.getBean("MedicFormResponseDao");
+		fieldResponseDao = (MedicFormFieldResponseDao) appCon.getBean("MedicFormFieldResponseDao");
 		matcher = PatientViewPluginController.getFormMatcher();
 		mainPanel = uiController.createPanel("");
 		uiController.setWeight(mainPanel,1,1);
@@ -223,11 +225,9 @@ public class CandidateSearchPanel implements ThinletUiEventHandler, AdvancedTabl
 	 * 
 	 */
 	public void setSubjectToSelectedCandidate(){
-		response = responseDao.reattach(response);
-		Hibernate.initialize(response);
-		Hibernate.initialize(response.getResponses());
 		response.setSubject(currentlySelectedPatient);
-		responseDao.updateMedicFormResponse(response);
+		formResponseDao.updateMedicFormResponse(response);
+		fieldResponseDao.updateSubjects(response);
 		parentController.currentResponseMappingChanged();
 	}
 	

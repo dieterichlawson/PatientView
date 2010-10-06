@@ -50,6 +50,7 @@ public abstract class QueryGenerator extends PagedResultSet{
 		}
 		//set up the time measurement
 		long prevTime = System.nanoTime();
+		System.out.println(query);
 		//run the query
 		results = session.createQuery(query).setFirstResult(currentPage * pageSize).setMaxResults(pageSize).list();
 		//output time elapsed

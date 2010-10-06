@@ -6,13 +6,13 @@ import java.util.List;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
+import net.frontlinesms.plugins.patientview.data.repository.CriteriaExecutor;
 import net.frontlinesms.plugins.patientview.search.OrderBySQL;
 import net.frontlinesms.plugins.patientview.search.PagedResultSet;
 
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
@@ -53,22 +53,16 @@ public class FormResponseResultSet extends PagedResultSet {
 	 */
 	private List<MedicFormResponse> results;
 	
-	private SessionFactory sessionFactory;
+	private CriteriaExecutor executor;
 
 	public FormResponseResultSet(ApplicationContext appCon){
-		this.sessionFactory = (SessionFactory) appCon.getBean("sessionFactory");
+		this.executor= (CriteriaExecutor) appCon.getBean("CriteriaExecutor");
 		super.pageSize = 28;
 	}
 	
 	@Override
 	public List<MedicFormResponse> getFreshResultsPage() {
-		Session session = null;
-		try{
-			session = sessionFactory.getCurrentSession();
-		}catch(Throwable t){			
-			session = sessionFactory.openSession();
-		}
-		Criteria c = session.createCriteria(MedicFormResponse.class);
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormResponse.class);
 		c.setFetchMode("form.fields", FetchMode.SELECT);
 		//create the criteria
 		if(submitter != null){
@@ -83,7 +77,7 @@ public class FormResponseResultSet extends PagedResultSet {
 		}
 		//count before we order
 		c.setProjection(Projections.rowCount());
-		super.setTotalResults(((Integer)c.uniqueResult()).intValue()); 
+		super.setTotalResults(executor.getUnique(c, Integer.class)); 
 		//clean up after counting
 		c.setProjection(null);
 		c.setResultTransformer(Criteria.ROOT_ENTITY);
@@ -92,7 +86,7 @@ public class FormResponseResultSet extends PagedResultSet {
 			c.addOrder(OrderBySQL.sqlFormula("abs(dateSubmitted - " + aroundDate.getTime() + ") asc"));
 		}
 		//get the results
-		results = c.setFirstResult(super.getFirstResultOnPage()-1).setMaxResults(pageSize).list();
+		this.results = executor.executePagedCriteria(c, super.getFirstResultOnPage()-1, pageSize, MedicFormResponse.class);
 		return results;
 	}
 

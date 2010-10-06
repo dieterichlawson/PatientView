@@ -29,5 +29,5 @@
 
 	<bean id="SecurityQuestionDao" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateSecurityQuestionDao" parent="baseHibernateDao"/>
 	<bean id="FlagDefinitionDao" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateFlagDefinitionDao" parent="baseHibernateDao"/>
-
+	<bean id="CriteriaExecutor" class="net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateCriteriaExecutor" parent="sessionFactoryAware"/>
 </beans>

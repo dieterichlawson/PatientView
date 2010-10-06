@@ -3,16 +3,17 @@ package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
+
+import org.hibernate.Hibernate;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 public class HibernateMedicFormFieldResponseDao extends BaseHibernateDao<MedicFormFieldResponse> implements MedicFormFieldResponseDao{
 
@@ -71,6 +72,22 @@ public class HibernateMedicFormFieldResponseDao extends BaseHibernateDao<MedicFo
 		c.add(Restrictions.eq("formResponse", mfr));
 		c.addOrder(Order.asc("responsePosition"));
 		return super.getList(c);
+	}
+	
+	public void updateSubjects(MedicFormResponse formResponse){
+		formResponse = (MedicFormResponse) super.getSession().merge(formResponse);
+		for(MedicFormFieldResponse fieldResponse: formResponse.getResponses()){
+			fieldResponse.setSubject(formResponse.getSubject());
+			updateWithoutDuplicateHandling(fieldResponse);
+		}
+	}
+	
+	public void updateSubmitters(MedicFormResponse formResponse){
+		formResponse = (MedicFormResponse) super.getSession().merge(formResponse);
+		for(MedicFormFieldResponse fieldResponse: formResponse.getResponses()){
+			fieldResponse.setSubmitter(formResponse.getSubmitter());
+			updateWithoutDuplicateHandling(fieldResponse);
+		}
 	}
 
 }

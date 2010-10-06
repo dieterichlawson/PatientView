@@ -91,10 +91,10 @@ public enum SimpleSearchEntity {
 	private String displayName;
 	private String databaseName;
 	private String tableAlias;
-	private Class entityClass;
+	private Class<?> entityClass;
 	private ArrayList<FieldDescriptor> fields;
 	
-	private SimpleSearchEntity(String name,  String tableAlias, String databaseName, Class entityClass, FieldDescriptor[] fields){
+	private SimpleSearchEntity(String name,  String tableAlias, String databaseName, Class<?> entityClass, FieldDescriptor[] fields){
 		this.displayName = name;
 		this.databaseName = databaseName;
 		this.entityClass = entityClass;
@@ -109,7 +109,7 @@ public enum SimpleSearchEntity {
 		return databaseName;
 	}
 	
-	public Class getEntityClass() {
+	public Class<?> getEntityClass() {
 		return entityClass;
 	}
 

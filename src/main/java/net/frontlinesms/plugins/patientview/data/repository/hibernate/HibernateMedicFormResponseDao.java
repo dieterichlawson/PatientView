@@ -61,11 +61,6 @@ public class HibernateMedicFormResponseDao extends BaseHibernateDao<MedicFormRes
 		c.add(Restrictions.eq("form", form));
 		return super.getList(c);
 	}
-	
-	public MedicFormResponse reattach(MedicFormResponse mf){
-		super.getHibernateTemplate().update(mf);
-		return mf;
-	}
 
 	public List<MedicFormResponse> getMappedResponses() {
 		DetachedCriteria c = super.getCriterion();

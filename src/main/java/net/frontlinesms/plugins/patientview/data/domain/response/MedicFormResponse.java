@@ -115,22 +115,6 @@ public class MedicFormResponse extends Response{
 		updateFieldPositions();
 	}
 	
-	@Override
-	public void setSubject(Person p){
-		super.setSubject(p);
-		for(MedicFormFieldResponse mfr: responses){
-			mfr.setSubject(p);
-		}
-	}
-	
-	@Override
-	public void setSubmitter(Person p){
-		super.setSubmitter(p);
-		for(MedicFormFieldResponse mfr: responses){
-			mfr.setSubmitter(p);
-		}
-	}
-	
 	public boolean isMapped(){
 		return subject !=null;
 	}

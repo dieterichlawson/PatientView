@@ -44,8 +44,6 @@ public interface MedicFormResponseDao {
 	 */
 	public List<MedicFormResponse> getFormResponsesForForm(MedicForm form);
 	
-	public MedicFormResponse reattach(MedicFormResponse mf);
-	
 	public List<MedicFormResponse> getUnmappedResponses();
 	
 	public List<MedicFormResponse> getMappedResponses();

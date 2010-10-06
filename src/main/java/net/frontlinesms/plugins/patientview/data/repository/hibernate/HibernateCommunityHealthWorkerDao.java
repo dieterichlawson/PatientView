@@ -8,12 +8,10 @@ import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWo
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
 
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
-public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<CommunityHealthWorker>
-		implements CommunityHealthWorkerDao {
-	
-	private static String chwByPatientQuery = "select p.chw from Patient p where p = :patient";
+public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<CommunityHealthWorker> implements CommunityHealthWorkerDao {
 	
 	protected HibernateCommunityHealthWorkerDao() {
 		super(CommunityHealthWorker.class);
@@ -35,17 +33,11 @@ public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<Communit
 		super.updateWithoutDuplicateHandling(chw);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao#getCommunityHealthWorkerByName(java.lang.String, int)
-	 */
-	public List<CommunityHealthWorker> getCommunityHealthWorkerByName(String s, int limit){
+	public List<CommunityHealthWorker> getCommunityHealthWorkerByName(String nameFragment, int limit){
 		DetachedCriteria c= super.getCriterion();
-		c.add(Restrictions.like("name", "%"+s+"%"));
-		if(limit > 0)
-			return super.getList(c, 0, limit);
-		else{
-			return super.getList(c);
-		}
+		c.add(Restrictions.like("name", nameFragment,MatchMode.ANYWHERE));
+		if(limit > 0) return super.getList(c, 0, limit);
+		else return super.getList(c);
 	}
 	
 	public CommunityHealthWorker getCommunityHealthWorkerByPhoneNumber(String phoneNumber){
