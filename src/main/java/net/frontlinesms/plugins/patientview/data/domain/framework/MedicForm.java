@@ -47,16 +47,51 @@ public class MedicForm extends RemovableObject{
 	@OrderBy(clause = "position asc")
 	private List<MedicFormField> fields;
 
+	/**
+	 * The FrontlineSMS form that this Medic form is linked to
+	 */
 	@OneToOne(fetch = FetchType.LAZY, cascade = {})
 	@JoinColumn(name = "vanilla_form_id", nullable = true)
 	private Form vanillaForm;
 
-	public MedicForm() {
-	}
+	/**
+	 * Blank Hibernate Constructor 
+	 */
+	public MedicForm() {}
 
+	/**
+	 * Creates a Medic form with the supplied name. Also Initializes the list of fields 
+	 * @param name
+	 */
 	public MedicForm(String name) {
 		this.name = name;
 		fields = new ArrayList<MedicFormField>();
+	}
+	
+	/**
+	 * Creates a Medic Form with the supplied name and fields.
+	 * @param name
+	 * @param fields
+	 */
+	public MedicForm(String name, List<MedicFormField> fields) {
+		this.name = name;
+		setFields(fields);
+	}
+	
+	/**
+	 * creates a MedicForm from a vanilla FrontlineSMS form automatically
+	 * 
+	 * @param f
+	 */
+	public MedicForm(Form f) {
+		this.vanillaForm = f;
+		this.name = f.getName();
+		fields = new ArrayList<MedicFormField>();
+		for (FormField field : f.getFields()) {
+			MedicFormField mff = new MedicFormField(this, DataType.getDataTypeForString(field.getType().name()), field.getLabel());
+			fields.add(mff);
+		}
+		updateFieldPositions();
 	}
 
 	/**
@@ -77,37 +112,47 @@ public class MedicForm extends RemovableObject{
 		this.vanillaForm = form;
 	}
 
-	public MedicForm(String name, List<MedicFormField> fields) {
-		this.name = name;
-		setFormFields(fields);
-	}
-
-	public void setFormFields(List<MedicFormField> fields) {
+	public void setFields(List<MedicFormField> fields) {
 		this.fields = fields;
-		updateFieldPositions();
-	}
-
-	/**
-	 * creates a MedicForm from a vanilla frontline form
-	 * 
-	 * @param f
-	 */
-	public MedicForm(Form f) {
-		this.vanillaForm = f;
-		this.name = f.getName();
-		fields = new ArrayList<MedicFormField>();
-		for (FormField field : f.getFields()) {
-			MedicFormField mff = new MedicFormField(this, DataType.getDataTypeForString(field.getType().name()), field.getLabel());
-			fields.add(mff);
+		if(this.fields == null) return;
+		for(MedicFormField mff: fields){
+			mff.setForm(this);
 		}
 		updateFieldPositions();
 	}
+	
+	/**
+	 * @return a list of the fields on the form
+	 */
+	public List<MedicFormField> getFields() {
+		return fields;
+	}
+	
+	/**
+	 * Adds a field to the form at the end
+	 * 
+	 * @param field
+	 */
+	public void addField(MedicFormField field) {
+		field.setForm(this);
+		fields.add(field);
+		field.setPosition(fields.size()-1);
+	}
 
 	/**
-	 * @return the name of the form
+	 * removes a field from the form
+	 * 
+	 * @param field
 	 */
-	public String getName() {
-		return name;
+	public void removeField(MedicFormField field) {
+		fields.remove(field);
+		updateFieldPositions();
+	}
+	
+	private void updateFieldPositions(){
+		for(int i = 0; i < fields.size();i++){
+			fields.get(i).setPosition(i);
+		}
 	}
 
 	/**
@@ -119,44 +164,16 @@ public class MedicForm extends RemovableObject{
 	}
 
 	/**
+	 * @return the name of the form
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
 	 * @return the ID of the form
 	 */
 	public long getFid() {
 		return fid;
 	}
-
-	/**
-	 * @return a list of the fields on the form
-	 */
-	public List<MedicFormField> getFields() {
-		return fields;
-	}
-
-	/**
-	 * Adds a field to the form at the end
-	 * 
-	 * @param field
-	 */
-	public void addField(MedicFormField field) {
-		field.setForm(this);
-		fields.add(field);
-		field.setPosition(fields.size());
-	}
-
-	/**
-	 * removes a field from the form
-	 * 
-	 * @param field
-	 */
-	public void removedField(MedicFormField field) {
-		fields.remove(field);
-		updateFieldPositions();
-	}
-	
-	private void updateFieldPositions(){
-		for(int i = 0; i < fields.size();i++){
-			fields.get(i).setPosition(i);
-		}
-	}
-
 }

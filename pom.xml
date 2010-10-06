@@ -43,6 +43,11 @@
 			</snapshots>
 			<layout>default</layout>
 		</repository>
+		<repository>
+			<id>cleone.net.repo</id>
+			<name>Temporary FrontlineSMS repository on cleone.net</name>
+			<url>http://m2repo.cleone.net</url>
+		</repository>
 	</repositories>
 
 	<properties>
@@ -85,6 +90,7 @@
 	</build>
 
 	<dependencies>
+		<!-- FrontlineSMS dependencies -->
 		<dependency>
 			<groupId>net.frontlinesms.core</groupId>
 			<artifactId>frontlinesms</artifactId>
@@ -95,6 +101,8 @@
 			<artifactId>frontlinesms-plugin-forms</artifactId>
 			<version>0.02.26-SNAPSHOT</version>
 		</dependency>
+		
+		<!--  Library Dependencies -->
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jfreechart</artifactId>
@@ -114,6 +122,27 @@
 			<groupId>org.beanshell</groupId>
 			<artifactId>bsh-core</artifactId>
 			<version>2.0b4</version>
+		</dependency>
+		
+		<!--  Test Dependencies -->
+			<dependency>
+			<groupId>net.frontlinesms.core</groupId>
+			<artifactId>frontlinesms-test</artifactId>
+			<version>0.01.01</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>2.5.6</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.8.2</version>
+			<scope>test</scope> 
 		</dependency>
 	</dependencies>
 </project>
