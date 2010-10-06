@@ -28,7 +28,7 @@ public abstract class PagedResultSet {
 	 * the size of the pages
 	 */
 	protected int pageSize=30;
-	
+		
 	public int getCurrentPage() {
 		return currentPage;
 	}

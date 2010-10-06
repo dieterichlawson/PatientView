@@ -5,10 +5,8 @@ import java.util.List;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
-import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
 
-import org.hibernate.Query;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -21,30 +19,18 @@ public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<Communit
 		super(CommunityHealthWorker.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao#deleteCommunityHealthWorker(net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker)
-	 */
 	public void deleteCommunityHealthWorker(CommunityHealthWorker chw) {
 		super.delete(chw);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao#getAllCommunityHealthWorkers()
-	 */
 	public Collection<CommunityHealthWorker> getAllCommunityHealthWorkers() {
 		return super.getAll();
 	}
 
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao#saveCommunityHealthWorker(net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker)
-	 */
 	public void saveCommunityHealthWorker(CommunityHealthWorker chw) {
 		super.saveWithoutDuplicateHandling(chw);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao#updateCommunityHealthWorker(net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker)
-	 */
 	public void updateCommunityHealthWorker(CommunityHealthWorker chw) {
 		super.updateWithoutDuplicateHandling(chw);
 	}
@@ -62,9 +48,6 @@ public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<Communit
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao#getCommunityHealthWorkerByPhoneNumber(java.lang.String)
-	 */
 	public CommunityHealthWorker getCommunityHealthWorkerByPhoneNumber(String phoneNumber){
 		DetachedCriteria c= super.getCriterion();
 		c.createCriteria("contactInfo").add(Restrictions.eq("phoneNumber",phoneNumber));
@@ -80,5 +63,4 @@ public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<Communit
 			return null;
 		}
 	}
-
 }

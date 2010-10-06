@@ -5,11 +5,16 @@ import java.util.List;
 
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
+import net.frontlinesms.plugins.patientview.data.domain.response.Response;
 import net.frontlinesms.plugins.patientview.data.repository.UserDao;
+import net.frontlinesms.plugins.patientview.security.UserSessionManager;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * The default implementation of the User DAO
+ */
 public class HibernateUserDao extends BaseHibernateDao<User> implements UserDao {
 
 	protected HibernateUserDao() {

@@ -69,7 +69,7 @@ public class DataGeneratorThread extends Thread{
 					"Charlie", "Lindsay", "Winnie", "Terrence", "Wilson", "Jenny",
 					"Meghan", "Katherine", "Poe", "Phillip", "Andrew", "Elizabeth",
 					"Whitney", "Frank", "Jared", "Maximillian", "Wylie","Theodore", "Margot",
-					"Forscythe","Lars","Sarah","Teddy","Fitz","Humphrey","James","Mark","Jesse" };
+					"Forscythe","Lars","Sarah","Teddy","Fitz","Humphrey","James","Mark","Jesse"};
 			// list of last names
 			String[] lasts = { "Lawson", "Threadbare", "Evermore", "Brown",
 					"DeWilliams", "Taraban", "Polombo", "Benter", "Trought",

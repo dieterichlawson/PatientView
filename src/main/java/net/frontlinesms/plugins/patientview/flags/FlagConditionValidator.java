@@ -20,7 +20,8 @@ public class FlagConditionValidator {
 	
 	public FlagConditionValidator(ApplicationContext appCon){
 		this.fieldDao = (FieldDao) appCon.getBean("FieldDao");
-		}
+	}
+	
 	public void validate(String condition) throws ValidationFailure{
 		//replace all whitespace
 		condition = condition.replaceAll("\\s", "");

@@ -2,6 +2,7 @@ package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;

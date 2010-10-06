@@ -70,5 +70,4 @@ public class PersonResultSet<P extends Person> extends PagedResultSet {
 	public String getNameString() {
 		return nameString;
 	}
-
 }

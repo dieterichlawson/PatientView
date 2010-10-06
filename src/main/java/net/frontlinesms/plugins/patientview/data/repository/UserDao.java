@@ -7,12 +7,36 @@ import net.frontlinesms.plugins.patientview.data.domain.people.User;
 
 public interface UserDao {
 
+	// CRUD
+	/**
+	 * Saves a user, creating a new database record. This method does NOT check
+	 * for duplicates.
+	 * 
+	 * @param s
+	 */
 	public void saveUser(User s);
 
+	/**
+	 * Permanently deletes a user's record. Should not be used - use void
+	 * instead.
+	 * 
+	 * @param s
+	 */
 	public void deleteUser(User s);
 
+	/**
+	 * Updates an existing User's recprd in the database. This method does NOT
+	 * check for duplicates.
+	 * 
+	 * @param s
+	 */
 	public void updateUser(User s);
 
+	/**
+	 * Returns all users
+	 * 
+	 * @return
+	 */
 	public Collection<User> getAllUsers();
 
 	/**
