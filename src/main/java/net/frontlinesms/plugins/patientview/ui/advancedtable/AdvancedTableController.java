@@ -160,7 +160,7 @@ public class AdvancedTableController{
 				Object cell = uiController.createTableCell(value);
 				uiController.add(row,cell);
 				try{
-					if(((RemovableObject) result).isDeleted()){
+					if(!((RemovableObject) result).isActive()){
 						uiController.setEnabled(cell, false);
 					}
 				}catch(Exception e){}

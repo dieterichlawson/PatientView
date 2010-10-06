@@ -50,7 +50,7 @@ public class SimpleSearchQueryGenerator extends QueryGenerator{
 			}
 			
 		}
-		query += " and isVisible = true"; 
+		query += " and deleted = false"; 
 		super.resetPaging();
 		runQuery(query);
 	}

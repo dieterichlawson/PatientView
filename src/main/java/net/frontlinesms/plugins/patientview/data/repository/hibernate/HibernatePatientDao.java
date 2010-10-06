@@ -112,7 +112,7 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 
 	private DetachedCriteria getBaseCriterion(){
 		DetachedCriteria c= super.getCriterion();
-		c.add(Restrictions.eq("isVisible",true));
+		c.add(Restrictions.eq("deleted",false));
 		return c;
 	}
 	

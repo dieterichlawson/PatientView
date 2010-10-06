@@ -29,7 +29,7 @@ public class PersonResultSet<P extends Person> extends PagedResultSet {
 		if(nameString != null){
 			c.add(Restrictions.ilike("name",nameString,MatchMode.ANYWHERE));
 		}
-		c.add(Restrictions.eq("isVisible",true));
+		c.add(Restrictions.eq("deleted",false));
 		c.setProjection(Projections.rowCount());
 		super.setTotalResults(executor.getUnique(c, Integer.class)); 
 		//clean up after counting
