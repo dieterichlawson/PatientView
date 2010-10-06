@@ -40,6 +40,9 @@ public class MedicFormField extends Field{
 	@JoinColumn(name="parentForm")
 	private MedicForm parentForm;
 	
+	/**
+	 * The responses for this field. Should not be accessed directly, as it is lazy loaded 
+	 */
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY, mappedBy="field",targetEntity=MedicFormFieldResponse.class)
 	private Set<MedicFormFieldResponse> responses;
 	 
@@ -79,9 +82,20 @@ public class MedicFormField extends Field{
 		}
 	}
 	
+	/**
+	 * Empty Hibernate Constructor
+	 */
 	public MedicFormField(){}
 	
 	
+	/**
+	 * Creates a field with the supplied parameters.
+	 * Use this constructor for Patient-id fields
+	 * @param form
+	 * @param datatype
+	 * @param label
+	 * @param mapping
+	 */
 	public MedicFormField(MedicForm form, DataType datatype, String label, PatientFieldMapping mapping){
 		super(label,datatype);
 		this.isAttributePanelField = false;
@@ -170,9 +184,12 @@ public class MedicFormField extends Field{
 		return responses;
 	}
 	
+	/**
+	 * Returns a boolean representing whether this field
+	 * can have responses or whether it is just a label field 
+	 * @return
+	 */
 	public boolean isRespondable(){
-		return this.datatype != DataType.WRAPPED_TEXT && this.datatype != DataType.TRUNCATED_TEXT;
+		return this.datatype.isRespondable();
 	}
-	
-	
 }
