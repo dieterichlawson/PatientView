@@ -22,6 +22,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import net.frontlinesms.plugins.patientview.domain.RemovableObject;
 import net.frontlinesms.plugins.patientview.ui.imagechooser.ImageUtils;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
@@ -33,7 +34,7 @@ import org.hibernate.annotations.IndexColumn;
 @DiscriminatorColumn(name="person_type", discriminatorType=DiscriminatorType.STRING)
 @DiscriminatorValue(value="per")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class Person{
+public abstract class Person extends RemovableObject{
 	
 	
 	public static enum Gender{ MALE("medic.common.male"),FEMALE("medic.common.female"),TRANSGENDER("medic.common.transgender"); 	

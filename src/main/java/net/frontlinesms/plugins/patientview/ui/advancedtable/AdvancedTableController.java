@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import net.frontlinesms.plugins.patientview.domain.RemovableObject;
 import net.frontlinesms.ui.UiGeneratorController;
 
 /**
@@ -156,7 +157,13 @@ public class AdvancedTableController{
 				} catch (Exception e) {
 					value = "";
 				}
-				uiController.add(row,uiController.createTableCell(value));
+				Object cell = uiController.createTableCell(value);
+				uiController.add(row,cell);
+				try{
+					if(((RemovableObject) result).isDeleted()){
+						uiController.setEnabled(cell, false);
+					}
+				}catch(Exception e){}
 			}
 			uiController.add(table,row);
 		}

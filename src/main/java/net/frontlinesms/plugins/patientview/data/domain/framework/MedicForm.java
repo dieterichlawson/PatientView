@@ -17,13 +17,22 @@ import javax.persistence.Table;
 
 import net.frontlinesms.plugins.forms.data.domain.Form;
 import net.frontlinesms.plugins.forms.data.domain.FormField;
+import net.frontlinesms.plugins.patientview.domain.RemovableObject;
 
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.OrderBy;
 
+import bsh.This;
+
+/**
+ * A class that represents a form in the system.
+ * MedicForm has a list of fields, a name, and a link
+ * to the 'vanilla form' that it represents. This 
+ *
+ */
 @Entity
 @Table(name = "medic_forms")
-public class MedicForm {
+public class MedicForm extends RemovableObject{
 
 	/** Unique id for this entity. This is for hibernate usage. */
 	@Id

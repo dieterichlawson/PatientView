@@ -10,21 +10,23 @@ import java.util.List;
 import net.frontlinesms.data.repository.hibernate.BaseHibernateDao;
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
+import net.frontlinesms.plugins.patientview.data.domain.response.Response;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
+import net.frontlinesms.plugins.patientview.security.UserSessionManager;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
 public class HibernatePatientDao extends BaseHibernateDao<Patient> implements PatientDao {
-
+	
 	protected HibernatePatientDao() {
 		super(Patient.class);
 	}
 	
 	//TODO fix this so it works
 	public Collection<Patient> getPatientsForCHW(CommunityHealthWorker chw) {
-		DetachedCriteria criteria = super.getCriterion();
+		DetachedCriteria criteria = getBaseCriterion();
 		criteria.add(Restrictions.eq("chw", chw));
 		return super.getList(criteria);
 	}
@@ -46,11 +48,12 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 
 	/** @see PatientDao#getAllPatients() */
 	public List<Patient> getAllPatients() {
-		return super.getAll();
+		DetachedCriteria c= getBaseCriterion();
+		return super.getList(c);
 	}
 
 	public List<Patient> getPatientsByNameWithLimit(String s, int limit) {
-		DetachedCriteria c= super.getCriterion();
+		DetachedCriteria c= getBaseCriterion();
 		c.add(Restrictions.like("name", "%"+s+"%"));
 		if(limit > 0)
 			return super.getList(c, 0, limit);
@@ -60,7 +63,7 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 	}
 	
 	public List<Patient> getPatientsByCHWAndName(String name, CommunityHealthWorker chw){
-		DetachedCriteria c= super.getCriterion();
+		DetachedCriteria c= getBaseCriterion();
 		c.add(Restrictions.like("name", "%"+name+"%"));
 		c.add(Restrictions.eq("chw", chw));
 		return super.getList(c);
@@ -71,7 +74,7 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 	}
 	
 	public Patient getPatientById(Long id){
-		DetachedCriteria c = super.getCriterion().forClass(Patient.class);
+		DetachedCriteria c = getBaseCriterion();
 		c.add(Restrictions.eq("pid", id));
 		try{
 			return super.getList(c).get(0);
@@ -81,7 +84,7 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 	}
 	
 	public Patient getPatient(String name, String birthdate, String id){
-		DetachedCriteria c = super.getCriterion();
+		DetachedCriteria c = getBaseCriterion();
 		//add the name restriction
 		if(name !=null && !name.equals("")){
 			c.add(Restrictions.eq("name", name));
@@ -107,4 +110,22 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 		return p;
 	}
 
+	private DetachedCriteria getBaseCriterion(){
+		DetachedCriteria c= super.getCriterion();
+		c.add(Restrictions.eq("isVisible",true));
+		return c;
+	}
+	
+	public void voidPatient(Patient patient, boolean keepVisible, String reason){
+		patient.setRemoved(true, keepVisible, UserSessionManager.getUserSessionManager().getCurrentUser(), reason);
+		updateWithoutDuplicateHandling(patient);
+		//get a list of all responses about this patient
+		DetachedCriteria c = DetachedCriteria.forClass(Response.class);
+		c.add(Restrictions.eq("subject", patient));
+		List<Response> patientResponses = super.getHibernateTemplate().findByCriteria(c);
+		//void all responses
+		for(Response response: patientResponses){
+			response.setRemoved(true, keepVisible, UserSessionManager.getUserSessionManager().getCurrentUser(), reason);
+		}
+	}
 }

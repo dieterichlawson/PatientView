@@ -1,22 +1,24 @@
 package net.frontlinesms.plugins.patientview.ui.administration.tabs;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import net.frontlinesms.events.FrontlineEventNotification;
-import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.repository.PatientDao;
+import net.frontlinesms.plugins.patientview.security.UserSessionManager;
+import net.frontlinesms.plugins.patientview.ui.administration.DeleteDialogController;
+import net.frontlinesms.plugins.patientview.ui.administration.DeleteDialogDelegate;
 import net.frontlinesms.plugins.patientview.ui.advancedtable.HeaderColumn;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PatientPanel;
 import net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
 
-public class PatientAdministrationPanelController extends PersonAdministrationPanelController<Patient> {
+public class PatientAdministrationPanelController extends PersonAdministrationPanelController<Patient> implements DeleteDialogDelegate{
 
 	private PatientDao patientDao;
 	
@@ -75,5 +77,17 @@ public class PatientAdministrationPanelController extends PersonAdministrationPa
 	}
 	
 	public void viewWillAppear() {}
+	
+	public void removeButtonClicked(){
+		DeleteDialogController d = new DeleteDialogController(uiController,this,"Patient");
+	}
+
+	public void dialogReturned(Boolean delete, Boolean keepVisible, String reason) {
+		if(delete){
+			super.currentPersonPanel.getPerson().setRemoved(true, keepVisible,UserSessionManager.getUserSessionManager().getCurrentUser(), reason);
+			patientDao.updatePatient(super.currentPersonPanel.getPerson());
+		}
+		super.advancedTableController.updateTable();
+	}
 
 }

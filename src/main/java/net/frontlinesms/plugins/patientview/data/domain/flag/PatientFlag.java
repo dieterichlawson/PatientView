@@ -53,8 +53,7 @@ public class PatientFlag {
 		return acknowledged;
 	}
 
-	public PatientFlag(Patient patient, FlagDefinition flag,
-			boolean acknowledged) {
+	public PatientFlag(Patient patient, FlagDefinition flag, boolean acknowledged) {
 		super();
 		this.patient = patient;
 		this.flag = flag;

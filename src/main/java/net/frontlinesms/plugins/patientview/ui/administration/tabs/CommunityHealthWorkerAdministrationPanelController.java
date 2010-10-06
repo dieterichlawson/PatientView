@@ -75,4 +75,10 @@ public class CommunityHealthWorkerAdministrationPanelController extends PersonAd
 	}
 	public void viewWillAppear() {}
 
+	@Override
+	public void removeButtonClicked() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

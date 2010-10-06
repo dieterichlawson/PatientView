@@ -67,8 +67,6 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 		uiController.setText(uiController.find(mainPanel,ADD_BUTTON), getI18NString(ADD)+ " " + getPersonType());
 		uiController.setText(uiController.find(mainPanel,REMOVE_BUTTON), getI18NString(REMOVE)+ " " + getPersonType());
 		uiController.setText(uiController.find(mainPanel,EDIT_BUTTON), getI18NString(EDIT)+ " " + getPersonType());
-		uiController.setAction(uiController.find(mainPanel,EDIT_BUTTON), "editButtonClicked()", null, this);
-		uiController.setAction(uiController.find(mainPanel,ADD_BUTTON), "addButtonClicked()", null, this);
 		uiController.setIcon(uiController.find(mainPanel,ADD_BUTTON), getIcons()[ADD_INDEX]);
 		uiController.setIcon(uiController.find(mainPanel,EDIT_BUTTON), getIcons()[EDIT_INDEX]);
 		uiController.setIcon(uiController.find(mainPanel,REMOVE_BUTTON), getIcons()[REMOVE_INDEX]);
@@ -166,4 +164,6 @@ public abstract class PersonAdministrationPanelController<E extends Person> impl
 	}
 	
 	protected abstract String[] getIcons();
+	
+	public abstract void removeButtonClicked();
 }

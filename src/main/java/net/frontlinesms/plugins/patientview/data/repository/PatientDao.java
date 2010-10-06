@@ -51,4 +51,5 @@ public interface PatientDao {
 	
 	public Patient getPatient(String name, String birthdate, String id);
 
+	public void voidPatient(Patient patient, boolean keepVisible, String reason);
 }

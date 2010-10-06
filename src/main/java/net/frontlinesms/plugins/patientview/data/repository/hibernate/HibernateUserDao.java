@@ -51,9 +51,9 @@ public class HibernateUserDao extends BaseHibernateDao<User> implements UserDao 
 		return super.getUnique(c);
 	}
 
-	public List<User> getUsersByName(String s, int limit) {
+	public List<User> getUsersByName(String nameFragment, int limit) {
 		DetachedCriteria c = super.getCriterion();
-		c.add(Restrictions.like("name", "%" + s + "%"));
+		c.add(Restrictions.like("name", "%" + nameFragment + "%"));
 		if (limit > 0)
 			return super.getList(c, 0, limit);
 		else {
@@ -67,5 +67,18 @@ public class HibernateUserDao extends BaseHibernateDao<User> implements UserDao 
 
 	public void updateUser(User u) {
 		super.updateWithoutDuplicateHandling(u);
+	}
+	
+	public void voidUser(User user, boolean keepVisible, String reason){
+		user.setRemoved(true, keepVisible, UserSessionManager.getUserSessionManager().getCurrentUser(), reason);
+		updateWithoutDuplicateHandling(user);
+		//get a list of all responses related to this user (submitted by or about)
+		DetachedCriteria c = DetachedCriteria.forClass(Response.class);
+		c.add(Restrictions.or(Restrictions.eq("submitter",user), Restrictions.eq("subject", user)));
+		List<Response> userResponses = super.getHibernateTemplate().findByCriteria(c);
+		//void all responses
+		for(Response response: userResponses){
+			response.setRemoved(true, keepVisible, UserSessionManager.getUserSessionManager().getCurrentUser(), reason);
+		}
 	}
 }

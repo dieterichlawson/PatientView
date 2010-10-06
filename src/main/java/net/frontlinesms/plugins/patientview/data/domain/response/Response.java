@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
+import net.frontlinesms.plugins.patientview.domain.RemovableObject;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 
@@ -25,7 +26,7 @@ import net.frontlinesms.ui.i18n.InternationalisationUtils;
 @Table(name="medic_responses")
 @DiscriminatorValue("response")
 @DiscriminatorColumn(name="response_type")
-public abstract class Response { 
+public abstract class Response extends RemovableObject{ 
 
 	/** Unique id for this entity.  This is for hibernate usage. */
 	@Id @GeneratedValue
