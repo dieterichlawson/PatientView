@@ -24,6 +24,7 @@ import javax.persistence.Table;
 
 import net.frontlinesms.plugins.patientview.domain.RemovableObject;
 import net.frontlinesms.plugins.patientview.ui.imagechooser.ImageUtils;
+import net.frontlinesms.plugins.patientview.utils.TimeUtils;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.hibernate.annotations.IndexColumn;
@@ -112,6 +113,11 @@ public abstract class Person extends RemovableObject{
 		return pid;
 	}
 	
+	/**
+	 * String value of the person's ID number.
+	 * This is for use in AdvancedTableController
+	 * @return
+	 */
 	public String getStringID(){
 		return ""+ pid;
 	}
@@ -146,16 +152,7 @@ public abstract class Person extends RemovableObject{
 	}
 	
 	public int getAge() {
-		if(getBirthdate() == null){
-			return 0;
-		}
-	    Date today = new Date();
-	    Date d= getBirthdate();
-	    int years = today.getYear() - d.getYear() - 1;
-	    if(today.getMonth() >= d.getMonth() && today.getDay() >= d.getDay()){
-	    	years++;
-	    }
-	    return years;
+		return TimeUtils.getAge(new Date(birthdate));
 	 }
 	
 	public String getStringAge(){
