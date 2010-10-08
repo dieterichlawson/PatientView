@@ -194,11 +194,6 @@ public class User extends Person {
 		return saltstr + ":" + hashstr;
 	}
 
-	@Override
-	public String getPersonType() {
-		return "User";
-	}
-
 	/** @return the role of this user */
 	public Role getRole() {
 		return role;

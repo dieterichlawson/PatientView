@@ -54,9 +54,4 @@ public class Patient extends Person {
 	public void setChw(CommunityHealthWorker chw) {
 		this.chw = chw;
 	}
-
-	@Override
-	public String getPersonType() {
-		return "Patient";
-	}
 }

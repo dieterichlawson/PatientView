@@ -181,6 +181,4 @@ public abstract class Person extends RemovableObject{
 	    thumbnailImageContent = ImageUtils.getByteArrayForImage(ImageUtils.getThumbnailImage(image), type);
 	 }
 	
-	public abstract String getPersonType();
-	
 }

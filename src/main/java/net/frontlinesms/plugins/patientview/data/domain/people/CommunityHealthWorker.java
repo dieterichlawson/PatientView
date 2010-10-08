@@ -14,6 +14,13 @@ import javax.persistence.OneToOne;
 import net.frontlinesms.data.DuplicateKeyException;
 import net.frontlinesms.data.domain.Contact;
 
+/**
+ * A Community Health Worker (CHW) is a health worker that 
+ * is responsible for the basic care of the patients in their purview. They are
+ * the primary data source about patients and will fill out forms on their mobile
+ * devices.
+ *
+ */
 @Entity
 @DiscriminatorValue(value="chw")
 public class CommunityHealthWorker extends Person {
@@ -30,11 +37,6 @@ public class CommunityHealthWorker extends Person {
 	public CommunityHealthWorker(String name,String phoneNumber, Gender gender, Date birthdate) {
 		super(name, gender, birthdate);
 		contactInfo = new Contact(name,phoneNumber,null,null,null,true);
-	}
-
-	@Override
-	public String getPersonType() {
-		return "CHW";
 	}
 	
 	public Contact getContactInfo(){
