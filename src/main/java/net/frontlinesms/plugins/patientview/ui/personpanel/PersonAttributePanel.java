@@ -1,7 +1,5 @@
 package net.frontlinesms.plugins.patientview.ui.personpanel;
 
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
-
 import java.util.ArrayList;
 
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
@@ -18,6 +16,7 @@ import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeDao;
 import net.frontlinesms.plugins.patientview.data.repository.PersonAttributeResponseDao;
 import net.frontlinesms.plugins.patientview.security.UserSessionManager;
 import net.frontlinesms.plugins.patientview.ui.thinletformfields.ThinletFormField;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.fieldgroups.FieldGroup;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
@@ -33,8 +32,12 @@ public class PersonAttributePanel {
 	private boolean inEditingMode;
 	
 	private UiGeneratorController uiController;
+	private ApplicationContext appCon;
 	
 	private Person person;
+	
+	private FieldGroup fieldGroup;
+	
 	//Daos
 	private PersonAttributeDao attributeDao;
 	private PersonAttributeResponseDao attributeResponseDao;
@@ -44,8 +47,10 @@ public class PersonAttributePanel {
 	
 	public PersonAttributePanel(UiGeneratorController uiController, ApplicationContext appCon, Person person){
 		this.uiController = uiController;
+		this.appCon = appCon;
 		this.person = person;
-		mainPanel = uiController.create("panel");
+		this.fieldGroup = new FieldGroup(uiController, appCon, null);
+		mainPanel = Thinlet.create("panel");
 		uiController.setInteger(mainPanel,"weightx",1);
 		//uiController.setInteger(mainPanel,"weighty",1);
 		uiController.setInteger(mainPanel, "columns", 1);
@@ -134,14 +139,14 @@ public class PersonAttributePanel {
 	 * person could have.
 	 */
 	public void switchToEditingPanel(){
-		uiController.removeAll(mainPanel);
+		fieldGroup.removeAll();
 		ArrayList<Field> attributes = new ArrayList<Field>();
-			attributes.addAll(attributeDao.getAllAttributesForPerson(person));
+		attributes.addAll(attributeDao.getAllAttributesForPerson(person));
 		if(person instanceof Patient){
 			attributes.addAll(fieldDao.getAttributePanelFields());
 		}
 		for(Field f: attributes){
-			ThinletFormField tff = ThinletFormField.getThinletFormFieldForDataType(f.getDatatype(), uiController, f.getLabel(),null);
+			ThinletFormField tff = ThinletFormField.getThinletFormFieldForDataType(f.getDatatype(), uiController, appCon, f.getLabel(),null);
 			tff.setField(f);
 			if(f instanceof PersonAttribute){
 				PersonAttributeResponse response= attributeResponseDao.getMostRecentAttributeResponse((PersonAttribute) f, person);
@@ -154,8 +159,7 @@ public class PersonAttributePanel {
 					tff.setStringResponse(mffr.getValue());
 				}
 			}
-			uiController.add(mainPanel,uiController.create("separator"));
-			uiController.add(mainPanel,tff.getThinletPanel());	
+			fieldGroup.addField(tff);	
 		}
 		inEditingMode=true;
 	}
@@ -167,25 +171,20 @@ public class PersonAttributePanel {
 	public boolean validateAndSaveResponses(){
 		if(!inEditingMode)
 			return false;
-		Object [] items = uiController.getItems(mainPanel);
-		for(Object panel : items){
-			ThinletFormField tff = (ThinletFormField) uiController.getAttachedObject(panel);
-			if(tff !=null && tff.hasResponse() && tff.hasChanged()){
-				if(!tff.isValid()){
-					uiController.alert(getI18NString("personpanel.edit.details.error.prefix") + " \"" + tff.getLabel()+ "\" " + getI18NString("personpanel.edit.details.error.suffix"));
-					return false;
-				}else{
-					if(tff.getField() instanceof PersonAttribute){
-						PersonAttributeResponse response = new PersonAttributeResponse(tff.getStringResponse(), (PersonAttribute) tff.getField(), person, UserSessionManager.getUserSessionManager().getCurrentUser());
-						attributeResponseDao.saveAttributeResponse(response);
-					}else if(tff.getField() instanceof MedicFormField){
-						MedicFormFieldResponse mffr = new MedicFormFieldResponse(tff.getStringResponse(),(MedicFormField) tff.getField(), person,UserSessionManager.getUserSessionManager().getCurrentUser());
-						fieldResponseDao.saveFieldResponse(mffr);
-					}
+		
+		if(fieldGroup.validate(true)){
+			for(ThinletFormField tff: fieldGroup.getFormFields()){
+				if(tff.getField() instanceof PersonAttribute){
+					PersonAttributeResponse response = new PersonAttributeResponse(tff.getStringResponse(), (PersonAttribute) tff.getField(), person, UserSessionManager.getUserSessionManager().getCurrentUser());
+					attributeResponseDao.saveAttributeResponse(response);
+				}else if(tff.getField() instanceof MedicFormField){
+					MedicFormFieldResponse mffr = new MedicFormFieldResponse(tff.getStringResponse(),(MedicFormField) tff.getField(), person,UserSessionManager.getUserSessionManager().getCurrentUser());
+					fieldResponseDao.saveFieldResponse(mffr);
 				}
 			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	public void stopEditingWithoutSave(){

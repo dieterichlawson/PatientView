@@ -1,5 +1,6 @@
 package net.frontlinesms.plugins.patientview.ui.thinletformfields;
 
+import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
 import net.frontlinesms.plugins.patientview.data.domain.framework.Field;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
@@ -7,7 +8,9 @@ import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfie
 import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.PhoneNumberField;
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.UiGeneratorController;
-import static net.frontlinesms.ui.i18n.InternationalisationUtils.*;
+
+import org.hibernate.classic.ValidationFailure;
+import org.springframework.context.ApplicationContext;
 
 public abstract class ThinletFormField<E>{
 
@@ -42,7 +45,6 @@ public abstract class ThinletFormField<E>{
 		this.thinlet = controller;
 		this.label = label;
 		this.field = field;
-		this.delegate = delegate;
 		mainPanel = controller.createPanel("");
 		controller.setInteger(mainPanel, "columns", 2);
 		controller.add(mainPanel,controller.createLabel(label));
@@ -63,7 +65,7 @@ public abstract class ThinletFormField<E>{
 	}
 	
 	/**expansion point for validating the fields **/
-	public abstract boolean isValid();
+	public abstract void validate() throws ValidationFailure;
 	
 	public abstract boolean hasChanged();
 	
@@ -127,7 +129,7 @@ public abstract class ThinletFormField<E>{
 	 * @param label
 	 * @return The ThinletFormField
 	 */
-	public static ThinletFormField getThinletFormFieldForDataType(DataType datatype, UiGeneratorController uiController, String label, FormFieldDelegate delegate){
+	public static ThinletFormField getThinletFormFieldForDataType(DataType datatype, UiGeneratorController uiController, ApplicationContext appCon, String label, FormFieldDelegate delegate){
 		if(datatype == DataType.CHECK_BOX){ 
 			return new CheckBox(uiController,label,delegate);
 		}else if(datatype ==  DataType.DATE_FIELD){
@@ -137,7 +139,7 @@ public abstract class ThinletFormField<E>{
 		}else if(datatype == DataType.PASSWORD_FIELD){
 			return new PasswordTextField(uiController,"",delegate);
 		}else if(datatype == DataType.PHONE_NUMBER_FIELD){
-			return new PhoneNumberField(uiController,"",delegate);
+			return new PhoneNumberField(uiController,"",delegate, appCon);
 		}else if(datatype == DataType.TIME_FIELD){
 			return new TimeField(uiController,label, delegate);
 		}else if(datatype == DataType.TEXT_AREA){
@@ -157,7 +159,10 @@ public abstract class ThinletFormField<E>{
 	protected void responseChanged(){
 		if(delegate != null){
 			delegate.formFieldChanged(this, getStringResponse());
-		}
-			
+		}	
+	}
+	
+	public void setDelegate(FormFieldDelegate delegate){
+		this.delegate = delegate;
 	}
 }

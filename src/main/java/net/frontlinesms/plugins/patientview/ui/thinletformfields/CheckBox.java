@@ -24,8 +24,8 @@ public class CheckBox extends ThinletFormField<Boolean>{
 	}
 
 	/** checkboxes are always valid */
-	public boolean isValid() {
-		return true;
+	public void validate() {
+		return;
 	}
 	
 	public boolean hasChanged(){

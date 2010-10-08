@@ -11,6 +11,7 @@ import net.frontlinesms.plugins.patientview.ui.thinletformfields.ThinletFormFiel
 import net.frontlinesms.ui.ExtendedThinlet;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
+import org.hibernate.classic.ValidationFailure;
 import org.springframework.context.ApplicationContext;
 
 public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> implements PersonalFormField{
@@ -63,8 +64,10 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 	}
 
 	@Override
-	public boolean isValid() {
-		return hasResponse();
+	public void validate() throws ValidationFailure{
+		if(!hasResponse()){
+			throw new ValidationFailure("\""+ getLabel().replace(":", "")+ "\" does not have a selected CHW.");
+		}
 	}
 
 	public boolean hasChanged() {

@@ -32,8 +32,8 @@ public class ButtonGroup extends ThinletFormField<Boolean> {
 
 	/** button groups are always valid**/
 	@Override
-	public boolean isValid() {
-		return true;
+	public void validate() {
+		return;
 	}
 	
 	public String getStringResponse() {

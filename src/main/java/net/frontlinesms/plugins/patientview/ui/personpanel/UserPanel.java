@@ -2,10 +2,8 @@ package net.frontlinesms.plugins.patientview.ui.personpanel;
 
 import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
-import net.frontlinesms.plugins.patientview.data.repository.UserDao;
-import net.frontlinesms.plugins.patientview.security.UserSessionManager;
-import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.RoleComboBox;
-import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.UsernameField;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.fieldgroups.PersonFieldGroup;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.fieldgroups.UserFieldGroup;
 import net.frontlinesms.ui.UiGeneratorController;
 
 import org.springframework.context.ApplicationContext;
@@ -19,30 +17,13 @@ public class UserPanel extends PersonPanel<User> {
 	private static final String USERNAME_LABEL = "medic.common.labels.username";
 	private static final String DEMO_USERNAME = "editdetailview.demo.username";
 	private static final String DEMO_ROLE = "roles.readwrite";
-
-	private UserDao userDao;
-
+	
 	public UserPanel(UiGeneratorController uiController, ApplicationContext appCon, User p) {
 		super(uiController, appCon, p);
-		userDao = (UserDao) appCon.getBean("UserDao");
 	}
 
 	public UserPanel(UiGeneratorController uiController,ApplicationContext appCon) {
 		super(uiController, appCon);
-		userDao = (UserDao) appCon.getBean("UserDao");
-	}
-
-	/**
-	 * @see net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel#addAdditionalEditableFields()
-	 */
-	@Override
-	protected void addAdditionalEditableFields() {
-		if(UserSessionManager.getUserSessionManager().getCurrentUser().equals(this.getPerson()) || isNewPersonPanel){
-			UsernameField usernameField = new UsernameField(uiController, appCon, true, isNewPersonPanel ? "" : getPerson().getUsername(),null);
-			uiController.add(getLabelPanel(), usernameField.getThinletPanel());
-		}
-		RoleComboBox roleCombo = new RoleComboBox(uiController, isNewPersonPanel ? null : getPerson().getRole(),null);
-		uiController.add(getLabelPanel(), roleCombo.getThinletPanel());
 	}
 
 	/**
@@ -54,14 +35,6 @@ public class UserPanel extends PersonPanel<User> {
 		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": "	+ getPerson().getRoleName());
 	}
 
-	/**
-	 * @see net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel#createPerson()
-	 */
-	@Override
-	protected User createPerson() {
-		return new User();
-	}
-
 	@Override
 	protected String getDefaultTitle() {
 		return getI18NString(USER_AAG);
@@ -70,16 +43,6 @@ public class UserPanel extends PersonPanel<User> {
 	@Override
 	protected String getEditingTitle() {
 		return getI18NString(EDIT_USER_DATA_BUTTON);
-	}
-
-	@Override
-	protected void savePerson() {
-		userDao.saveUser(getPerson());
-	}
-
-	@Override
-	protected void updatePerson() {
-		userDao.updateUser(getPerson());
 	}
 
 	@Override
@@ -94,6 +57,16 @@ public class UserPanel extends PersonPanel<User> {
 		addLabelToLabelPanel(getI18NString(ROLE_LABEL) + ": "
 				+ getI18NString(DEMO_ROLE));
 
+	}
+
+	@Override
+	protected User createPerson() {
+		return new User();
+	}
+
+	@Override
+	protected PersonFieldGroup<User> getEditableFields() {
+		return new UserFieldGroup(uiController, appCon, null, getPerson());
 	}
 
 }

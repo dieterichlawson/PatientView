@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.frontlinesms.plugins.patientview.data.domain.people.CommunityHealthWorker;
-import net.frontlinesms.plugins.patientview.data.repository.CommunityHealthWorkerDao;
-import net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields.PhoneNumberField;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.fieldgroups.CommunityHealthWorkerFieldGroup;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.fieldgroups.PersonFieldGroup;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
@@ -18,31 +18,15 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 	private static final String ADD_CHW = "personpanel.labels.add.a.chw";
 	private static final String PHONE_NUMBER_FIELD = "medic.common.labels.phone.number";
 	private static final String DEMO_PHONE_NUMBER = "editdetailview.demo.phone.number";
-	
-	private CommunityHealthWorkerDao chwDao;
-	
+		
 	public CommunityHealthWorkerPanel(UiGeneratorController uiController, ApplicationContext appCon,CommunityHealthWorker p) {
 		super(uiController, appCon,p);
-		chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
 	}
 	
 	public CommunityHealthWorkerPanel(UiGeneratorController uiController, ApplicationContext appCon) {
 		super(uiController,appCon);
-		chwDao = (CommunityHealthWorkerDao) appCon.getBean("CHWDao");
 	}
 
-	/**
-	 * @see net.frontlinesms.plugins.patientview.ui.personpanel.PersonPanel#addAdditionalEditableFields()
-	 */
-	@Override
-	protected void addAdditionalEditableFields() {
-		PhoneNumberField phoneNumber = new PhoneNumberField(uiController,isNewPersonPanel?"":getPerson().getPhoneNumber(),null);
-		uiController.add(getLabelPanel(),phoneNumber.getThinletPanel());
-	}
-
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.ui.PersonPanel#addAdditionalFields()
-	 */
 	@Override
 	protected void addAdditionalFields() {
 		Object panel = uiController.createPanel("");
@@ -55,44 +39,19 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 		uiController.add(super.getLabelPanel(),panel);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.ui.PersonPanel#createPerson()
-	 */
 	@Override
 	protected CommunityHealthWorker createPerson() {
 		return new CommunityHealthWorker();
 	}
 
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.ui.PersonPanel#getDefaultTitle()
-	 */
 	@Override
 	protected String getDefaultTitle() {
 		return InternationalisationUtils.getI18NString(CHW_AAG);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.ui.PersonPanel#getEditingTitle()
-	 */
 	@Override
 	protected String getEditingTitle() {
 		return InternationalisationUtils.getI18NString(EDIT_CHW_DATA);
-	}
-
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.ui.PersonPanel#savePerson()
-	 */
-	@Override
-	protected void savePerson() {
-		chwDao.saveCommunityHealthWorker(getPerson());
-	}
-
-	/* (non-Javadoc)
-	 * @see net.frontlinesms.plugins.patientview.ui.PersonPanel#updatePerson()
-	 */
-	@Override
-	protected void updatePerson() {
-		chwDao.updateCommunityHealthWorker(getPerson());
 	}
 
 	@Override
@@ -109,5 +68,10 @@ public class CommunityHealthWorkerPanel extends PersonPanel<CommunityHealthWorke
 		Set<Object> number= new HashSet<Object>();
 		number.add(getPerson().getPhoneNumber());
 		uiController.show_composeMessageForm(number);
+	}
+
+	@Override
+	protected PersonFieldGroup<CommunityHealthWorker> getEditableFields() {
+		return new CommunityHealthWorkerFieldGroup(uiController, appCon, null, getPerson());
 	}
 }

@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields;
 
+import org.hibernate.classic.ValidationFailure;
+
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.people.Person.Gender;
 import net.frontlinesms.plugins.patientview.ui.thinletformfields.FormFieldDelegate;
@@ -37,8 +39,10 @@ public class GenderComboBox extends ThinletFormField<Gender> implements Personal
 	}
 
 	@Override
-	public boolean isValid() {
-		return hasResponse();
+	public void validate() throws ValidationFailure{
+		if(!hasResponse()){
+			throw new ValidationFailure("\""+ getLabel().replace(":", "")+ "\" does not have a gender selected.");
+		}
 	}
 	
 	public boolean hasChanged(){		

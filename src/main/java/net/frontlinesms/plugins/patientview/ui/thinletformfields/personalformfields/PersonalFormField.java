@@ -2,6 +2,8 @@ package net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfi
 
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 
+import org.hibernate.classic.ValidationFailure;
+
 /**
  * An interface for fields that are about a person specifically.
  * @author Dieterich
@@ -19,7 +21,7 @@ public interface PersonalFormField {
 	/**
 	 * @return whether or not the field currently contains valid input
 	 */
-	public boolean isValid();
+	public void validate() throws ValidationFailure;
 	
 	/**
 	 * @return whether or not the field's content has changed

@@ -45,17 +45,11 @@ public class CommunityHealthWorker extends Person {
 		return contactInfo.getPhoneNumber();
 	}
 	
-	public void setPhoneNumber(String phoneNumber){
+	public void setPhoneNumber(String phoneNumber) throws NumberFormatException, DuplicateKeyException{
 		if (contactInfo == null){
 			contactInfo = new Contact(this.getName(),phoneNumber,null,null,null,true);
 		}else{
-			try {
 				contactInfo.setPhoneNumber(phoneNumber);
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (DuplicateKeyException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 

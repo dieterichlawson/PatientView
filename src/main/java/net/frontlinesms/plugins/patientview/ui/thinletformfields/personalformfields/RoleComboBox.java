@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields;
 
+import org.hibernate.classic.ValidationFailure;
+
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.data.domain.people.User;
 import net.frontlinesms.plugins.patientview.data.domain.people.User.Role;
@@ -34,8 +36,10 @@ public class RoleComboBox extends ThinletFormField<Role> implements PersonalForm
 	}
 
 	@Override
-	public boolean isValid() {
-		return hasResponse();
+	public void validate() throws ValidationFailure{
+		if(!hasResponse()){
+			throw new ValidationFailure("\""+ getLabel().replace(":", "")+ "\" does not have a role selected.");
+		}
 	}
 
 	public boolean hasChanged() {

@@ -13,8 +13,8 @@ public class TextField extends TextBox<String> {
 	}
 
 	/** Text Fields are always valid **/
-	public boolean isValid() {
-		return true;
+	public void validate() {
+		return;
 	}
 
 	@Override

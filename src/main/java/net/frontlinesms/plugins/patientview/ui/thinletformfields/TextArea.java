@@ -20,8 +20,8 @@ public class TextArea extends ThinletFormField<String>{
 	}
 	
 	/** Text Areas are always valid**/
-	public boolean isValid() {
-		return true;
+	public void validate() {
+		return;
 	}
 	
 	public void textAreaKeyPressed(String text){

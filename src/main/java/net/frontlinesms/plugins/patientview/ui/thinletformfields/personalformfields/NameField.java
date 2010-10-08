@@ -1,5 +1,7 @@
 package net.frontlinesms.plugins.patientview.ui.thinletformfields.personalformfields;
 
+import org.hibernate.classic.ValidationFailure;
+
 import net.frontlinesms.plugins.patientview.data.domain.people.Person;
 import net.frontlinesms.plugins.patientview.ui.thinletformfields.FormFieldDelegate;
 import net.frontlinesms.plugins.patientview.ui.thinletformfields.TextField;
@@ -17,10 +19,12 @@ public class NameField extends TextField implements PersonalFormField{
 	}
 	
 	@Override
-	public boolean isValid(){
-		return super.getStringResponse() !="" && super.getStringResponse() != null;
+	public void validate() throws ValidationFailure{
+		if(!(super.getStringResponse() !="" && super.getStringResponse() != null)){
+			throw new ValidationFailure("\""+ getLabel().replace(":", "")+ "\" is not filled out. Please enter the desired name.");
+		}
 	}
-
+	
 	public void setFieldForPerson(Person p) {
 		p.setName(getRawResponse());
 	}

@@ -1,20 +1,17 @@
 package net.frontlinesms.plugins.patientview.ui.dashboard.tabs;
 
-import java.util.ArrayList;
-
-import net.frontlinesms.plugins.patientview.data.domain.framework.DataType;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField;
-import net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField.PatientFieldMapping;
 import net.frontlinesms.plugins.patientview.data.domain.people.Patient;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldResponse;
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
+import net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.data.repository.hibernate.HibernateMedicFormResponseDao;
 import net.frontlinesms.plugins.patientview.security.UserSessionManager;
 import net.frontlinesms.plugins.patientview.ui.components.FormSearchArea;
 import net.frontlinesms.plugins.patientview.ui.components.SearchAreaDelegate;
-import net.frontlinesms.plugins.patientview.ui.thinletformfields.DateField;
 import net.frontlinesms.plugins.patientview.ui.thinletformfields.ThinletFormField;
+import net.frontlinesms.plugins.patientview.ui.thinletformfields.fieldgroups.FormFieldGroup;
 import net.frontlinesms.ui.ThinletUiEventHandler;
 import net.frontlinesms.ui.UiGeneratorController;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
@@ -33,7 +30,7 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 	private Object warningLabel;
 	/**
 	 * the search areas where the user selects the form to submit, the patient
-	 * to submit about and the chw to submit for
+	 * to submit about, and the chw to submit for
 	 */
 	private FormSearchArea formSearch;
 	
@@ -41,19 +38,15 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 	private Patient currentPatient;
 	private MedicForm currentForm;
 	
-	/**ArrayList of fields on the forms**/
-	@SuppressWarnings("unchecked")
-	ArrayList<ThinletFormField> fields;
+	private FormFieldGroup fieldGroup;
 	
 	/**daos**/
-	private HibernateMedicFormResponseDao responseDao;
+	private MedicFormResponseDao responseDao;
 	
 	//i18n
 	private static final String TITLE ="submitform.title";
 	private static final String MUST_FILL_OUT_FORM_MESSAGE ="submitform.messages.must.fill.out";
 	private static final String MUST_SELECT_PATIENT_MESSAGE ="submitform.messages.select.patient";
-	private static final String BAD_FORMATTING_MESSAGE_PREFIX ="submitform.messages.bad.form.prefix";
-	private static final String BAD_FORMATTING_MESSAGE_SUFFIX ="submitform.messages.bad.form.suffix";
 	private static final String SUCCESSFUL_SUBMIT_MESSAGE ="submitform.messages.successful.submit";
 	
 	public SubmitFormTab(UiGeneratorController uiController, ApplicationContext appContext, Patient patient){
@@ -85,53 +78,13 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 		updateFormPanel();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void updateFormPanel(){
 			//clear the panel
 		uiController.removeAll(formPanel);
-		if(currentForm == null)
-			return;
-
-		fields = new ArrayList<ThinletFormField>();
-		for(MedicFormField ff: currentForm.getFields()){
-			ThinletFormField tff = null;
-			String label = ff.getLabel() +":";
-			if(ff.getDatatype() == DataType.TRUNCATED_TEXT || ff.getDatatype() == DataType.WRAPPED_TEXT){
-				Object field = uiController.createLabel(label);
-				uiController.add(formPanel,field);
-				uiController.setChoice(field, "halign", "center");
-				uiController.setInteger(field, "weightx", 1);
-			}else{
-				tff = ThinletFormField.getThinletFormFieldForDataType(ff.getDatatype(), uiController, label, null);
-				tff.setField(ff);
-				fields.add(tff);
-				uiController.add(formPanel,tff.getThinletPanel());
-				uiController.setWeight(tff.getThinletPanel(), 1,0);
-				uiController.setHAlign(tff.getThinletPanel(), "fill");
-			}
-		}
-		autoFillPatient();
+		fieldGroup = new FormFieldGroup(uiController, appCon, currentForm, null);
+		uiController.add(formPanel,fieldGroup.getMainPanel());
+		fieldGroup.autoFillWithPatient(currentPatient);
 		clearWarningLabel();
-	}
-	
-	private void autoFillPatient(){
-		int nonRespondable=0;
-		for(int i = 0; i < currentForm.getFields().size(); i++){
-			MedicFormField mff = currentForm.getFields().get(i);
-			if(!mff.getDatatype().isRespondable()){
-				nonRespondable++;
-			}
-			if(mff.getMapping()== PatientFieldMapping.NAMEFIELD){
-				fields.get(i-nonRespondable).setStringResponse(currentPatient.getName());
-			}else if(mff.getMapping()== PatientFieldMapping.BIRTHDATEFIELD){
-				((DateField) fields.get(i-nonRespondable)).setRawResponse(currentPatient.getBirthdate());
-			}else if(mff.getMapping()== PatientFieldMapping.IDFIELD){
-				fields.get(i-nonRespondable).setStringResponse(String.valueOf(currentPatient.getPid()));
-			}
-			if(mff.getMapping() !=null){
-				fields.get(i-nonRespondable).setEnabled(false);
-			}
-		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -144,23 +97,19 @@ public class SubmitFormTab extends TabController implements ThinletUiEventHandle
 			setWarningLabel(InternationalisationUtils.getI18NString(MUST_SELECT_PATIENT_MESSAGE));
 			return;
 		}
-		//The form response that is going to contain all the field responses
-		MedicFormResponse response = new MedicFormResponse(currentForm,UserSessionManager.getUserSessionManager().getCurrentUser(),currentPatient);
-		for(ThinletFormField f:fields){
-			MedicFormFieldResponse rv = null;
-			if(!f.isValid()){
-				setWarningLabel(InternationalisationUtils.getI18NString(BAD_FORMATTING_MESSAGE_PREFIX)+" \"" + f.getLabel() +"\" "+InternationalisationUtils.getI18NString(BAD_FORMATTING_MESSAGE_SUFFIX));
-				return;
-			}else{	
+		if(fieldGroup.validate(true)){
+			MedicFormResponse response = new MedicFormResponse(currentForm,UserSessionManager.getUserSessionManager().getCurrentUser(),currentPatient);
+			for(ThinletFormField f:fieldGroup.getFormFields()){
+				MedicFormFieldResponse rv = null;
 				//create the field response
 				rv = new MedicFormFieldResponse(f.getStringResponse(), (MedicFormField) f.getField(),response,currentPatient,UserSessionManager.getUserSessionManager().getCurrentUser());
 				//and add it to the form response
 				response.addFieldResponse(rv);
 			}
+			responseDao.saveMedicFormResponse(response);
+			updateFormPanel();
+			setSuccessLabel(InternationalisationUtils.getI18NString(SUCCESSFUL_SUBMIT_MESSAGE));
 		}
-		responseDao.saveMedicFormResponse(response);
-		updateFormPanel();
-		setSuccessLabel(InternationalisationUtils.getI18NString(SUCCESSFUL_SUBMIT_MESSAGE));
 	}
 	
 	public void setSuccessLabel(String s){

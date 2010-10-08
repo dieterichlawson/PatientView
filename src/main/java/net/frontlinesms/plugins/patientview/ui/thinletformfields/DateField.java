@@ -6,6 +6,8 @@ import static net.frontlinesms.ui.i18n.InternationalisationUtils.getI18NString;
 import java.text.DateFormat;
 import java.util.Date;
 
+import org.hibernate.classic.ValidationFailure;
+
 import net.frontlinesms.FrontlineSMSConstants;
 import net.frontlinesms.plugins.patientview.ui.components.DateSelectorDialog;
 import net.frontlinesms.ui.ExtendedThinlet;
@@ -50,13 +52,13 @@ public class DateField extends TextBox<Date> {
 		thinlet.setEnabled(btn, value);
 	}
 
-	public boolean isValid() {
+	@Override
+	public void validate() throws ValidationFailure{
 		try {
 			Date date = df.parse(this.getStringResponse());
 		} catch (Exception e) {
-			return false;
+			throw new ValidationFailure("\""+ getLabel().replace(":", "")+ "\" is formatted incorrectly");
 		}
-		return true;
 	}
 
 }
