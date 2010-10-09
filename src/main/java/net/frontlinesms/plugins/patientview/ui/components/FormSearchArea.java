@@ -40,7 +40,7 @@ public class FormSearchArea implements ThinletUiEventHandler{
 	}
 	
 	public void textChanged(String searchString){
-		List<MedicForm> results = formDao.getMedicFormsByName(searchString);
+		List<MedicForm> results = formDao.findMedicFormsByName(searchString);
 		setResults(results);
 	}
 	

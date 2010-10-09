@@ -7,21 +7,35 @@ import net.frontlinesms.plugins.patientview.data.domain.framework.MedicForm;
 
 public interface MedicFormDao {
 
-	public void saveMedicForm(MedicForm s);
+	/**
+	 * Saves a MedicForm to the data source
+	 * @param s
+	 */
+	public void saveMedicForm(MedicForm form);
 
-	public void deleteMedicForm(MedicForm s);
+	/**
+	 * Deletes a MedicForm from the data source
+	 * @param form
+	 */
+	public void deleteMedicForm(MedicForm form);
 	
-	public void updateMedicForm(MedicForm s);
+	/**
+	 * Updates a MedicForm in the data source
+	 * @param form
+	 */
+	public void updateMedicForm(MedicForm form);
 	
+	/**
+	 * @return All MedicForms in the system
+	 */
 	public List<MedicForm> getAllMedicForms();
 	
 	/**
-	 * Performs a like query with %'s around the s's
-	 * select * from MedicForm where name like '%s%'
-	 * @param s
-	 * @return All Medic Forms with a name like s
+	 * Finds all MedicForms with nameFragment anywhere
+	 * in their name. Performs a like query.
+	 * @param nameFragment
 	 */
-	public List<MedicForm> getMedicFormsByName(String s);
+	public List<MedicForm> findMedicFormsByName(String nameFragment);
 	
 	/**
 	 * Returns the MedicForm that corresponds to the supplied FrontlineSMS form
@@ -29,6 +43,5 @@ public interface MedicFormDao {
 	 * @return the corresponding Medic Form
 	 */
 	public MedicForm getMedicFormForForm(Form form);
-	
-	public void reattach(MedicForm mf);
+
 }
