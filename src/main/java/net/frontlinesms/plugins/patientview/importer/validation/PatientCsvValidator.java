@@ -22,7 +22,7 @@ public class PatientCsvValidator extends PersonCsvValidator{
 
 	@Override
 	public void doAdditionalValidation(int lineNumber, String[] line, List<CsvValidationException> exceptions) {
-		Collection<CommunityHealthWorker> chws = chwDao.getCommunityHealthWorkerByName(line[CHW_INDEX], -1);
+		Collection<CommunityHealthWorker> chws = chwDao.findCommunityHealthWorkerByName(line[CHW_INDEX], -1);
 		if(chws.size() == 0){
 			exceptions.add(new CsvValidationException(lineNumber, getI18NString("medic.importer.no.chw.association.error")+" \"" + line[CHW_INDEX]+"\""));
 		}else if(chws.size() >1){

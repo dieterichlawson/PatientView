@@ -113,7 +113,7 @@ public class FormResponseDataImporter implements CsvDataImporter{
 					while((currLine = reader.readNext()) != null){
 						//determine the submitter of the form
 						Person submitter = null;
-						List<CommunityHealthWorker> chws  = chwDao.getCommunityHealthWorkerByName(currLine[0], -1);
+						List<CommunityHealthWorker> chws  = chwDao.findCommunityHealthWorkerByName(currLine[0], -1);
 						if(chws.size() != 1){
 							List<User> users = userDao.getUsersByName(currLine[0], -1);
 							if(users.size() != 1){

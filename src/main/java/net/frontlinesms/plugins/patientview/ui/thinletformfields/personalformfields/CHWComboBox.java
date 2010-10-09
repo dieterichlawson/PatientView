@@ -41,7 +41,7 @@ public class CHWComboBox extends ThinletFormField<CommunityHealthWorker> impleme
 
 	public void textChanged(String text){
 		thinlet.removeAll(comboBox);
-		Collection<CommunityHealthWorker> chws = chwDao.getCommunityHealthWorkerByName(text, 30);
+		Collection<CommunityHealthWorker> chws = chwDao.findCommunityHealthWorkerByName(text, 30);
 		for(CommunityHealthWorker chw: chws){
 			Object choice = thinlet.createComboboxChoice(chw.getName(), chw);
 			thinlet.add(comboBox,choice);

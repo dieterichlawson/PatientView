@@ -17,6 +17,14 @@ public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<Communit
 		super(CommunityHealthWorker.class);
 	}
 
+	public void saveCommunityHealthWorker(CommunityHealthWorker chw) {
+		super.saveWithoutDuplicateHandling(chw);
+	}
+
+	public void updateCommunityHealthWorker(CommunityHealthWorker chw) {
+		super.updateWithoutDuplicateHandling(chw);
+	}
+	
 	public void deleteCommunityHealthWorker(CommunityHealthWorker chw) {
 		super.delete(chw);
 	}
@@ -25,19 +33,15 @@ public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<Communit
 		return super.getAll();
 	}
 
-	public void saveCommunityHealthWorker(CommunityHealthWorker chw) {
-		super.saveWithoutDuplicateHandling(chw);
-	}
-
-	public void updateCommunityHealthWorker(CommunityHealthWorker chw) {
-		super.updateWithoutDuplicateHandling(chw);
-	}
-
-	public List<CommunityHealthWorker> getCommunityHealthWorkerByName(String nameFragment, int limit){
+	public List<CommunityHealthWorker> findCommunityHealthWorkerByName(String nameFragment, int limit){
 		DetachedCriteria c= super.getCriterion();
 		c.add(Restrictions.like("name", nameFragment,MatchMode.ANYWHERE));
 		if(limit > 0) return super.getList(c, 0, limit);
 		else return super.getList(c);
+	}
+
+	public List<CommunityHealthWorker> findCommunityHealthWorkerByName(String nameFragment){
+		return findCommunityHealthWorkerByName(nameFragment,-1);
 	}
 	
 	public CommunityHealthWorker getCommunityHealthWorkerByPhoneNumber(String phoneNumber){
@@ -47,12 +51,8 @@ public class HibernateCommunityHealthWorkerDao extends BaseHibernateDao<Communit
 	}
 
 	public CommunityHealthWorker getCommunityHealthWorkerById(long id) {
-		DetachedCriteria c = super.getCriterion().forClass(CommunityHealthWorker.class);
+		DetachedCriteria c = DetachedCriteria.forClass(CommunityHealthWorker.class);
 		c.add(Restrictions.eq("pid", id));
-		try{
-			return super.getList(c).get(0);
-		}catch(Throwable t){
-			return null;
-		}
+		return super.getUnique(c);
 	}
 }

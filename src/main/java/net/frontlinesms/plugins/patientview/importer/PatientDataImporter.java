@@ -74,7 +74,7 @@ public class PatientDataImporter implements CsvDataImporter{
 				int lineNumber = 0;
 				try {
 					while((currLine = reader.readNext()) != null){
-						List<CommunityHealthWorker> chw = chwDao.getCommunityHealthWorkerByName(currLine[3],-1);
+						List<CommunityHealthWorker> chw = chwDao.findCommunityHealthWorkerByName(currLine[3],-1);
 						if(chw.size() == 1){
 							Patient patient  = new Patient(chw.get(0),currLine[0],parseGender(currLine[2]),InternationalisationUtils.getDateFormat().parse(currLine[1]));
 							patientDao.savePatient(patient);

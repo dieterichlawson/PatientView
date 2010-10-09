@@ -32,7 +32,7 @@ public class CommunityHealthWorkerAdministrationPanelController extends PersonAd
 
 	@Override
 	protected List<CommunityHealthWorker> getPeopleForString(String s) {
-		return new ArrayList<CommunityHealthWorker>(chwDao.getCommunityHealthWorkerByName(s, 30));
+		return new ArrayList<CommunityHealthWorker>(chwDao.findCommunityHealthWorkerByName(s, 30));
 	}
 
 	@Override
