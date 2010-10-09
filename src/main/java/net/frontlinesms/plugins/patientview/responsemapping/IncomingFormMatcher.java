@@ -182,7 +182,7 @@ public class IncomingFormMatcher implements EventObserver{
 		try{
 			responses.get(0).getDateSubmitted();
 		}catch(Exception e){
-			responses = formFieldResponseDao.getResponsesForForm(response);
+			responses = formFieldResponseDao.getResponsesForFormResponse(response);
 		}
 		
 		for(MedicFormFieldResponse fieldResponse : responses){
@@ -212,7 +212,7 @@ public class IncomingFormMatcher implements EventObserver{
 	}
 	
 	public float getConfidence(Patient subject, MedicFormResponse mfr){
-		List<MedicFormFieldResponse> responses = formFieldResponseDao.getResponsesForForm(mfr);
+		List<MedicFormFieldResponse> responses = formFieldResponseDao.getResponsesForFormResponse(mfr);
 		float result = 0.0F;
 		float total = 0.0F;
 		for(MedicFormFieldResponse fieldResponse : responses){

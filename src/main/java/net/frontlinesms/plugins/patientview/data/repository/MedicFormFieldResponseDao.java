@@ -9,52 +9,79 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldR
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 
 /**
- * This dao is fairly stripped down since, in general, you should not be deleting or
- * updating responses to fields. Additionally, most saving of fields should be done
- * by first placing them in a FormResponse container
- * @author Dieterich
- *
+ * The MedicFormFieldResponseDao does not have update or delete methods because
+ * in general you should not be manipulating fields directly but should instead
+ * manipulate their parent form.
  */
 public interface MedicFormFieldResponseDao {
 
-	public void saveFieldResponse(MedicFormFieldResponse s);
-	
-	public Collection<MedicFormFieldResponse> getAllFieldResponses();
-		
 	/**
-	 * Returns the most recently submitted response for the field f about the person p
-	 * @param f The FormField in question
-	 * @param p the Person in question
-	 * @return the most recent response
+	 * Saves a MedicFormFieldResponse to the data source.
 	 */
-	public MedicFormFieldResponse getMostRecentFieldResponse(MedicFormField f, Person p);
-	
+	public void saveFieldResponse(MedicFormFieldResponse fieldResponse);
+
 	/**
-	 * Returns the most recent reponse for MedicFormField f concerning person p
-	 * @param f the MedicFormField
-	 * @param p the Person
-	 * @return the most recent response
-	 */
-	public List<MedicFormFieldResponse> getResponsesForFieldAndPerson(MedicFormField f, Person p);
-	
-	/**
-	 * Returns all the responses to the Form field mff
-	 * @param mff
+	 * Gets all form field responses from the data source.
+	 * 
 	 * @return
 	 */
-	public List<MedicFormFieldResponse> getResponsesForfield(MedicFormField mff);
-	
+	public Collection<MedicFormFieldResponse> getAllFieldResponses();
+
 	/**
-	 * Returns all form field responses on that form response.
-	 * This method should be destroyed as soon as we figure out a
-	 * better way to fix the Lazy Loading exceptions 
+	 * Returns the most recently submitted response for a field about a person
+	 * 
+	 * @param field
+	 * @param subject
+	 */
+	public MedicFormFieldResponse getMostRecentFieldResponse(
+			MedicFormField field, Person subject);
+
+	/**
+	 * Returns all responses for the supplied field about the supplied subject
+	 * 
+	 * @param field
+	 *            the MedicFormField
+	 * @param subject
+	 *            the Person
+	 * @return the most recent response
+	 */
+	public List<MedicFormFieldResponse> getResponsesForFieldAndPerson(
+			MedicFormField field, Person subject);
+
+	/**
+	 * Returns all the responses to the supplied field
+	 * 
+	 * @param field
+	 * @return
+	 */
+	public List<MedicFormFieldResponse> getResponsesForfield(
+			MedicFormField field);
+
+	/**
+	 * Returns all form field responses on the supplied form response. This
+	 * method should be destroyed as soon as we figure out a better way to fix
+	 * the Lazy Loading exceptions
+	 * 
 	 * @param mfr
 	 * @return
 	 */
-	public List<MedicFormFieldResponse> getResponsesForForm(MedicFormResponse mfr);
-	
+	public List<MedicFormFieldResponse> getResponsesForFormResponse(
+			MedicFormResponse mfr);
+
+	/**
+	 * Updates the subjects of the fields on the supplied form response
+	 * to match the supplied form's subject.
+	 * 
+	 * @param formResponse
+	 */
 	public void updateSubjects(MedicFormResponse formResponse);
-	
+
+	/**
+	 * Updates the submitters of the fields on the supplied form response
+	 * to match the supplied form's submitter.
+	 * 
+	 * @param formResponse
+	 */
 	public void updateSubmitters(MedicFormResponse formResponse);
-	
+
 }

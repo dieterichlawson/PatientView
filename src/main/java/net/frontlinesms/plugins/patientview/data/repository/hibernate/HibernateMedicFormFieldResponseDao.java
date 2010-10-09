@@ -10,7 +10,6 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormFieldR
 import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse;
 import net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao;
 
-import org.hibernate.Hibernate;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -20,55 +19,42 @@ public class HibernateMedicFormFieldResponseDao extends BaseHibernateDao<MedicFo
 	protected HibernateMedicFormFieldResponseDao() {
 		super(MedicFormFieldResponse.class);
 	}
-
+	
+	public void saveFieldResponse(MedicFormFieldResponse s) {
+		super.saveWithoutDuplicateHandling(s);
+	}
+	
 	public Collection<MedicFormFieldResponse> getAllFieldResponses() {
 		return super.getAll();
 	}
 
-	public void saveMedicFieldResponse(MedicFormFieldResponse response) {
-		super.saveWithoutDuplicateHandling(response);
-	}
-
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao#getMostRecentFieldResponse(net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField, net.frontlinesms.plugins.patientview.data.domain.people.Person)
-	 */
-	public MedicFormFieldResponse getMostRecentFieldResponse(MedicFormField f, Person p) {
-		DetachedCriteria c = super.getCriterion();
-		c.add(Restrictions.eq("field", f));
-		c.add(Restrictions.eq("subject", p));
+	public MedicFormFieldResponse getMostRecentFieldResponse(MedicFormField field, Person subject) {
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormFieldResponse.class);
+		c.add(Restrictions.eq("field", field));
+		c.add(Restrictions.eq("subject", subject));
 		c.addOrder(Order.desc("dateSubmitted"));
 		try{
-			return super.getList(c,0,1).get(0);
-		}catch(Exception e){
+			return super.getList(c, 0, 1).get(0);
+		}catch(Throwable t){
 			return null;
 		}
 	}
 
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao#getResponsesForFieldAndPerson(net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField, net.frontlinesms.plugins.patientview.data.domain.people.Person)
-	 */
-	public List<MedicFormFieldResponse> getResponsesForFieldAndPerson(MedicFormField f, Person p) {
-		DetachedCriteria c = super.getCriterion();
-		c.add(Restrictions.eq("field", f));
-		c.add(Restrictions.eq("subject", p));
+	public List<MedicFormFieldResponse> getResponsesForFieldAndPerson(MedicFormField field, Person subject) {
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormFieldResponse.class);
+		c.add(Restrictions.eq("field", field));
+		c.add(Restrictions.eq("subject", subject));
 		return super.getList(c);
 	}
 
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormFieldResponseDao#getResponsesForfield(net.frontlinesms.plugins.patientview.data.domain.framework.MedicFormField)
-	 */
 	public List<MedicFormFieldResponse> getResponsesForfield(MedicFormField mff) {
-		DetachedCriteria c = super.getCriterion();
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormFieldResponse.class);
 		c.add(Restrictions.eq("field", mff));
 		return super.getList(c);
 	}
 
-	public void saveFieldResponse(MedicFormFieldResponse s) {
-		super.saveWithoutDuplicateHandling(s);
-	}
-
-	public List<MedicFormFieldResponse> getResponsesForForm(MedicFormResponse mfr) {	
-		DetachedCriteria c = super.getCriterion();
+	public List<MedicFormFieldResponse> getResponsesForFormResponse(MedicFormResponse mfr) {	
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormFieldResponse.class);
 		c.add(Restrictions.eq("formResponse", mfr));
 		c.addOrder(Order.asc("responsePosition"));
 		return super.getList(c);

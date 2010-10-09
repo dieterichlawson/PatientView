@@ -78,7 +78,7 @@ public class FormResponseDetailViewPanelController implements DetailViewPanelCon
 		uiController.removeAll(fieldContainer);
 		//get all the responses
 		ArrayList<String> responses = new ArrayList<String>();
-		List<MedicFormFieldResponse> fieldResponses = fieldResponseDao.getResponsesForForm(response);
+		List<MedicFormFieldResponse> fieldResponses = fieldResponseDao.getResponsesForFormResponse(response);
 		for(MedicFormFieldResponse r: fieldResponses){
 			responses.add(r.getValue());
 		}

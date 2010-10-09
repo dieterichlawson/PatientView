@@ -65,7 +65,7 @@ public class FlexibleFormResponsePanel implements ThinletUiEventHandler{
 	public void showForm() {
 		uiController.removeAll(formPanel);
 		ArrayList<String> responses = new ArrayList<String>();
-		List<MedicFormFieldResponse> fieldResponses = ((MedicFormFieldResponseDao) appCon.getBean("MedicFormFieldResponseDao")).getResponsesForForm(response);
+		List<MedicFormFieldResponse> fieldResponses = ((MedicFormFieldResponseDao) appCon.getBean("MedicFormFieldResponseDao")).getResponsesForFormResponse(response);
 		for(MedicFormFieldResponse r: fieldResponses){
 			responses.add(r.getValue());
 		}
