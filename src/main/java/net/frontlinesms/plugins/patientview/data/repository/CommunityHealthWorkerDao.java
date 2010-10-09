@@ -29,7 +29,7 @@ public interface CommunityHealthWorkerDao {
 	public Collection<CommunityHealthWorker> getAllCommunityHealthWorkers();
 	
 	/**
-	 * Returns the community health worker that has the phone number supplied
+	 * Returns the community health worker that has the supplied phone number. 
 	 * @param phoneNumber The phone number
 	 * @return the Community Health Worker
 	 */

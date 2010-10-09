@@ -47,6 +47,14 @@ public class CommunityHealthWorker extends Person {
 		return contactInfo.getPhoneNumber();
 	}
 	
+	/**
+	 * Sets the phone number of the CHW, creating a Contact
+	 * if the CHW does not already have one created.
+	 * 
+	 * @param phoneNumber
+	 * @throws NumberFormatException
+	 * @throws DuplicateKeyException
+	 */
 	public void setPhoneNumber(String phoneNumber) throws NumberFormatException, DuplicateKeyException{
 		if (contactInfo == null){
 			contactInfo = new Contact(this.getName(),phoneNumber,null,null,null,true);

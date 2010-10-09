@@ -105,16 +105,6 @@ public class User extends Person {
 	/** Default constructor for Hibernate. */
 	public User() {}
 
-	/**
-	 * 
-	 * @param name
-	 * @param gender
-	 * @param birthdate
-	 * @param username
-	 * @param password
-	 * @param role
-	 * @throws GeneralSecurityException
-	 */
 	public User(String name, Gender gender, Date birthdate, String username, Role role, String password) throws GeneralSecurityException {
 		super(name, gender, birthdate);
 		// TODO: Make sure no two users have the same login name
