@@ -147,7 +147,7 @@ public class AttributeAdministrationPanelController implements AdministrationTab
 	 * @param text
 	 */
 	public void fieldSearchBarKeyPress(String text){
-		updateFieldSearchTable(formFieldDao.getFieldsByName(text));
+		updateFieldSearchTable(formFieldDao.findFieldsByLabel(text));
 		uiController.setText(labelTextField, "");
 		uiController.setText(dataTypeComboBox, "");
 		uiController.setSelectedIndex(dataTypeComboBox, -1);
