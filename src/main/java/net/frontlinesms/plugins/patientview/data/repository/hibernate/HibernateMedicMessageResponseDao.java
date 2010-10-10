@@ -16,30 +16,21 @@ public class HibernateMedicMessageResponseDao extends BaseHibernateDao<MedicMess
 		super(MedicMessageResponse.class);
 	}
 
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicMessageResponseDao#getAllMedicMessageResponse()
-	 */
 	public Collection<MedicMessageResponse> getAllMedicMessageResponse() {
 		return super.getAll();
 	}
 
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicMessageResponseDao#saveMedicMessageResponse(net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse)
-	 */
 	public void saveMedicMessageResponse(MedicMessageResponse message) {
 		super.saveWithoutDuplicateHandling(message);
 	}
 
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicMessageResponseDao#updateMedicMessageResponse(net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageResponse)
-	 */
 	public void updateMedicMessageResponse(MedicMessageResponse message) {
 		super.updateWithoutDuplicateHandling(message);
 	}
 
-	public MedicMessageResponse getMessageForVanillaMessage(FrontlineMessage m) {
-		DetachedCriteria dc = super.getCriterion();
-		dc.add(Restrictions.eq("message",m));
-		return super.getUnique(dc);
+	public MedicMessageResponse getMessageForVanillaMessage(FrontlineMessage vanillaMessage) {
+		DetachedCriteria c = DetachedCriteria.forClass(MedicMessageResponse.class);
+		c.add(Restrictions.eq("message",vanillaMessage));
+		return super.getUnique(c);
 	}
 }

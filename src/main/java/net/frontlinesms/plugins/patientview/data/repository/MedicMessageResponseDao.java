@@ -7,11 +7,27 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicMessageRes
 
 public interface MedicMessageResponseDao {
 
+	/**
+	 * @return all MedicMessageResponses
+	 */
 	public Collection<MedicMessageResponse> getAllMedicMessageResponse();
 
+	/**
+	 * Saves a message response
+	 * @param message
+	 */
 	public void saveMedicMessageResponse(MedicMessageResponse message);
 
+	/**
+	 * Updates a message response
+	 * @param message
+	 */
 	public void updateMedicMessageResponse(MedicMessageResponse message);
 	
-	public MedicMessageResponse getMessageForVanillaMessage(FrontlineMessage m);
+	/**
+	 * Returns the medic message that corresponds with the given FrontlineSMS message
+	 * @param vanillaMessage
+	 * @return
+	 */
+	public MedicMessageResponse getMessageForVanillaMessage(FrontlineMessage vanillaMessage);
 }
