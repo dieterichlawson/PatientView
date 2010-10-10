@@ -9,6 +9,7 @@ import net.frontlinesms.plugins.patientview.data.domain.response.MedicFormRespon
 public interface MedicFormResponseDao {
 	
 	/**
+	 * Returns all MedicFormResponses
 	 * @return All form responses
 	 */
 	public List<MedicFormResponse> getAllFormResponses();
@@ -26,32 +27,32 @@ public interface MedicFormResponseDao {
 	public void updateMedicFormResponse(MedicFormResponse response);
 	
 	/**
-	 * All form responses about p
-	 * @param p
+	 * Returns all form responses about the given subject 
+	 * @param subject
 	 * @return
 	 */
-	public List<MedicFormResponse> getFormResponsesForSubject(Person p);
+	public List<MedicFormResponse> getFormResponsesForSubject(Person subject);
 	
 	/**
-	 * @param p
-	 * @return All Form Responses submitted by p
+	 * Returns all form responses submitted by the given person
 	 */
-	public List<MedicFormResponse> getFormResponsesForSubmitter(Person p);
+	public List<MedicFormResponse> getFormResponsesForSubmitter(Person submitter);
 	
 	/**
-	 * @param form
-	 * @return All the form responses for MedicForm form
+	 * Returns all form responses for the given form
 	 */
 	public List<MedicFormResponse> getFormResponsesForForm(MedicForm form);
 	
+	/**
+	 * Returns all unmapped form responses. Unmapped responses are defined
+	 * to be responses without a subject
+	 */
 	public List<MedicFormResponse> getUnmappedResponses();
 	
+	/**
+	 * Returns all mapped form responses. Mapped responses are defined
+	 * to be responses that have a subject
+	 */
 	public List<MedicFormResponse> getMappedResponses();
-	
-	public List<MedicFormResponse> getMappedResponses(int startIndex, int limit);
-
-	public List<MedicFormResponse> getUnmappedResponses(int startIndex, int limit);
-	
-	public List<MedicFormResponse> getAllResponses(int startIndex,int limit);
 	
 }

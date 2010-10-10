@@ -17,79 +17,46 @@ public class HibernateMedicFormResponseDao extends BaseHibernateDao<MedicFormRes
 		super(MedicFormResponse.class);
 	}
 
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#getAllFormResponses()
-	 */
 	public List<MedicFormResponse> getAllFormResponses() {
 		return super.getAll();
 	}
 
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#saveMedicFormResponse(net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse)
-	 */
 	public void saveMedicFormResponse(MedicFormResponse response) {
 		super.saveWithoutDuplicateHandling(response);
 	}
 
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#updateMedicFormResponse(net.frontlinesms.plugins.patientview.data.domain.response.MedicFormResponse)
-	 */
 	public void updateMedicFormResponse(MedicFormResponse response) {
 		super.updateWithoutDuplicateHandling(response);
 	}
 	
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#getFormResponsesForSubject(net.frontlinesms.plugins.patientview.data.domain.people.Person)
-	 */
-	public List<MedicFormResponse> getFormResponsesForSubject(Person p){
-		DetachedCriteria c = super.getCriterion();
-		c.add(Restrictions.like("subject", p));
+	public List<MedicFormResponse> getFormResponsesForSubject(Person subject){
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormResponse.class);
+		c.add(Restrictions.eq("subject", subject));
 		return super.getList(c);
 	}
 	
-	/* (non-javadoc)
-	 * @see net.frontlinesms.plugins.patientview.data.repository.MedicFormResponseDao#getFormResponsesForSubmitter(net.frontlinesms.plugins.patientview.data.domain.people.Person)
-	 */
-	public List<MedicFormResponse> getFormResponsesForSubmitter(Person p){
-		DetachedCriteria c = super.getCriterion();
-		c.add(Restrictions.like("submitter", p));
+	public List<MedicFormResponse> getFormResponsesForSubmitter(Person submitter){
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormResponse.class);
+		c.add(Restrictions.eq("submitter", submitter));
 		return super.getList(c);
 	}
 
 	public List<MedicFormResponse> getFormResponsesForForm(MedicForm form) {
-		DetachedCriteria c = super.getCriterion();
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormResponse.class);
 		c.add(Restrictions.eq("form", form));
 		return super.getList(c);
 	}
 
 	public List<MedicFormResponse> getMappedResponses() {
-		DetachedCriteria c = super.getCriterion();
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormResponse.class);
 		c.add(Restrictions.isNotNull("subject"));
 		return super.getList(c);
 	}
 
 
 	public List<MedicFormResponse> getUnmappedResponses() {
-		DetachedCriteria c = super.getCriterion();
+		DetachedCriteria c = DetachedCriteria.forClass(MedicFormResponse.class);
 		c.add(Restrictions.isNull("subject"));
 		return super.getList(c);
 	}
-
-	
-	public List<MedicFormResponse> getMappedResponses(int startIndex, int limit) {
-		DetachedCriteria c  = super.getCriterion();
-		c.add(Restrictions.isNotNull("subject"));
-		return super.getList(c, startIndex, limit);
-	}
-
-	public List<MedicFormResponse> getUnmappedResponses(int startIndex, int limit) {
-		DetachedCriteria c  = super.getCriterion();
-		c.add(Restrictions.isNull("subject"));
-		return super.getList(c, startIndex, limit);
-	}
-
-	public List<MedicFormResponse> getAllResponses(int startIndex, int limit) {
-		return super.getAll(startIndex, limit);
-	}
-	
 }
