@@ -163,7 +163,7 @@ public class CandidateSearchPanel implements ThinletUiEventHandler, AdvancedTabl
 		}
 		if(!searchingCandidates){
 			//if we aren't searching for candidates, then we just want a few patients
-			tableController.setResults(patientDao.getPatientsByNameWithLimit(text,5));
+			tableController.setResults(patientDao.findPatientsByName(text,5));
 		}else{
 			//if we are searching for candidates, filter by name
 			ArrayList<Candidate> results = new ArrayList<Candidate>();

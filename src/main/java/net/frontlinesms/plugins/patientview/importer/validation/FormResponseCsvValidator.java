@@ -103,7 +103,7 @@ public class FormResponseCsvValidator extends CsvValidator{
 					}
 		
 				}
-				Patient p = patientDao.getPatient(name, birthdate, id);
+				Patient p = patientDao.findPatient(name, birthdate, id);
 				if (p == null) {
 					exceptions.add(new CsvValidationException(lineNumber,getI18NString("medic.importer.unknown.subject.error")));
 				}

@@ -34,7 +34,7 @@ public class PatientAdministrationPanelController extends PersonAdministrationPa
 
 	@Override
 	protected List<Patient> getPeopleForString(String s) {
-		return new ArrayList<Patient>(patientDao.getPatientsByNameWithLimit(s, 30));
+		return new ArrayList<Patient>(patientDao.findPatientsByName(s, 30));
 	}
 
 	@Override

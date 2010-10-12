@@ -2,8 +2,6 @@ package net.frontlinesms.plugins.patientview.data.repository.hibernate;
 
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +14,7 @@ import net.frontlinesms.plugins.patientview.security.UserSessionManager;
 import net.frontlinesms.ui.i18n.InternationalisationUtils;
 
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
 public class HibernatePatientDao extends BaseHibernateDao<Patient> implements PatientDao {
@@ -24,66 +23,50 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 		super(Patient.class);
 	}
 	
-	//TODO fix this so it works
-	public Collection<Patient> getPatientsForCHW(CommunityHealthWorker chw) {
+	public void savePatient(Patient p) {
+		super.saveWithoutDuplicateHandling(p);
+	}
+
+	public void updatePatient(Patient p) {
+		super.updateWithoutDuplicateHandling(p);
+	}
+
+	public void deletePatient(Patient p) {
+		super.delete(p);
+	}
+
+	public List<Patient> getAllPatients() {
+		DetachedCriteria c= getBaseCriterion();
+		return super.getList(c);
+	}
+	
+	public List<Patient> getPatientsForCHW(CommunityHealthWorker chw) {
 		DetachedCriteria criteria = getBaseCriterion();
 		criteria.add(Restrictions.eq("chw", chw));
 		return super.getList(criteria);
 	}
 
-	/** @see PatientDao#savePatient(Patient) */
-	public void savePatient(Patient p) {
-		super.saveWithoutDuplicateHandling(p);
-	}
-
-	/** @see PatientDao#updatePatient(Patient) */
-	public void updatePatient(Patient p) {
-		super.updateWithoutDuplicateHandling(p);
-	}
-
-	/** @see PatientDao#deletePatient(Patient) */
-	public void deletePatient(Patient p) {
-		super.delete(p);
-	}
-
-	/** @see PatientDao#getAllPatients() */
-	public List<Patient> getAllPatients() {
+	public List<Patient> findPatientsByName(String nameFragment, int resultsLimit) {
 		DetachedCriteria c= getBaseCriterion();
-		return super.getList(c);
-	}
-
-	public List<Patient> getPatientsByNameWithLimit(String s, int limit) {
-		DetachedCriteria c= getBaseCriterion();
-		c.add(Restrictions.like("name", "%"+s+"%"));
-		if(limit > 0)
-			return super.getList(c, 0, limit);
+		c.add(Restrictions.like("name", nameFragment, MatchMode.ANYWHERE));
+		if(resultsLimit > 0)
+			return super.getList(c, 0, resultsLimit);
 		else{
 			return super.getList(c);
 		}
 	}
 	
-	public List<Patient> getPatientsByCHWAndName(String name, CommunityHealthWorker chw){
-		DetachedCriteria c= getBaseCriterion();
-		c.add(Restrictions.like("name", "%"+name+"%"));
-		c.add(Restrictions.eq("chw", chw));
-		return super.getList(c);
-	}
-	
-	public List<Patient> getPatientsByName(String s){
-		return getPatientsByNameWithLimit(s,-1);
+	public List<Patient> findPatientsByName(String nameFragment){
+		return findPatientsByName(nameFragment,-1);
 	}
 	
 	public Patient getPatientById(Long id){
 		DetachedCriteria c = getBaseCriterion();
 		c.add(Restrictions.eq("pid", id));
-		try{
-			return super.getList(c).get(0);
-		}catch(Throwable t){
-			return null;
-		}
+		return super.getUnique(c);
 	}
 	
-	public Patient getPatient(String name, String birthdate, String id){
+	public Patient findPatient(String name, String birthdate, String id){
 		DetachedCriteria c = getBaseCriterion();
 		//add the name restriction
 		if(name !=null && !name.equals("")){
@@ -106,12 +89,11 @@ public class HibernatePatientDao extends BaseHibernateDao<Patient> implements Pa
 			long longId = Long.parseLong(id);
 			c.add(Restrictions.eq("id", longId));
 		}
-		Patient p = super.getUnique(c);
-		return p;
+		return super.getUnique(c);
 	}
 
 	private DetachedCriteria getBaseCriterion(){
-		DetachedCriteria c= super.getCriterion();
+		DetachedCriteria c= DetachedCriteria.forClass(Patient.class);
 		c.add(Restrictions.eq("deleted",false));
 		return c;
 	}
